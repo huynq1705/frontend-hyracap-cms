@@ -1,0 +1,31 @@
+.custom-table-calender {
+    // max-height: calc(100vh - 350px) !important;
+}
+
+.time-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 5px;
+}
+.icon-add {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 8px;
+    gap: 10px;
+    border-radius: 8px;
+    color: #fff;
+    box-shadow: 0px 0px 6.6px 0px #e2e2e2;
+}
+.desc-event {
+    font-size: 12px;
+    font-weight: 400;
+    color: #475467;
+}
+.desc-employee {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1d2939;
+}

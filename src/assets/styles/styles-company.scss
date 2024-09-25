@@ -1,0 +1,69 @@
+.wrapper-company {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 16px 24px;
+    flex-wrap: wrap;
+    padding: 16px;
+    justify-content: flex-start;
+    transition: all 0.3s linear;
+    
+    
+}
+
+@media (max-width: 600px) {
+    .wrapper-edit-page {
+        padding: 16px;
+    }
+
+    .wrapper-company {
+        display: block;
+        flex-direction: column;
+        gap: 16px;
+      
+    }
+
+    .wrapper-company>div {
+        width: 100% !important;
+        margin-top: 8px;
+    }
+
+    /* Customize MyTextField, MyTextareaAutosize, MySelect, MyDatePicker, MyRadio */
+    .currency-input,
+    .my-text-field,
+    .my-textarea-autosize,
+    .my-select,
+    .my-datepicker,
+    .my-radio {
+        width: 100% !important;
+       
+    }
+
+    /* Customize MyTextField inside ActionsEditPage */
+    .actions-edit-page {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    /* Customize Buttons in ActionsEditPage */
+    .actions-edit-page .button {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1024px) {
+    // .wrapper-company {
+    //     overflow-y: auto;
+    //     max-height: calc(100vh - 180px);
+    // }
+    .wrapper-from>div {
+        width: calc(50% - 12px) !important;
+    }
+
+    .my-select,
+    .my-datepicker,
+    .my-radio {
+        width: calc(50% - 8px) !important;
+    }
+}
