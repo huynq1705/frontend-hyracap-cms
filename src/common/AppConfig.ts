@@ -14,16 +14,11 @@ export default class AppConfig {
             `/all-request-overview1${params}`,
         GET_REPORT_COMMISSION: (params: string) =>
             `/report/commissions${params}`,
-        GET_REPORT_PRODUCT: (params: string) =>
-            `/report/product${params}`,
-        GET_REPORT_SERVICE: (params: string) =>
-            `/report/service${params}`,
-        GET_REPORT_ACCOUNT: (params: string) =>
-            `/report/account${params}`,
-        GET_REPORT_EVALUATION_CRITERIA:
-            `/report/evaluation-criteria?order=DESC`,
-        GET_REPORT_REVENUE: (params: string) =>
-            `/report/revenue${params}`,
+        GET_REPORT_PRODUCT: (params: string) => `/report/product${params}`,
+        GET_REPORT_SERVICE: (params: string) => `/report/service${params}`,
+        GET_REPORT_ACCOUNT: (params: string) => `/report/account${params}`,
+        GET_REPORT_EVALUATION_CRITERIA: `/report/evaluation-criteria?order=DESC`,
+        GET_REPORT_REVENUE: (params: string) => `/report/revenue${params}`,
         GET_REPORT_PAYMENT_METHOD: (params: string) =>
             `/report/payment-method${params}`,
         GET_REPORT_REVENUE_PAYMENT_METHOD: (params: string) =>
@@ -130,7 +125,7 @@ export default class AppConfig {
         SIGN_UP: `/account`,
     };
     static USER = {
-        GET_PROFILE: `account/me`,
+        GET_PROFILE: `users/me`,
         GET_ALL: `all-user`,
     };
 

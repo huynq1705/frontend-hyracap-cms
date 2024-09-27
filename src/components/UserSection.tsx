@@ -59,7 +59,9 @@ const UserSection = (): JSX.Element => {
                             // style={{ minWidth: "120px" }}
                         >
                             <span className="!text-black !font-bold hidden lg:inline-block">
-                                {`${userInfo?.full_name}`}
+                                {`${userInfo[0]?.firstName}` +
+                                    ` ` +
+                                    `${userInfo[0]?.lastName}`}
                             </span>
                             <FontAwesomeIcon icon={faAngleDown} />
                         </div>

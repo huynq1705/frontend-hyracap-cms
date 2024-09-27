@@ -20,7 +20,7 @@ type ResultSignIn = {
     isLoading: boolean;
 };
 
-export default function useSignIn(
+export default function useSigIn(
     redirectPath: string | null,
     onLoginSuccess: (response: any) => void
 ): ResultSignIn {
@@ -38,11 +38,19 @@ export default function useSignIn(
             authService.signIn(formValues),
         onSuccess: (res: any) => {
             onLoginSuccess(res);
+            console.log("status", res.status);
             if (res.status) {
-                const { access_token } = res.data.data;
-                const { refresh_token } = res.data.data;
-                localStorage.setItem(AppConfig.ACCESS_TOKEN, access_token);
-                localStorage.setItem(AppConfig.REFRESH_TOKEN, refresh_token);
+                const { accessToken } = res.data;
+                const { refreshToken } = res.data;
+                console.log("res.data", res.data);
+                console.log(
+                    "accessToken",
+                    accessToken,
+                    "refreshToken",
+                    refreshToken
+                );
+                localStorage.setItem(AppConfig.ACCESS_TOKEN, accessToken);
+                localStorage.setItem(AppConfig.REFRESH_TOKEN, refreshToken);
                 dispatch(
                     setGlobalNoti({
                         type: "success",
@@ -53,20 +61,20 @@ export default function useSignIn(
                     if (redirectPath) {
                         navigate(redirectPath);
                     } else {
-                        // navigate("/admin");
-                        getPaymentMethod({ take: 99 })
-                            .then((e) => {
-                                if (
-                                    e.data.find(
-                                        (item) => item.default_payment === 1
-                                    )
-                                ) {
-                                    navigate("/admin");
-                                } else {
-                                    navigate("/admin/get-start");
-                                }
-                            })
-                            .catch(() => {});
+                        navigate("/admin");
+                        // getPaymentMethod({ take: 99 })
+                        //     .then((e) => {
+                        //         if (
+                        //             e.data.find(
+                        //                 (item) => item.default_payment === 1
+                        //             )
+                        //         ) {
+                        //             navigate("/admin");
+                        //         } else {
+                        //             navigate("/admin/get-start");
+                        //         }
+                        //     })
+                        //     .catch(() => {});
                     }
                 }, 100);
             } else {
