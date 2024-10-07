@@ -7,47 +7,44 @@ import {
     ValidationResult,
 } from "@/types/types";
 import { validateRequiredKeys } from "@/utils";
-import { PayloadService, ResponseServiceItem } from "@/types/service.type";
 import {
-    InitServiceKeys,
-} from "@/constants/init-state/service";
-import { PayloadRole, PayloadRoleGroup, ResponseRoleDetailItem, ResponseRoleItem } from "@/types/role";
+    PayloadRole,
+    PayloadRoleGroup,
+    ResponseRoleDetailItem,
+    ResponseRoleItem,
+} from "@/types/role";
 type RoleService = {
-    getRole: (
-        param?: any,
-    ) => Promise<ResponseFromServerV1<ResponseRoleItem[]>>;
+    getRole: (param?: any) => Promise<ResponseFromServerV1<ResponseRoleItem[]>>;
     getRoleDetail: (
-        param?: any,
+        param?: any
     ) => Promise<ResponseFromServerV1<ResponseRoleDetailItem>>;
     postRole: (
         payload: PayloadRoleGroup,
-        requiredKeys: string[],
-    ) => ValidationResult | Promise<ValidationResult |boolean>;
+        requiredKeys: string[]
+    ) => ValidationResult | Promise<ValidationResult | boolean>;
     putRole: (
         payload: PayloadRoleGroup,
-        code : number | string,
-        requiredKeys: string[],
-    ) => ValidationResult | Promise<ValidationResult|boolean>;
+        code: number | string,
+        requiredKeys: string[]
+    ) => ValidationResult | Promise<ValidationResult | boolean>;
     deleteRole: (payload: string[]) => Promise<boolean>;
 };
 export default function apiRoleService(): RoleService {
     const httpClient = useHttpClient();
     const getRole = (params: any): Promise<any> => {
-        const paramRaw: any =  {
-            take : 10,
-            page :1,
-            ...params
-        }
+        const paramRaw: any = {
+            take: 10,
+            page: 1,
+            ...params,
+        };
 
         const queryParams = Utils.parseObjectToParam(paramRaw);
         return httpClient.get<any>(`${AppConfig.ROLE.GET_ROLE(queryParams)}`);
     };
     const getRoleDetail = (param: string): Promise<any> => {
-
         return httpClient.get<any>(`${AppConfig.ROLE.END_POINT}/${param}`);
     };
     const postRole = (payload: PayloadRoleGroup, requiredKeys: string[]) => {
-        
         const result = validateRequiredKeys(payload, requiredKeys);
 
         if (!result.isValid) return result;
@@ -55,13 +52,13 @@ export default function apiRoleService(): RoleService {
             .post<ResponseFromServerV2<any>>(
                 AppConfig.ROLE_ACCOUNT.END_POINT,
                 payload,
-                {},
+                {}
             )
             .then((res: ResponseFromServerV2<any>) => {
                 if (res.statusCode === 409) {
                     return {
                         isValid: true,
-                        missingKeys: ["name"]
+                        missingKeys: ["name"],
                     };
                 }
                 return res.statusCode === 200;
@@ -70,8 +67,11 @@ export default function apiRoleService(): RoleService {
                 throw err;
             });
     };
-    const putRole = (payload: PayloadRoleGroup, code : number | string, requiredKeys: string[]) => {
-      
+    const putRole = (
+        payload: PayloadRoleGroup,
+        code: number | string,
+        requiredKeys: string[]
+    ) => {
         const result = validateRequiredKeys(payload, requiredKeys);
 
         if (!result.isValid) return result;
@@ -79,13 +79,13 @@ export default function apiRoleService(): RoleService {
             .put<ResponseFromServerV2<any>>(
                 AppConfig.ROLE_ACCOUNT.END_POINT + "/" + code,
                 payload,
-                {},
+                {}
             )
             .then((res: ResponseFromServerV2<any>) => {
                 if (res.statusCode === 409) {
                     return {
                         isValid: true,
-                        missingKeys: ["name"]
+                        missingKeys: ["name"],
                     };
                 }
                 return res.statusCode === 200;
@@ -96,7 +96,10 @@ export default function apiRoleService(): RoleService {
     };
     const deleteRole = (payload: string[]) => {
         return httpClient
-            .delete<ResponseFromServerV2<any>>(AppConfig.ROLE.END_POINT, payload)
+            .delete<ResponseFromServerV2<any>>(
+                AppConfig.ROLE.END_POINT,
+                payload
+            )
             .then((res: ResponseFromServerV2<any>) => {
                 return res.statusCode === 200;
             })
@@ -109,6 +112,6 @@ export default function apiRoleService(): RoleService {
         postRole,
         putRole,
         deleteRole,
-        getRoleDetail
+        getRoleDetail,
     };
 }

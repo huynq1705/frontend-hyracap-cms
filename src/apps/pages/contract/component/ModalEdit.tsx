@@ -2,8 +2,8 @@ import HeaderModalEdit from "@/components/header-modal-edit";
 import Transition from "@/components/transition-dialog";
 import { Box, Dialog } from "@mui/material";
 import React, { useState } from "react";
-import EditPage from "./edit";
 import { Modal } from "antd";
+import EditPage from "./edit";
 
 export interface ModalEditProps {
     open: boolean;
@@ -12,7 +12,7 @@ export interface ModalEditProps {
 }
 const transition = (props: any) => <Transition direction="up" {...props} />;
 
-export default function ModalEditProduct(props: ModalEditProps) {
+export default function ModalEditContract(props: ModalEditProps) {
     const { open, toggle, refetch } = props;
 
     return (

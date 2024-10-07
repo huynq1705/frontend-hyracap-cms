@@ -47,7 +47,7 @@ const UserSection = (): JSX.Element => {
     ];
     return (
         <>
-            <Tooltip title={userInfo?.email} disableInteractive>
+            <Tooltip title={userInfo?.[0].email} disableInteractive>
                 <Button
                     className="w-auto animate-fadeleft !rounded-lg"
                     onClick={handleClick}
@@ -59,9 +59,9 @@ const UserSection = (): JSX.Element => {
                             // style={{ minWidth: "120px" }}
                         >
                             <span className="!text-black !font-bold hidden lg:inline-block">
-                                {`${userInfo[0]?.firstName}` +
+                                {`${userInfo?.[0].firstName}` +
                                     ` ` +
-                                    `${userInfo[0]?.lastName}`}
+                                    `${userInfo?.[0].lastName}`}
                             </span>
                             <FontAwesomeIcon icon={faAngleDown} />
                         </div>

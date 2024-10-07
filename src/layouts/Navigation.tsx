@@ -76,62 +76,9 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         // role: "account.getList",
                     },
                     {
-                        label: `${T("manage")} ${t("schedule")}`,
-                        icon: <ScheduleIcon />,
-                        key: "admin/schedule",
-                        type: "link",
-                        // role: ["admin"],
-                    },
-                    {
-                        label: `${T("information")} ${t("customer")}`,
-                        icon: <CustomerIcon />,
-                        key: "admin/customer",
-                        type: "link",
-                    },
-                    {
-                        label: `${T("manage")} ${t("order")}`, //
-                        icon: <CartIcon />, // icon - name : tên ảnh svg
-                        key: "admin/order", // check width pathname => activate navbar
-                        type: "link", // type navbar
-                        // role: ["admin"],
-                    },
-                    {
-                        label: `${T("manage")} ${t("tag")} ${t("service")}`,
-                        icon: <TagService />,
-                        key: "admin/tag-service-wrapper",
-                        betaItem: true,
-                        // role: ["admin"],
-                        children: [
-                            {
-                                label: "DS KH dùng thẻ trả trước",
-                                key: "admin/prepaid-card-face",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "DS KH dùng thẻ liệu trình",
-                                key: "admin/order-detail-information/treatment",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "QL mệnh giá thẻ trả trước",
-                                key: "admin/prepaid-card-face-value",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "QL loại thẻ liệu trình",
-                                key: "admin/treatment",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                        ],
-                    },
-                    {
                         label: `${T("manage")} ${t("products")}`, //
                         icon: <ProductIcon />, // icon - name : tên ảnh svg
-                        key: "admin/manage-products", // check width pathname => activate navbar
+                        key: "admin/manage-product", // check width pathname => activate navbar
                         betaItem: true, // type navbar
                         // role: ["admin"],
                         children: [
@@ -150,165 +97,23 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         ],
                     },
                     {
-                        label: `${T("manage")} ${t("service")}`,
-                        icon: <ServiceComponent />,
-                        key: "admin/service",
-                        betaItem: true,
-                        // role: ["account"],
-                        children: [
-                            {
-                                label: T("service-tab"),
-                                key: "admin/service-list",
-                                type: "link",
-                                // role: "account.category",
-                            },
-                            {
-                                label: T("service-catalog"),
-                                key: "admin/service-catalog",
-                                type: "link",
-                                // role: "account.getList",
-                            },
-                        ],
-                    },
-                    {
-                        label: `${T("manage")} ${t("team")}`,
-                        icon: <PermissionsIcon />,
-                        key: "admin/manage-team",
-                        betaItem: true,
-                        role: ["account"],
-                        children: [
-                            {
-                                label: T("admin_management"),
-                                key: "admin/management-admin",
-                                type: "link",
-                                // role: ["admin"],
-                                // role: ["account.getList"],
-                            },
-                            {
-                                label: T("employee-manager"),
-                                key: "admin/management-employee",
-                                type: "link",
-                                // role: ["account.put"],
-                            },
-                        ],
-                    },
-
-                    {
-                        label: `Đánh giá`,
-                        icon: <EvaluationsIcon />,
-                        key: "admin/evaluation",
-                        betaItem: true,
-                        // role: ["admin"],
-                        children: [
-                            {
-                                label: `${T("manage") + " " + t("evaluation")}`,
-                                key: "admin/systems-evaluation",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "Đánh giá từ khách hàng",
-                                key: "admin/evaluation-customer",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                        ],
-                    },
-
-                    {
-                        label: T("report"),
-                        icon: <ReportIcon />,
-                        key: "admin/reports-wrapper",
-                        betaItem: true,
-                        children: [
-                            {
-                                label: "BC doanh thu",
-                                key: "admin/report-revenue",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "BC dịch vụ",
-                                key: "admin/report-service",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "BC sản phẩm",
-                                key: "admin/report-product",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "BC hoa hồng",
-                                key: "admin/report-commission",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "BC đánh giá khách hàng",
-                                key: "admin/report-customer",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                        ],
-                    },
-                    {
-                        label: `${T("setting")} ${t("system")}`,
-                        icon: <SettingComponent />,
-                        key: "admin/systems",
-                        betaItem: true,
-                        // role: ["admin"],
-                        children: [
-                            {
-                                label: T("authorization"),
-                                key: "admin/systems-position",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: T("payment-methods"),
-                                key: "admin/systems-payment",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: T("customer-source"),
-                                key: "admin/systems-customer",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: T("customer-classification"),
-                                key: "admin/customer-classification",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: "Thông tin công ty",
-                                key: "admin/company",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: T("setting"),
-                                key: "admin/systems-setting",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                        ],
-                    },
-                    {
-                        label: `Quản lý truyền thông`,
-                        icon: <MediaIcon />,
-                        key: "admin/media",
+                        label: `Hợp đồng`,
+                        icon: <ProductIcon />, // icon - name : tên ảnh svg
+                        key: "admin/contract",
                         type: "link",
                         // role: ["admin"],
                     },
                     {
-                        label: `Ngân hàng đại lý`,
-                        icon: <ScheduleIcon />,
-                        key: "admin/bank",
+                        label: `Giao dịch`,
+                        icon: <ProductIcon />, // icon - name : tên ảnh svg
+                        key: "admin/transaction",
+                        type: "link",
+                        // role: ["admin"],
+                    },
+                    {
+                        label: `Admin`,
+                        icon: <ProductIcon />, // icon - name : tên ảnh svg
+                        key: "admin/users",
                         type: "link",
                         // role: ["admin"],
                     },

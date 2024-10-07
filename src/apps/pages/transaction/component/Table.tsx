@@ -1,34 +1,38 @@
+import React, { useState, useEffect, useMemo } from "react";
+import { Typography, Table, Pagination, PaginationProps, Empty } from "antd";
+import { Box } from "@mui/system";
+import { Stack } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
-import { Box, Stack } from "@mui/material";
-import { Empty, Table, Typography } from "antd";
-import { useEffect, useMemo, useState } from "react";
-import apiProductCategoryService from "@/api/apiProductCategory.service";
 import PopupConfirmRemove from "@/components/popup/confirm-remove";
+import PopupConfirmImport from "@/components/popup/confirm-import";
 import {
     useLocation,
     useNavigate,
     useParams,
     useSearchParams,
 } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { useDispatch, useSelector } from "react-redux";
+import { formatCurrency } from "@/utils";
 import usePermissionCheck from "@/hooks/usePermission";
+import SearchBoxTable from "@/components/search-box-table";
 import ActionButton from "@/components/button/action";
-import ModalEdit from "./ModalEdit";
-import PopupConfirmImport from "@/components/popup/confirm-import";
 import { KeySearchType } from "@/types/types";
 import {
     convertObjToParam,
     handleGetPage,
     parseQueryParams,
 } from "@/utils/filter";
-import SearchBoxTable from "@/components/search-box-table";
-import MySelect from "@/components/input-custom-v2/select";
 import CStatus from "@/components/status";
-import { setTotalItems } from "@/redux/slices/page.slice";
+import apiCommonService from "@/api/apiCommon.service";
+import { useDispatch, useSelector } from "react-redux";
 import { selectPage } from "@/redux/selectors/page.slice";
-import TableResponsive from "./tableResponsive";
 import EmptyIcon from "@/components/icons/empty";
+import { setTotalItems } from "@/redux/slices/page.slice";
+import apiContractService from "@/api/apiContract.service";
+import ModalEditTransaction from "./Modal";
+import apiTransactionService from "@/api/apiTransaction.service";
+import { formatDate } from "@/utils/date-time";
+
 interface ColumnProps {
     actions: {
         [key: string]: (...args: any) => void;
@@ -45,6 +49,13 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                     key={item.id}
                     className="border border-solid border-gray-4 shadow rounded-lg mb-4"
                 >
+                    {/* <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup even:bg-gray-1 px-3 py-2">
+            <span className="font-medium text-gray-9 text-sm">STT</span>
+            <div className="text-gray-9 text-base py-1">
+              <span>{index + 1}</span>
+            </div>
+          </div> */}
+
                     <div className="flex flex-row justify-between border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <div>
                             <span className="font-medium text-gray-9 text-sm">
@@ -54,7 +65,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 <span>{index + 1}</span>
                             </div>
                         </div>
-                        <div className="min-w-[80px]">
+                        {/* <div className="min-w-[80px]">
                             <span className="font-medium text-gray-9 text-sm">
                                 Trạng thái
                             </span>
@@ -64,6 +75,15 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                     name={item?.status ? "Active" : "Inactive"}
                                 />
                             </div>
+                        </div> */}
+                    </div>
+
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Mã sản phẩm
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>{item?.id}</span>
                         </div>
                     </div>
 
@@ -81,6 +101,52 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </div>
                     </div>
 
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Hạn mức tối thiểu
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>
+                                {formatCurrency(item?.min_invest) ?? "- -"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Hạn mức tối đa
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>
+                                {formatCurrency(item?.max_invest) ?? "- -"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Thời hạn tối thiểu
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>{item?.min_duration ?? "- -"} Ngày</span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Thời hạn tối đa
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>{item?.max_duration ?? "- -"} Ngày</span>
+                        </div>
+                    </div>
+
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Mức lãi suất hiện tại
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>{item?.current_interest_rate ?? "- -"}</span>
+                        </div>
+                    </div>
+
                     {(hasPermission.update || hasPermission.delete) && (
                         <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                             <span className="font-medium text-gray-9 text-sm">
@@ -93,7 +159,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="view"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/product-category/view/${item?.id}`
+                                                    `/admin/transaction/view/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -104,7 +170,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="edit"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/product-category/edit/${item?.id}`
+                                                    `/admin/transaction/edit/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -130,17 +196,19 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
         </div>
     );
 };
+
 const getColumns = (props: ColumnProps) => {
     const navigate = useNavigate();
     const { T } = useCustomTranslation();
     const { pathname } = useLocation();
     //permissions
-    const { hasPermission } = usePermissionCheck("product_category");
+    const { hasPermission } = usePermissionCheck("products");
+
     const { actions } = props;
     const columns: any = [
         {
             title: "STT",
-            dataIndex: "index",
+            dataIndex: "products",
 
             render: (_: any, item: any, index: number) => (
                 <Stack direction={"column"} spacing={1}>
@@ -159,19 +227,64 @@ const getColumns = (props: ColumnProps) => {
             width: 50,
         },
         {
-            title: T("product-category"),
-            dataIndex: "product_category",
+            title: "Loại giao dịch",
+            dataIndex: "type",
+
+            render: (_: any, item: any, index: number) => (
+                <Stack direction={"column"} spacing={1}>
+                    <Typography
+                        style={{
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            color: "var(--text-color-three)",
+                            textAlign: "left",
+                        }}
+                    >
+                        {item?.type === 0 ? "Nạp tiền" : "Rút tiền"}
+                    </Typography>
+                </Stack>
+            ),
+            width: 100,
+        },
+        {
+            title: "Têm khách hàng",
+            dataIndex: "name",
+            width: 120,
+            render: (_: any, d: any) => (
+                <Stack direction={"column"} spacing={1}>
+                    <Typography
+                        style={{
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            color: "var(--text-color-three)",
+                        }}
+                    >
+                        {`${d?.contract.user.firstName}` +
+                            " " +
+                            `${d?.contract.user.lastName}`}
+                    </Typography>
+                </Stack>
+            ),
+        },
+        {
+            title: "Số tiền",
+            dataIndex: "amount",
             fixed: "left" as const,
             render: (_: any, item: any) => (
-                <Typography className="text-sm font-semibold text-left">
-                    {item?.name ?? "- -"}
+                <Typography
+                    style={{
+                        fontSize: "14px",
+                        fontWeight: 500,
+                    }}
+                >
+                    {formatCurrency(Number(item?.amount))}
                 </Typography>
             ),
-            width: 380,
+            width: 220,
         },
         {
-            title: "Thời hạn tối thiểu",
-            dataIndex: "min_duration",
+            title: "Mã giao dịch",
+            dataIndex: "code",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -182,14 +295,14 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.min_duration + " Tháng"}
+                        {d?.code}
                     </Typography>
                 </Stack>
             ),
         },
         {
-            title: "Thời hạn tối đa",
-            dataIndex: "max_duration",
+            title: "Thời gian giao dịch",
+            dataIndex: "time",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -200,100 +313,30 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.max_duration + " Tháng"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Lãi xuất tối thiếu",
-            dataIndex: "min_interest_rate",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {(d?.min_interest_rate * 100).toFixed(2) + " %"}
+                        {formatDate(d?.time, "DDMMYY")}
                     </Typography>
                 </Stack>
             ),
         },
     ];
-    {
-        // (hasPermission.update || hasPermission.delete) &&
-        columns.push({
-            title: T("action"),
-            width: 120,
-            dataIndex: "actions",
-            fixed: "right" as const,
-            render: (_: any, d: any) => (
-                <div className="flex justify-center">
-                    {/* check permission */}
-                    {true && (
-                        <Stack
-                            direction={"row"}
-                            sx={{
-                                gap: "12px",
-                                justifyContent: "flex-start",
-                                alignItems: "center",
-                            }}
-                        >
-                            {/* {hasPermission.update && ( */}
-                            <ActionButton
-                                type="view"
-                                onClick={() => {
-                                    navigate(
-                                        `/admin/product-category/view/${d?.id}`
-                                    );
-                                    actions.togglePopup("edit");
-                                }}
-                            />
-                            {/* )} */}
-                            {/* {hasPermission.delete && ( */}
-                            <ActionButton
-                                type="edit"
-                                onClick={() => {
-                                    navigate(
-                                        `/admin/product-category/edit/${d?.id}`
-                                    );
-                                    actions.togglePopup("edit");
-                                }}
-                            />
-                            {/* )} */}
-                            {/* {hasPermission.delete && ( */}
-                            <ActionButton
-                                type="remove"
-                                onClick={() => {
-                                    actions.openRemoveConfirm("remove", d?.id);
-                                }}
-                            />
-                            {/* )} */}
-                        </Stack>
-                    )}
-                </div>
-            ),
-        });
-    }
+
     return columns;
 };
-interface ListProductCategoryProps {
+
+interface CTableProps {
     authorizedPermissions?: any;
 }
-const ListProductCategory = (props: ListProductCategoryProps) => {
-    const { authorizedPermissions } = props;
-    const { T } = useCustomTranslation();
-    const { code } = useParams();
-    const navigate = useNavigate();
 
-    const [searchParams] = useSearchParams();
-    //--fn
-    const { getProductCategory } = apiProductCategoryService();
+const CTable = (props: CTableProps) => {
+    const { code } = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const { pathname, search } = useLocation();
     const dispatch = useDispatch();
+    // --state
+    const page = useSelector(selectPage);
+
+    // search
     const handleGetParam = () => {
         const params: any = {};
         for (const [key, value] of searchParams.entries()) {
@@ -304,115 +347,124 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
         return params;
     };
 
-    const handleSearch = (
-        objParam = {
-            ...keySearch,
-        }
-    ) => {
-        let filter = convertObjToParam(objParam, {
-            page: currentPage,
-            take: pageSize,
-        });
-        let url = `${pathname}${filter}`;
-        navigate(url);
-    };
-    const togglePopup = (params: keyof typeof popup) => {
-        setPopup((prev) => ({ ...prev, [params]: !prev[params] }));
-    };
-    //--const
     const { currentPage, pageSize, key_search } = handleGetPage(searchParams);
-    const { pathname, search } = useLocation();
-    const actions = {
-        openRemoveConfirm: (key_popup: string, code_item: number) => {
-            togglePopup(key_popup as keyof typeof popup);
-            setSelectedRowKeys([code_item]);
-            console.log(typeof [code_item]);
-            console.log(selectedRowKeys);
-        },
-        togglePopup,
-    };
-    //--state
-    const page = useSelector(selectPage);
     const param_payload = useMemo(() => {
         return handleGetParam();
     }, [searchParams]);
+    // search
     const [popup, setPopup] = useState({
         edit: false,
         remove: false,
         upload: false,
+        create_category: false,
     });
-    const [keySearch, setKeySearch] = useState<KeySearchType>({
-        status__in: "1;0",
-    });
+    // search
+    const [keySearch, setKeySearch] = useState<KeySearchType>({});
+
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const { data, isLoading, refetch } = useQuery({
-        queryKey: ["GET_PRODUCT_CATEGORY", param_payload, pathname],
-        queryFn: () =>
-            getProductCategory({ ...param_payload, status__in: "1;0" }),
+    const { getStatistics } = apiCommonService();
+    const { getTransaction } = apiTransactionService();
+    //permissions
+    const { hasPermission } = usePermissionCheck("products");
+
+    const { data, isLoading, isError, refetch } = useQuery({
+        queryKey: ["GET_TRANSACTION", param_payload, pathname],
+        queryFn: () => getTransaction(param_payload),
         keepPreviousData: true,
     });
-
+    console.log("data", data);
+    // convert data
     const dataConvert = useMemo(() => {
+        const data_res = data?.data;
         if (data && data?.meta) {
             dispatch(setTotalItems(data?.meta?.itemCount ?? 1));
         }
-        const list_data = !data?.status ? data?.data : data?.data?.data;
-        if (Array.isArray(list_data))
-            return list_data.map((item: any) => ({ ...item, key: item?.id }));
+        if (data_res && Array.isArray(data_res))
+            return data_res.map((item) => ({ ...item, key: item?.id }));
         return [];
-    }, [data as any]);
+    }, [data]);
+    console.log("dataConvert", dataConvert);
+
     const selectedRowLabels = useMemo(() => {
         return dataConvert
-            .filter((item: any) => selectedRowKeys.includes(item.key))
-            .map((item: any) => item.name);
+            .filter((item) => selectedRowKeys.includes(item.key))
+            .map((item) => item.product.name);
     }, [selectedRowKeys]);
-    const text_search = useMemo(
-        () => keySearch?.name__ilike?.toString() ?? "",
-        [keySearch?.name__ilike, pathname]
-    );
-    //--effect
+    const togglePopup = (params: keyof typeof popup, value?: boolean) => {
+        setPopup((prev) => ({ ...prev, [params]: value ?? !prev[params] }));
+    };
+    // search
     useEffect(() => {
         const new_key_search = parseQueryParams(param_payload);
         setKeySearch(new_key_search);
-        if (code || !pathname.includes("create")) return;
-        if (pathname.includes("create") && !popup.edit) {
-            navigate(`/admin/product-category/create`);
-            togglePopup("edit");
-        }
-        if (pathname.includes("view") && !popup.edit) {
-            navigate(`/admin/product-category/view/${code}`);
-            togglePopup("edit");
+        if (pathname.includes("add_category") && !popup.create_category) {
+            togglePopup("create_category");
+            return;
         }
 
-        if (pathname.includes("edit") && !popup.edit) {
-            navigate(`/admin/product-category/edit/${code}`);
+        if (!code && !pathname.includes("create")) return;
+        if (pathname.includes("view") && !popup.edit) {
+            navigate(`/admin/transaction/view/${code}`);
             togglePopup("edit");
         }
+        if (pathname.includes("edit") && !popup.edit) {
+            navigate(`/admin/transaction/edit/${code}`);
+            togglePopup("edit");
+        }
+        if (pathname.includes("create") && !popup.edit) {
+            togglePopup("edit");
+            return;
+        }
+    }, [window.location.href]);
+    // search
+    const handleSearch = () => {
+        let filter = convertObjToParam(keySearch, {
+            page: currentPage,
+            take: pageSize,
+            text: keySearch?.text?.toString().trim(),
+        });
+        let url = `${pathname}${filter}`;
+        navigate(url);
+    };
+
+    const actions = {
+        openRemoveConfirm: (key_popup: string, code_item: string) => {
+            togglePopup(key_popup as keyof typeof popup);
+            setSelectedRowKeys([code_item]);
+        },
+        togglePopup,
+    };
+    const text_search = useMemo(
+        () => keySearch?.text?.toString() ?? "",
+        [keySearch?.text, pathname]
+    );
+    useEffect(() => {
+        refetch();
     }, [window.location.href]);
     return (
         <>
             <Box className="h-full">
-                <Box className="custom-table-wrapper ">
-                    <div className="gap-6  md:flex">
-                        <div className="w-full flex-wrap md:flex items-start justify-start gap-4">
+                <Box className="custom-table-wrapper shadow">
+                    <div className="md:flex items-end  justify-between space-y-4 flex-wrap">
+                        <div className="w-full md:w-1/3">
                             <SearchBoxTable
                                 keySearch={text_search}
                                 setKeySearch={(value?: string) => {
                                     setKeySearch((prev) => ({
                                         ...prev,
-                                        name__like: value || "",
+                                        text: value || "",
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo tên danh mục"
+                                placeholder="Tìm theo mã sản phẩm, tên sản phẩm, nhãn hiệu"
                             />
                         </div>
                     </div>
-                    {search.includes("full_text") && key_search?.full_text && (
+                    {search.includes("text") && key_search?.text && (
                         <div>
                             {dataConvert.length
-                                ? `Có ${page.totalItems} kết quả cho từ khóa '${key_search?.full_text}'`
-                                : `Không tìm thấy nội dung nào phù hợp với '${key_search?.full_text}'`}
+                                ? `Có ${page.totalItems} kết quả cho từ khóa '${key_search?.text}'`
+                                : `Không tìm thấy nội dung nào phù hợp với '${key_search?.text}'`}
                         </div>
                     )}
                     {/* <Card> */}
@@ -431,6 +483,7 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
                             ),
                         }}
                         bordered
+                        // rowSelection={rowSelection}
                         loading={isLoading}
                         dataSource={dataConvert}
                         columns={getColumns({
@@ -454,24 +507,29 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
                     )}
                 </Box>
             </Box>
+
+            {/*  */}
             {popup.edit && (
-                <ModalEdit
+                <ModalEditTransaction
                     open={popup.edit}
-                    toggle={() => {
-                        togglePopup("edit");
-                        navigate("/admin/product-category");
+                    toggle={(param) => {
+                        togglePopup(param);
+                        navigate(`/admin/transaction`);
                     }}
                     refetch={refetch}
                 />
             )}
-
+            {/*  */}
             <PopupConfirmRemove
                 listItem={selectedRowKeys}
                 open={popup.remove}
-                handleClose={() => togglePopup("remove")}
+                handleClose={() => {
+                    togglePopup("remove");
+                }}
                 refetch={refetch}
                 name_item={selectedRowLabels}
             />
+            {/*  */}
             <PopupConfirmImport
                 open={popup.upload}
                 handleClose={() => {
@@ -483,4 +541,4 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
     );
 };
 
-export default ListProductCategory;
+export default CTable;

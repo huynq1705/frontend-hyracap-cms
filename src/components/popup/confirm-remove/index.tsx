@@ -37,6 +37,7 @@ function PopupConfirmRemove(props: PopupConfirmRemoveProps) {
     const { T, t } = useCustomTranslation();
     const { pathname } = useLocation();
     const urlPayload = getKeyPage(end_point ?? pathname, "key");
+    console.log("urlPayload", urlPayload);
     const handleRemove = async () => {
         const payload = listItem.map((item) => item.toString());
         try {

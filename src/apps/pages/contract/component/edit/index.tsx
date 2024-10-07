@@ -18,14 +18,11 @@ import HeaderModalEdit from "@/components/header-modal-edit";
 import { getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import ListImage from "@/components/list-image";
-import { Timeline, UploadFile } from "antd";
+import { UploadFile } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import CustomCurrencyInput from "@/components/input-custom-v2/currency";
-import X2ChevronDown from "@/components/icons/x2-chevron-down";
-import apiHistoryService from "@/api/apiHistory.service";
-import { formatDate } from "@/utils/date-time";
 import dayjs from "dayjs";
-import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
+import apiAccountService from "@/api/Account.service";
 const VALIDATE = {
     name: "Hãy nhập tên sản phẩm",
     // max_duration: "Hãy nhập thời hạn",
@@ -46,10 +43,6 @@ interface EditPageProps {
     onClose: () => void;
     refetch: () => void;
 }
-type History = {
-    interest_rate: string;
-    effective_from: string;
-};
 export default function EditPage(props: EditPageProps) {
     //--init
     const { onClose, refetch, open } = props;
@@ -59,22 +52,18 @@ export default function EditPage(props: EditPageProps) {
     const { T, t } = useCustomTranslation();
     const { detailCommon } = apiCommonService();
     const { postProduct, putProduct } = apiProductService();
-    const { getProductCategory } = apiProductCategoryService();
-    const { getHistory } = apiHistoryService();
+    const { getProduct } = apiProductService();
+    const { getAccount } = apiAccountService();
 
-    const [isShow, setIsShow] = useState(false);
-    const [history, setHistory] = useState<History[]>([]);
-
-    const getAllProductCategory = async () => {
+    const getAllProduct = async () => {
         try {
             const param = {
                 page: 1,
                 take: 999,
-                filter: "status__eq__1",
             };
-            const response = await getProductCategory(param);
+            const response = await getProduct(param);
             if (response) {
-                setProductCategory(
+                setProduct(
                     response.data.map((it: any) => ({
                         value: it.id.toString(),
                         label: it.name,
@@ -85,20 +74,21 @@ export default function EditPage(props: EditPageProps) {
             throw e;
         }
     };
-    const getInterestRateHistory = async () => {
-        if (!code) return;
+    const getAllAccount = async () => {
         try {
             const param = {
                 page: 1,
                 take: 999,
             };
-            const response = await getHistory(code, param);
+            const response = await getAccount(param);
             if (response) {
-                setHistory(
-                    response.data.map((it: any) => ({
-                        interest_rate: it.interest_rate,
-                        effective_from: it.effective_from,
-                    }))
+                setAccount(
+                    response.data
+                        .filter((it: any) => it.kycStatus === "VERIFIED")
+                        .map((it: any) => ({
+                            value: it.id.toString(),
+                            label: `${it?.firstName}` + " " + `${it?.lastName}`,
+                        }))
                 );
             }
         } catch (e) {
@@ -124,7 +114,7 @@ export default function EditPage(props: EditPageProps) {
                         response.current_interest_rate * 100
                     ).toString(),
                     category_id: response.category_id,
-                    effective_from: dayjs().add(1, "day").format("DD-MM-YYYY"),
+                    effective_from: dayjs().format("DD-MM-YYYY"),
                 };
                 setFormData(convert_data);
             }
@@ -137,7 +127,6 @@ export default function EditPage(props: EditPageProps) {
             );
         }
     };
-
     const handleCreate = async () => {
         try {
             const response = await postProduct(formData, KEY_REQUIRED);
@@ -230,18 +219,8 @@ export default function EditPage(props: EditPageProps) {
             [name]: value,
         }));
     };
-    const toggleShowHistory = () => {
-        setIsShow(!isShow);
-    };
     const handleOnchangeCurrency = (name: string, value: any) => {
         setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    const handleOnchangeDate = (name: string, value: any) => {
-        setFormData((prev: any) => ({
             ...prev,
             [name]: value,
         }));
@@ -254,7 +233,8 @@ export default function EditPage(props: EditPageProps) {
     const { pathname } = useLocation();
     const title_page = T(getKeyPage(pathname, "key"));
     //--state
-    const [productCategory, setProductCategory] = useState<OptionSelect>([]);
+    const [product, setProduct] = useState<OptionSelect>([]);
+    const [account, setAccount] = useState<OptionSelect>([]);
     const [errors, setErrors] = useState<string[]>([]);
     const [formData, setFormData] = useState(INIT_PRODUCT);
     const [popup, setPopup] = useState({
@@ -272,110 +252,40 @@ export default function EditPage(props: EditPageProps) {
     useEffect(() => {
         code && getDetail();
         if (open) {
-            getAllProductCategory();
+            getAllProduct();
+            getAllAccount();
         }
-        getInterestRateHistory();
-        setIsShow(false);
     }, [code, open]);
     return (
         <>
             <HeaderModalEdit onClose={handleCancel} />
             <div className="wrapper-edit-page">
-                <div className="history">
-                    <div
-                        className="flex items-center gap-1 my-3 cursor-pointer"
-                        onClick={toggleShowHistory}
-                    >
-                        <div className="title font-medium text-base text-[#50945D]">
-                            Xem lịch sử thay đổi lãi suất
-                        </div>
-                        <div
-                            className={`transform transition-transform ${
-                                isShow ? "rotate-0" : "rotate-180"
-                            }`}
-                        >
-                            <X2ChevronDown />
-                        </div>
-                    </div>
-                    {isShow && (
-                        <div className="list-history bg-[#F6FAF7] p-5 rounded-xl my-3 flex flex-col gap-3">
-                            {history.length > 0 ? (
-                                <Timeline>
-                                    {history.map((item, index) => (
-                                        <Timeline.Item
-                                            key={index}
-                                            color={"#D0D5DD"}
-                                        >
-                                            <div className="flex items-center font-normal text-base text-[#475467] gap-3">
-                                                <div>
-                                                    Lãi suất{" "}
-                                                    {item.interest_rate}
-                                                </div>
-                                                <div className="w-[6px] h-[6px] rounded-full bg-[#475467]"></div>
-                                                <div>
-                                                    Hiệu lực từ ngày{" "}
-                                                    {formatDate(
-                                                        item.effective_from,
-                                                        "DDMMYYYY"
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </Timeline.Item>
-                                    ))}
-                                </Timeline>
-                            ) : (
-                                <div className="font-medium text-sm text-[#1D2939]">
-                                    Chưa có lịch sử chỉnh sửa
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
                 <div className="wrapper-from items-end">
-                    {code && (
-                        <>
-                            {/* id */}
-                            <MyTextField
-                                label="Mã sản phẩm"
-                                errors={errors}
-                                required={KEY_REQUIRED}
-                                configUI={{
-                                    width: "calc(50% - 12px)",
-                                }}
-                                name="id"
-                                placeholder=""
-                                handleChange={handleOnchange}
-                                values={formData}
-                                validate={VALIDATE}
-                                disabled
-                            />
-                        </>
-                    )}
-                    {/* name */}
-                    <MyTextField
-                        label="Tên sản phẩm"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="name"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        disabled={isView}
-                    />
-                    {/* product_category_id */}
                     <MySelect
                         configUI={{
                             width: "calc(50% - 12px)",
                         }}
-                        label="Danh mục"
-                        name="category_id"
+                        label="Khách hàng"
+                        name="user"
                         handleChange={handleOnchange}
                         values={formData}
-                        options={productCategory}
+                        options={account}
+                        errors={errors}
+                        validate={VALIDATE}
+                        required={KEY_REQUIRED}
+                        itemsPerPage={5} // Adjust items per page as needed
+                        disabled={isView}
+                        placeholder="Chọn"
+                    />
+                    <MySelect
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        label="Sản phẩm"
+                        name="product_id"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        options={product}
                         errors={errors}
                         validate={VALIDATE}
                         required={KEY_REQUIRED}
@@ -386,20 +296,8 @@ export default function EditPage(props: EditPageProps) {
 
                     {/* amount */}
                     <CurrencyInput
-                        label="Hạn mức tối thiểu"
-                        name="min_invest"
-                        handleChange={handleOnchangeCurrency}
-                        values={formData}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        configUI={{ width: "calc(50% - 12px)" }}
-                        disabled={isView}
-                    />
-                    {/* selling_price */}
-                    <CurrencyInput
-                        label="Hạn mức tối đa"
-                        name="max_invest"
+                        label="Tổng vốn đầu tư"
+                        name="capital"
                         handleChange={handleOnchangeCurrency}
                         values={formData}
                         errors={errors}
@@ -410,13 +308,13 @@ export default function EditPage(props: EditPageProps) {
                     />
                     {/* commission */}
                     <MyTextField
-                        label="Thời hạn tối thiểu"
+                        label="Thời hạn đầu tư"
                         errors={errors}
                         required={KEY_REQUIRED}
                         configUI={{
                             width: "calc(50% - 12px)",
                         }}
-                        name="min_duration"
+                        name="duration"
                         placeholder="Nhập"
                         handleChange={handleOnchange}
                         values={formData}
@@ -427,59 +325,6 @@ export default function EditPage(props: EditPageProps) {
                         type="number"
                         disabled={isView}
                     />
-                    <MyTextField
-                        label="Thời hạn tối đa"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="max_duration"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        unit="Tháng"
-                        max={100}
-                        min={0}
-                        type="number"
-                        disabled={isView}
-                    />
-                    <MyTextField
-                        label="Mức lãi suất hiện tại"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="interest_rate"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        unit="%"
-                        max={100}
-                        min={0}
-                        type="number"
-                        disabled={isView}
-                    />
-                    {!isView && (
-                        <MyDatePickerMui
-                            label="Lãi suất có hiệu lực từ ngày"
-                            errors={errors}
-                            required={KEY_REQUIRED}
-                            configUI={{
-                                width: "calc(50% - 12px)",
-                            }}
-                            name="date"
-                            placeholder="Chọn ngày hẹn"
-                            handleChange={handleOnchangeDate}
-                            disablePastDates={true}
-                            values={formData}
-                            validate={VALIDATE}
-                            disabled={isView}
-                        />
-                    )}
                 </div>
             </div>
             <ActionsEditPage actions={actions} isView={isView} />

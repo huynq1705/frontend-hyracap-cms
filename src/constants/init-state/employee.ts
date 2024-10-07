@@ -1,9 +1,9 @@
-export const INIT_EMPLOYEE= {
-    id:0,
+export const INIT_EMPLOYEE = {
+    id: 0,
     username: "",
     full_name: "",
     address: "",
-    date_of_birth: new Date,
+    date_of_birth: new Date(),
     email: "",
     phone_number: "",
     referral_code: "",
@@ -14,16 +14,16 @@ export const INIT_EMPLOYEE= {
     hourly_wage: 0,
     note: "",
     is_book_online: 1,
-    position:"",
-    password:"",
-    password_config:"",
+    position: "",
+    password: "",
+    password_config: "",
     is_active: true,
-    status:1,
-    type : 0,
-    note_detail : {},
-    image:"",
-    star : 0,
-    description : ""
+    status: 1,
+    type: 0,
+    note_detail: {},
+    image: "",
+    star: 0,
+    description: "",
 };
 export type InitCustomerKeys = typeof INIT_EMPLOYEE;
 export const GENDER_LIST = [
