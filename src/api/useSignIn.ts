@@ -11,7 +11,6 @@ import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { setGlobalNoti } from "@/redux/slices/app.slice";
 import { setUserInfo } from "@/redux/slices/user.slice";
-import apiPaymentMethodService from "./apiPayment.service";
 
 type ResultSignIn = {
     signIn: (formValues: SignInPayload) => Promise<void>;
@@ -25,7 +24,6 @@ export default function useSigIn(
     onLoginSuccess: (response: any) => void
 ): ResultSignIn {
     const authService = useAuthService();
-    const { getPaymentMethod } = apiPaymentMethodService();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isTwoFactorAuth, setTwoFactorAuth] = useState<boolean | undefined>(
@@ -62,19 +60,6 @@ export default function useSigIn(
                         navigate(redirectPath);
                     } else {
                         navigate("/admin");
-                        // getPaymentMethod({ take: 99 })
-                        //     .then((e) => {
-                        //         if (
-                        //             e.data.find(
-                        //                 (item) => item.default_payment === 1
-                        //             )
-                        //         ) {
-                        //             navigate("/admin");
-                        //         } else {
-                        //             navigate("/admin/get-start");
-                        //         }
-                        //     })
-                        //     .catch(() => {});
                     }
                 }, 100);
             } else {

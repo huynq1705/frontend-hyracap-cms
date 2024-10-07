@@ -1,28 +1,20 @@
 export const INIT_PRODUCT: {
-  id: number;
-  name: string;
-  brand: string;
-  stock: any;
-  original_price: number;
-  selling_price: number;
-  product_category_id: string[];
-  product_type_id: string[];
-  description: string;
-  status: boolean;
-  commission: any;
-  commission_percentage: any;
+    name: string;
+    min_invest: string;
+    max_invest: string;
+    min_duration: string;
+    max_duration: string;
+    interest_rate: string;
+    category_id: number;
+    effective_from: string;
 } = {
-  id: 0,
-  name: "",
-  brand: "",
-  stock: "",
-  original_price: 0,
-  selling_price: 0,
-  product_category_id: [],
-  product_type_id: [],
-  description: "",
-  status: true,
-  commission: "",
-  commission_percentage: "",
+    name: "",
+    min_invest: "",
+    max_invest: "",
+    min_duration: "",
+    max_duration: "",
+    interest_rate: "",
+    effective_from: "",
+    category_id: 0,
 };
 export type InitProductKeys = typeof INIT_PRODUCT;

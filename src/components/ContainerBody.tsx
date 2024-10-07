@@ -10,7 +10,6 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import PopupConfirmImport from "./popup/confirm-import";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import PopupConfirmAccept from "@/components/popup/confirm-accept";
-import ModalGetLink from "@/apps/pages/schedule/component/ModalGetLink";
 import StarIconV2 from "./icons/StarV2";
 import CPagination from "./pagination";
 import { useSelector } from "react-redux";
@@ -18,7 +17,7 @@ import { RootState } from "@/redux/rootReducers";
 interface ContainerBodyProps {
     children: ReactNode;
 }
-const BTN_CATEGORY = ["products", "service-list"];
+const BTN_CATEGORY = ["product", "service-list"];
 
 const ContainerBody: React.FC<ContainerBodyProps> = ({ children }) => {
     const navigate = useNavigate();
@@ -89,9 +88,6 @@ const ContainerBody: React.FC<ContainerBodyProps> = ({ children }) => {
                     open
                     keySearch={key_search}
                 />
-            )}
-            {showGetLink && (
-                <ModalGetLink open={showGetLink} toggle={toggleShowGetLink} />
             )}
         </Box>
     );

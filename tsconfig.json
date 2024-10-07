@@ -1,39 +1,39 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": true,
-    "checkJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    // "baseUrl": ".",
-    // "paths": {
-    //     "@/*": [
-    //         "./src/*"
-    //     ],
-    // },
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["./*"],
-      "jszip": ["node_modules/jszip/dist/jszip.min.js"]
+    "compilerOptions": {
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "allowJs": true,
+        "checkJs": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        // "baseUrl": ".",
+        // "paths": {
+        //     "@/*": [
+        //         "./src/*"
+        //     ],
+        // },
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": ["./*"],
+            "jszip": ["node_modules/jszip/dist/jszip.min.js"]
+        },
+        "downlevelIteration": true,
+        "typeRoots": ["./src/types"]
     },
-    "downlevelIteration": true,
-    "typeRoots": ["./src/types"]
-  },
-  "include": ["src"],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+    "include": ["src"],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
 }
