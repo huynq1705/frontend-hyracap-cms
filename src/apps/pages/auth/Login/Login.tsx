@@ -24,7 +24,7 @@ const FlexBox = styled(Box)(() => ({ display: "flex", alignItems: "center" }));
 
 // inital login credentials
 const initialValues = {
-    username: "mailyhai814@gmail.com",
+    username: "0559611720",
     password: "123456",
     remember: true,
 };
@@ -294,7 +294,7 @@ const Login = () => {
                     {T("forgotPassword")}
                   </NavLink>
                 </FlexBox> */}
-                                <Grid
+                                {/* <Grid
                                     display="flex"
                                     justifyContent="center"
                                     alignItems="center"
@@ -325,7 +325,7 @@ const Login = () => {
                                     >
                                         {T("signup")}
                                     </NavLink>
-                                </Grid>
+                                </Grid> */}
                             </form>
                         )}
                     </Formik>

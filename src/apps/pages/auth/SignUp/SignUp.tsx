@@ -121,14 +121,8 @@ const SignUp = () => {
         setLoading(true);
         try {
             const registerPayload = {
-                full_name: values.full_name,
-                email: values.email,
-                user_name: values.username,
+                account: values.email,
                 password: values.password,
-                phone_number: values.phone_number,
-                date_of_birth: values.date_of_birth,
-                address: values.address,
-                role_id: values.role_id,
             };
 
             await signUp(registerPayload);
@@ -141,19 +135,8 @@ const SignUp = () => {
 
     const formik = useFormik({
         initialValues: {
-            email: "",
+            account: "",
             password: "",
-            confirm_password: "",
-            phone_number: "",
-            gender: "Nam",
-            username: "",
-            remember: true,
-            date_of_birth: dayjs(),
-            full_name: "",
-            nick_name: "",
-            address: "",
-            avt_url: "",
-            role_id: undefined,
         },
         validationSchema: validationSchema,
         onSubmit: handleFormSubmit,
@@ -170,7 +153,13 @@ const SignUp = () => {
                 </div>
             </NavLink>
             <Grid className="container-register">
-                <Grid item lg={6} md={6} xs={6} className="content-right max-sm:!w-full max-sm:!m-0">
+                <Grid
+                    item
+                    lg={6}
+                    md={6}
+                    xs={6}
+                    className="content-right max-sm:!w-full max-sm:!m-0"
+                >
                     <Formik
                         onSubmit={handleFormSubmit}
                         initialValues={initialValues}
@@ -316,7 +305,7 @@ const SignUp = () => {
                                     {T("date_of_birth")}
                                 </label>
                                 <DatePicker
-                                    value={formik.values.date_of_birth}
+                                    value={formik.values}
                                     onChange={(val) => {
                                         formik.setFieldValue(
                                             "date_of_birth",
@@ -561,7 +550,13 @@ const SignUp = () => {
                         )}
                     </Formik>
                 </Grid>
-                <Grid item lg={6} md={6} xs={6} className="content-left max-sm:!hidden">
+                <Grid
+                    item
+                    lg={6}
+                    md={6}
+                    xs={6}
+                    className="content-left max-sm:!hidden"
+                >
                     <div className="content">
                         <img
                             className="img-preview-login"

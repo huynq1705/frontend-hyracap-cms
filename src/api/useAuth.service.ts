@@ -9,12 +9,22 @@ import axios from "axios";
 type ResultAuth = {
     signIn: (payload: SignInPayload) => Promise<SignInResponse>;
     signUp: (payload: RegisterPayload) => Promise<SignUpResponse>;
+    confirmOtp: (payload: any) => Promise<SignUpResponse>;
 };
 
 export default function useAuthService(): ResultAuth {
     const httpClient = useHttpClient();
     const { axiosBase } = httpClient;
     const dispatch = useDispatch();
+    const isEmail = (account: string) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(account);
+    };
+
+    const isPhoneNumber = (value: string) => {
+        const phonePattern = /^(0[1-9]{1}[0-9]{8}|[1-9]{1}[0-9]{9,10})$/;
+        return phonePattern.test(value);
+    };
 
     const generateSignal = async (requestBody: any, secretKey: any) => {
         const encoder = new TextEncoder();
@@ -38,30 +48,22 @@ export default function useAuthService(): ResultAuth {
     };
     const signIn = async (payload: any): Promise<any> => {
         const { email, password, otp } = payload;
-        const serviceName = "HYRA-CAPITAL-BETA-PuBndmfTVF7wbxHUoZQ8iJ";
-        const secretKey =
-            "HYRA-CAPITAL-BETA-Secret-kFVnZnRXccHuJWmoeI2ayAnPDGxNEbAO7RfVKw1ty2LHqo1B0C";
-        const timeRequest = new Date().toISOString();
-        const requestId = uuidv4().slice(0, 50);
 
         const Body = {
-            request_id: requestId,
-            timeRequest: timeRequest,
-            email: email,
-            password: password,
+            path: "/v2/api/account/login",
+            method: "POST",
+            body: {
+                ...(isEmail(email) ? { email: email } : { phone: email }),
+                password,
+            },
         };
-
-        const requestBody = JSON.stringify(Body);
-        const signalT = await generateSignal(requestBody, secretKey);
         try {
             const response = await axios.post(
-                "https://hyra-account-api-beta.metawaytech.net/v2/api/account/login",
+                "https://hyracap.lyhai.id.vn/api/account",
                 Body,
                 {
                     headers: {
                         "Content-Type": "application/json",
-                        signal: signalT,
-                        servicename: serviceName,
                     },
                 }
             );
@@ -72,14 +74,63 @@ export default function useAuthService(): ResultAuth {
         }
     };
 
-    const signUp = (payload: RegisterPayload): Promise<SignUpResponse> => {
-        return axiosBase
-            .post<SignUpResponse>(AppConfig.AUTH.SIGN_UP, payload)
-            .then((res) => res.data);
+    const signUp = async (
+        payload: RegisterPayload
+    ): Promise<SignUpResponse> => {
+        const { account, password } = payload;
+
+        const Body = {
+            path: "/v2/api/account/register",
+            method: "POST",
+            body: {
+                ...(isEmail(account) ? { email: account } : { phone: account }),
+                password,
+            },
+        };
+        console.log("payload", payload);
+        try {
+            const response = await axios.post(
+                "https://hyracap.lyhai.id.vn/api/account",
+                Body,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            return response.data;
+        } catch (err) {
+            console.error("Error:", err);
+            throw err;
+        }
+    };
+
+    const confirmOtp = async (payload: any): Promise<any> => {
+        const { email, otp } = payload;
+        const Body = {
+            ...(isEmail(email) ? { email: email } : { phone: email }),
+            verifyCode: otp,
+        };
+        try {
+            const response = await axios.post(
+                "https://hyracap.lyhai.id.vn/api/account",
+                Body,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            return response.data;
+        } catch (err) {
+            console.error("Error:", err);
+            throw err;
+        }
     };
 
     return {
         signIn,
         signUp,
+        confirmOtp,
     };
 }

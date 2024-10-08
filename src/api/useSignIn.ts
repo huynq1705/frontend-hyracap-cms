@@ -36,17 +36,9 @@ export default function useSigIn(
             authService.signIn(formValues),
         onSuccess: (res: any) => {
             onLoginSuccess(res);
-            console.log("status", res.status);
             if (res.status) {
                 const { accessToken } = res.data;
                 const { refreshToken } = res.data;
-                console.log("res.data", res.data);
-                console.log(
-                    "accessToken",
-                    accessToken,
-                    "refreshToken",
-                    refreshToken
-                );
                 localStorage.setItem(AppConfig.ACCESS_TOKEN, accessToken);
                 localStorage.setItem(AppConfig.REFRESH_TOKEN, refreshToken);
                 dispatch(
