@@ -32,7 +32,6 @@ export default function useSignUp(): ResultSignUp {
                         message: "registerSuccessfully",
                     })
                 );
-                navigate("/admin/login");
             } else {
                 dispatch(
                     setGlobalNoti({
@@ -61,25 +60,8 @@ export default function useSignUp(): ResultSignUp {
 
     const signUp = async (registerPayload: RegisterPayload) => {
         const registerUpload = {
-            full_name: "string",
-            email: registerPayload.email,
-            user_name: registerPayload.user_name,
+            account: registerPayload.account,
             password: registerPayload.password,
-            phone_number: registerPayload.phone_number,
-            date_of_birth: formatDate(
-                registerPayload.date_of_birth,
-                "YYYYMMDD"
-            ),
-            address: "string",
-            referral_code: "rocklee",
-            referred_code: "rocklee",
-            role_id: 3,
-            cccd: 1,
-            shift_wage: 1,
-            hourly_wage: 1,
-            note: "Mô Tả",
-            is_book_online: 1,
-            position_id: 1,
         };
         mutationSignUp.mutate({ registerPayload: registerUpload }); // admin token => api sign up
     };

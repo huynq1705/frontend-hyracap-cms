@@ -1,3 +1,5 @@
+import { Password } from "@mui/icons-material";
+
 export const INIT_EMPLOYEE = {
     id: 0,
     username: "",
@@ -25,6 +27,11 @@ export const INIT_EMPLOYEE = {
     star: 0,
     description: "",
 };
+export const CREATE_ACCOUNT = {
+    account: "",
+    password: "",
+};
+
 export type InitCustomerKeys = typeof INIT_EMPLOYEE;
 export const GENDER_LIST = [
     {

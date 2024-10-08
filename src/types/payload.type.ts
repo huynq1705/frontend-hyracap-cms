@@ -29,14 +29,8 @@ export type CredentialItem = {
     temporary: boolean;
 };
 export type RegisterPayload = {
-    full_name: string;
-    email: string;
-    user_name: string;
+    account: string;
     password: string;
-    phone_number: string;
-    date_of_birth: string;
-    address: string;
-    role_id: number | null;
 };
 
 export type UploadSdkPayload = {

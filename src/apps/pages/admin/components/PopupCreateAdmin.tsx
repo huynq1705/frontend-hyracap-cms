@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -26,7 +27,9 @@ import { OptionSelect } from "@/types/types";
 import MyTextFieldPassword from "@/components/input-custom-v2/password";
 import AvatarImage from "@/components/avatar";
 import { UploadFile } from "antd";
-import { INIT_EMPLOYEE } from "@/constants/init-state/employee";
+import { CREATE_ACCOUNT, INIT_EMPLOYEE } from "@/constants/init-state/employee";
+import useSignUp from "@/api/useSignUp";
+import OTPPopup from "./PopupConfirmOtp";
 
 const KEY_REQUIRED = ["full_name", "phone_number", "email", "username"];
 const KEY_REQUIRED_V2 = ["old_password", "new_password"];
@@ -66,7 +69,7 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
     const dispatch = useDispatch();
     const { T, t } = useCustomTranslation();
     const [statusPage, setStatusPage] = React.useState(status);
-    const [formData, setFormData] = React.useState(data);
+    const [formData, setFormData] = React.useState(CREATE_ACCOUNT);
     const [errors, setErrors] = React.useState<string[]>([]);
     const [listRole] = React.useState<OptionSelect>([
         { label: "Admin", value: "Admin" },
@@ -74,228 +77,36 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
     ]);
     const [editPassword, setEditPassword] = React.useState(true);
     const [fileList, setFileList] = React.useState<UploadFile[]>([]);
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const { signUp, isLoading } = useSignUp();
+
+    const [isOTPOpen, setIsOTPOpen] = React.useState(false);
+
+    const handleCloseOTP = () => {
+        setIsOTPOpen(false);
+    };
+    //sign up
     const handleOnchange = (e: any) => {
         const { name, value } = e.target;
 
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    const handleOnchangeDate = (name: string, value: any) => {
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
     const handleSubmitCreate = async () => {
-        setIsLoading(true);
+        setLoading(true);
         try {
-            const response = await postAccount(
-                formData,
-                KEY_REQUIRED,
-                fileList
-            );
-            switch (response) {
-                case true: {
-                    // navigate("/customer");
-                    refetch && refetch();
-                    handleClose();
-                    dispatch(
-                        setGlobalNoti({
-                            type: "success",
-                            message:
-                                T("create") +
-                                " " +
-                                t("manage") +
-                                " " +
-                                t("success"),
-                        })
-                    );
-                    break;
-                }
-                case false: {
-                    dispatch(
-                        setGlobalNoti({
-                            type: "error",
-                            message:
-                                T("create") +
-                                " " +
-                                t("manage") +
-                                " " +
-                                t("fail"),
-                        })
-                    );
+            const registerPayload = {
+                account: formData.account,
+                password: formData.password,
+            };
 
-                    break;
-                }
-                default: {
-                    if (typeof response === "object") {
-                        if (response.isValid) {
-                            let re:
-                                | "email"
-                                | "phone_number"
-                                | "username"
-                                | "password";
-
-                            if (response.missingKeys === "phone") {
-                                re = "phone_number";
-                            } else {
-                                re = response.missingKeys as
-                                    | "email"
-                                    | "username"
-                                    | "password";
-                            }
-                            console.log("TTTT", response);
-
-                            VALIDATE[re] =
-                                re === "password"
-                                    ? "Mật khẩu không đạt chuẩn."
-                                    : `${t(re)} đã tồn tại.`;
-                            setErrors([re]);
-                            dispatch(
-                                setGlobalNoti({
-                                    type: "info",
-                                    message:
-                                        re === "password"
-                                            ? "Mật khẩu không đạt chuẩn."
-                                            : `${t(re)} đã tồn tại.`,
-                                })
-                            );
-                        } else {
-                            setErrors(response.missingKeys);
-                            (VALIDATE.phone_number =
-                                "Số điện thoại không đúng định dạng."),
-                                (VALIDATE.username =
-                                    "Tên đăng nhập không được để trống."),
-                                (VALIDATE.email =
-                                    "Email không đúng định dạng.");
-                            VALIDATE.password = "Mật khẩu không được để trống.";
-                            dispatch(
-                                setGlobalNoti({
-                                    type: "info",
-                                    message: "Nhập đẩy đủ dữ liệu",
-                                })
-                            );
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            dispatch(
-                setGlobalNoti({
-                    type: "error",
-                    message: T("thereWasError"),
-                })
-            );
-            console.error("==>", error);
-        } finally {
-            setIsLoading(false);
+            await signUp(registerPayload);
+            setLoading(false);
+            setIsOTPOpen(true);
+        } catch (e) {
+            setLoading(false);
         }
     };
-    const handleSubmitUpdate = async () => {
-        // const payload = {};
-        setIsLoading(true);
-        try {
-            const response = await putAccount(
-                formData,
-                formData.id,
-                KEY_REQUIRED,
-                fileList
-            );
-            switch (response) {
-                case true: {
-                    // navigate("/customer");
-                    refetch();
-
-                    dispatch(
-                        setGlobalNoti({
-                            type: "success",
-                            message:
-                                T("update") +
-                                " " +
-                                t("manage") +
-                                " " +
-                                t("success"),
-                        })
-                    );
-                    break;
-                }
-                case false: {
-                    dispatch(
-                        setGlobalNoti({
-                            type: "error",
-                            message:
-                                T("update") +
-                                " " +
-                                t("manage") +
-                                " " +
-                                t("fail"),
-                        })
-                    );
-                    break;
-                }
-                default: {
-                    if (typeof response === "object") {
-                        if (response.isValid) {
-                            let re:
-                                | "email"
-                                | "phone_number"
-                                | "username"
-                                | "password";
-
-                            if (response.missingKeys === "phone") {
-                                re = "phone_number";
-                            } else {
-                                re = response.missingKeys as
-                                    | "email"
-                                    | "username"
-                                    | "password";
-                            }
-
-                            VALIDATE[re] =
-                                re === "password"
-                                    ? "Mật khẩu không đạt chuẩn."
-                                    : `${t(re)} đã tồn tại.`;
-                            setErrors([re]);
-                            dispatch(
-                                setGlobalNoti({
-                                    type: "info",
-                                    message:
-                                        re === "password"
-                                            ? "Mật khẩu không đạt chuẩn."
-                                            : `${t(re)} đã tồn tại.`,
-                                })
-                            );
-                        } else {
-                            setErrors(response.missingKeys);
-                            (VALIDATE.phone_number =
-                                "Số điện thoại không đúng định dạng."),
-                                (VALIDATE.username =
-                                    "Tên đăng nhập không được để trống."),
-                                (VALIDATE.email =
-                                    "Email không đúng định dạng.");
-                            VALIDATE.password = "Mật khẩu không được để trống.";
-                            dispatch(
-                                setGlobalNoti({
-                                    type: "info",
-                                    message: "Nhập đẩy đủ dữ liệu",
-                                })
-                            );
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            dispatch(
-                setGlobalNoti({
-                    type: "error",
-                    message: T("thereWasError"),
-                })
-            );
-            console.error("==>", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const handleSubmitUpdate = async () => {};
 
     const handleSubmit = () => {
         if (editPassword) {
@@ -305,6 +116,7 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
         } else {
         }
     };
+
     return (
         <>
             <Dialog
@@ -312,7 +124,7 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
                 TransitionComponent={Transition}
                 onClose={handleClose}
                 fullWidth={true}
-                maxWidth={editPassword ? "md" : "sm"}
+                maxWidth={"sm"}
                 // hidden
                 // scroll="paper"
                 aria-describedby="alert-dialog-slide-description"
@@ -352,194 +164,35 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
                             />
                         </button>
                     </DialogActions>
-                    {editPassword ? (
-                        <Stack
-                            spacing={3}
-                            sx={{
-                                overflowY: "auto",
-                                scrollbarWidth: "thin",
-                                maxHeight: "64vh",
-                                p: 3,
-                                width: "100%",
-                            }}
-                        >
-                            <h3 style={{ color: palette.textQuaternary }}>
-                                Thông tin chung
-                            </h3>
-                            <div className="wrapper-from">
-                                <AvatarImage
-                                    disabled={statusPage === "detail"}
-                                    data={formData.image}
-                                    fileList={fileList}
-                                    setFileList={setFileList}
-                                    clear={() => {
-                                        handleOnchangeDate("image", "");
-                                    }}
-                                />
-                                <MyTextField
-                                    label="Họ và tên"
-                                    errors={errors}
-                                    required={KEY_REQUIRED}
-                                    configUI={{
-                                        width: "calc(50% - 12px)",
-                                    }}
-                                    name="full_name"
-                                    placeholder="Nguyễn Văn A"
-                                    handleChange={handleOnchange}
-                                    values={formData}
-                                    validate={VALIDATE}
-                                    disabled={statusPage === "detail"}
-                                />
-                                <Stack
-                                    direction={"column"}
-                                    spacing={1.5}
-                                    alignItems={"flex-start"}
-                                    sx={{
-                                        width: "calc(50% - 12px)",
-                                        height: "fit-content",
-                                    }}
-                                >
-                                    <label className="label">
-                                        {T("status")}{" "}
-                                    </label>
-                                    <Box height={32}>
-                                        <CSwitch
-                                            disabled={statusPage === "detail"}
-                                            checked={!!formData.status}
-                                            value={formData.status}
-                                            name="status"
-                                            onChange={(e) => {
-                                                handleOnchangeDate(
-                                                    e.target.name,
-                                                    !formData.status ? 1 : 0
-                                                );
-                                            }}
-                                        />
-                                    </Box>
-                                </Stack>
-
-                                <MyTextField
-                                    label="Email"
-                                    errors={errors}
-                                    required={KEY_REQUIRED}
-                                    configUI={{
-                                        width: "calc(50% - 12px)",
-                                    }}
-                                    name="email"
-                                    placeholder="mituabc@gmail.com"
-                                    handleChange={handleOnchange}
-                                    values={formData}
-                                    validate={VALIDATE}
-                                    disabled={statusPage === "detail"}
-                                />
-                                <MyTextField
-                                    label={T("phone_number")}
-                                    errors={errors}
-                                    required={KEY_REQUIRED}
-                                    configUI={{
-                                        width: "calc(50% - 12px)",
-                                    }}
-                                    name="phone_number"
-                                    placeholder="0987xxxxx"
-                                    handleChange={handleOnchange}
-                                    values={formData}
-                                    validate={VALIDATE}
-                                    disabled={statusPage === "detail"}
-                                />
-                                <MySelect
-                                    options={listRole}
-                                    label="Chức vụ"
-                                    errors={errors}
-                                    required={KEY_REQUIRED}
-                                    configUI={{
-                                        width: "calc(50% - 12px)",
-                                    }}
-                                    name="position"
-                                    handleChange={handleOnchange}
-                                    values={formData}
-                                    validate={VALIDATE}
-                                    type="select-one"
-                                    itemsPerPage={5}
-                                    disabled={statusPage === "detail"}
-                                />
-                            </div>
-                            <h3 style={{ color: palette.textQuaternary }}>
-                                Thông tin tài khoản
-                            </h3>
-                            <div className="wrapper-from">
-                                <MyTextField
-                                    label={T("userName")}
-                                    errors={errors}
-                                    required={KEY_REQUIRED}
-                                    configUI={{
-                                        width: "calc(50% - 12px)",
-                                    }}
-                                    name="username"
-                                    placeholder="mitu@gmail.com"
-                                    handleChange={handleOnchange}
-                                    values={formData}
-                                    validate={VALIDATE}
-                                    disabled={statusPage !== "create"}
-                                />
-                                {statusPage !== "create" ? (
-                                    <Box
-                                        alignItems={"flex-end"}
-                                        height={62}
-                                        display={"flex"}
-                                        pt={"66px"}
-                                        width={"calc(50% - 12px)"}
-                                    >
-                                        <ButtonCore
-                                            type="bgWhite"
-                                            title="Đổi mật khẩu"
-                                            onClick={() =>
-                                                setEditPassword(false)
-                                            }
-                                        />
-                                    </Box>
-                                ) : (
-                                    <Box width={"40%"} />
-                                )}
-                                {statusPage === "create" && (
-                                    <MyTextFieldPassword
-                                        label={T("password")}
-                                        errors={errors}
-                                        required={KEY_REQUIRED}
-                                        configUI={{
-                                            width: "calc(50% - 12px)",
-                                        }}
-                                        name="password"
-                                        placeholder={T("password")}
-                                        handleChange={handleOnchange}
-                                        values={formData}
-                                        validate={VALIDATE}
-                                        type="password"
-                                    />
-                                )}
-                                {statusPage === "create" && (
-                                    <MyTextField
-                                        label={T("confirmPassword")}
-                                        errors={errors}
-                                        required={KEY_REQUIRED}
-                                        configUI={{
-                                            width: "calc(50% - 12px)",
-                                        }}
-                                        name="password_config"
-                                        placeholder={T("confirmPassword")}
-                                        handleChange={handleOnchange}
-                                        values={formData}
-                                        validate={VALIDATE}
-                                        type="password"
-                                    />
-                                )}
-                            </div>
-                        </Stack>
-                    ) : (
-                        <Stack p={3} spacing={2}>
+                    <Stack
+                        spacing={3}
+                        sx={{
+                            overflowY: "auto",
+                            scrollbarWidth: "thin",
+                            maxHeight: "64vh",
+                            p: 3,
+                            width: "100%",
+                        }}
+                    >
+                        <div className="wrapper-from">
+                            <MyTextField
+                                label="Email hoặc Số điện thoại"
+                                errors={errors}
+                                required={KEY_REQUIRED}
+                                configUI={{
+                                    width: "100%",
+                                }}
+                                name="account"
+                                placeholder="mituabc@gmail.com"
+                                handleChange={handleOnchange}
+                                values={formData}
+                                validate={VALIDATE}
+                                disabled={statusPage === "detail"}
+                            />
                             <MyTextFieldPassword
                                 label={T("password")}
                                 errors={errors}
-                                required={KEY_REQUIRED_V2}
+                                required={KEY_REQUIRED}
                                 configUI={{
                                     width: "100%",
                                 }}
@@ -547,13 +200,13 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
                                 placeholder={T("password")}
                                 handleChange={handleOnchange}
                                 values={formData}
-                                validate={VALIDATE_V2}
+                                validate={VALIDATE}
                                 type="password"
                             />
                             <MyTextField
                                 label={T("confirmPassword")}
                                 errors={errors}
-                                required={KEY_REQUIRED_V2}
+                                required={KEY_REQUIRED}
                                 configUI={{
                                     width: "100%",
                                 }}
@@ -561,11 +214,11 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
                                 placeholder={T("confirmPassword")}
                                 handleChange={handleOnchange}
                                 values={formData}
-                                validate={VALIDATE_V2}
+                                validate={VALIDATE}
                                 type="password"
                             />
-                        </Stack>
-                    )}
+                        </div>
+                    </Stack>
                     <Stack
                         direction={"row"}
                         justifyContent={"flex-end"}
@@ -576,31 +229,20 @@ function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
                         spacing={2}
                         style={{ borderTop: "0.5px solid #D0D5DD" }}
                     >
-                        {statusPage !== "detail" ? (
-                            <ButtonCore
-                                title={T("cancel")}
-                                type="bgWhite"
-                                onClick={handleClose}
-                            />
-                        ) : (
-                            <ButtonCore
-                                type="bgWhite"
-                                title="Chỉnh sửa"
-                                onClick={() => setStatusPage("edit")}
-                            />
-                        )}
-                        {statusPage === "detail" ? (
-                            <ButtonCore title={"Đóng"} onClick={handleClose} />
-                        ) : (
-                            <ButtonCore
-                                title={"Hoàn tất"}
-                                onClick={handleSubmit}
-                                loading={isLoading}
-                            />
-                        )}
+                        <ButtonCore
+                            title={T("cancel")}
+                            type="bgWhite"
+                            onClick={handleClose}
+                        />
+                        <ButtonCore
+                            title={"Hoàn tất"}
+                            onClick={handleSubmit}
+                            loading={isLoading}
+                        />
                     </Stack>
                 </Box>
             </Dialog>
+            <OTPPopup open={isOTPOpen} handleClose={handleCloseOTP} />
         </>
     );
 }

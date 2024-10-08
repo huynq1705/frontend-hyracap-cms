@@ -525,7 +525,7 @@ const ListAdmin = (props: ListRequestDepositProps) => {
         });
         // setPopup((prev) => ({ ...prev, remove: false }));
 
-        navigate("/admin/management-admin");
+        navigate("/admin/users");
         // refetch();
     };
     useEffect(() => {
@@ -598,9 +598,7 @@ const ListAdmin = (props: ListRequestDepositProps) => {
                     status={popup.status}
                     handleClose={() =>
                         popup.status === "create"
-                            ? navigate(
-                                  `/admin/management-admin?${searchParams}`
-                              )
+                            ? navigate(`/admin/users?${searchParams}`)
                             : setPopup((prev) => ({ ...prev, remove: false }))
                     }
                     refetch={() => {
