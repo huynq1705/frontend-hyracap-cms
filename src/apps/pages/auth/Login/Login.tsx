@@ -82,7 +82,7 @@ const Login = () => {
                     <div className="content">
                         <img
                             className="img-preview-login"
-                            src="/assets/images/preview_login.png"
+                            src="/assets/images/bg_login.jpg"
                             alt="preview_login"
                         />
                     </div>
@@ -123,7 +123,7 @@ const Login = () => {
                                     <div className="logo-hyracap">
                                         <img
                                             className="img-logo-hyracap"
-                                            src="/src/assets/images/logo-hyracap.jpg"
+                                            src="/src/assets/images/logo/logo-hyracap.jpg"
                                             alt="logo_hyracap"
                                         />
                                     </div>

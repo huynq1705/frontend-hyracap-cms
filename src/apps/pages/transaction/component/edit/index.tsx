@@ -4,7 +4,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import apiProductService from "@/api/apiProduct.service";
 import apiCommonService from "@/api/apiCommon.service";
 import ActionsEditPage from "@/components/actions-edit-page";
-import { INIT_PRODUCT } from "@/constants/init-state/product";
 import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
 import { ResponseProductItem } from "@/types/product";
 import MyTextField from "@/components/input-custom-v2/text-field";
@@ -23,20 +22,22 @@ import { v4 as uuidv4 } from "uuid";
 import CustomCurrencyInput from "@/components/input-custom-v2/currency";
 import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
 import dayjs from "dayjs";
+import apiTransactionService from "@/api/apiTransaction.service";
+import apiContractService from "@/api/apiContract.service";
+import { INIT_TRANSACTION } from "@/constants/init-state/transaction";
 const VALIDATE = {
-    name: "Hãy nhập tên sản phẩm",
-    // max_duration: "Hãy nhập thời hạn",
-    // min_duration: "Hãy nhập thời hạn",
-    // max_invest: "Hãy nhập hạn mức đầu tư",
-    // min_invest: "Hãy nhập hạn mức đầu tư",
+    amount: "Hãy nhập số tiền",
 };
-const KEY_REQUIRED = [
-    "name",
-    // "interest_rate",
-    // "max_duration",
-    // "min_duration",
-    // "max_invest",
-    // "min_invest",
+const KEY_REQUIRED = ["amount"];
+const OptionTypeSelect = [
+    {
+        value: "0",
+        label: "Nạp tiền",
+    },
+    {
+        value: "1",
+        label: "Rút tiền",
+    },
 ];
 interface EditPageProps {
     open: boolean;
@@ -52,20 +53,21 @@ export default function EditPage(props: EditPageProps) {
     const { T, t } = useCustomTranslation();
     const { detailCommon } = apiCommonService();
     const { postProduct, putProduct } = apiProductService();
-    const { getProductCategory } = apiProductCategoryService();
-    const getAllProductCategory = async () => {
+    const { postTransaction } = apiTransactionService();
+    const { getContract } = apiContractService();
+
+    const getAllContract = async () => {
         try {
             const param = {
                 page: 1,
                 take: 999,
-                filter: "status__eq__1",
             };
-            const response = await getProductCategory(param);
+            const response = await getContract(param);
             if (response) {
                 setProductCategory(
                     response.data.map((it: any) => ({
                         value: it.id.toString(),
-                        label: it.name,
+                        label: `Hợp đồng ${it.id}`,
                     }))
                 );
             }
@@ -75,39 +77,39 @@ export default function EditPage(props: EditPageProps) {
     };
     const getDetail = async () => {
         if (!code) return;
-        try {
-            const response = await detailCommon<ResponseProductItem>(
-                code,
-                "/products"
-            );
-            if (response) {
-                const convert_data = {
-                    id: response.id,
-                    name: response.name,
-                    min_invest: response.min_invest.toString(),
-                    max_invest: response.max_invest.toString(),
-                    min_duration: response.min_duration.toString(),
-                    max_duration: response.max_duration.toString(),
-                    interest_rate: (
-                        response.current_interest_rate * 100
-                    ).toString(),
-                    category_id: response.category_id,
-                    effective_from: dayjs().format("DD-MM-YYYY"),
-                };
-                setFormData(convert_data);
-            }
-        } catch (error) {
-            dispatch(
-                setGlobalNoti({
-                    type: "error",
-                    message: "Failed to fetch product details",
-                })
-            );
-        }
+        // try {
+        //     const response = await detailCommon<ResponseProductItem>(
+        //         code,
+        //         "/products"
+        //     );
+        //     if (response) {
+        //         const convert_data = {
+        //             id: response.id,
+        //             name: response.name,
+        //             min_invest: response.min_invest.toString(),
+        //             max_invest: response.max_invest.toString(),
+        //             min_duration: response.min_duration.toString(),
+        //             max_duration: response.max_duration.toString(),
+        //             interest_rate: (
+        //                 response.current_interest_rate * 100
+        //             ).toString(),
+        //             category_id: response.category_id,
+        //             effective_from: dayjs().format("DD-MM-YYYY"),
+        //         };
+        //         setFormData(convert_data);
+        //     }
+        // } catch (error) {
+        //     dispatch(
+        //         setGlobalNoti({
+        //             type: "error",
+        //             message: "Failed to fetch product details",
+        //         })
+        //     );
+        // }
     };
     const handleCreate = async () => {
         try {
-            const response = await postProduct(formData, KEY_REQUIRED);
+            const response = await postTransaction(formData, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
             let type = "error";
             if (typeof response === "object" && response?.missingKeys) {
@@ -135,17 +137,17 @@ export default function EditPage(props: EditPageProps) {
         }
     };
     const handleCancel = () => {
-        setFormData(INIT_PRODUCT);
-        navigate("/admin/products");
+        setFormData(INIT_TRANSACTION);
+        navigate("/admin/transaction");
         onClose();
     };
     const handelSave = async () => {
         if (isView) {
-            navigate(`/admin/products/edit/${code}`);
+            navigate(`/admin/transaction/edit/${code}`);
         } else {
             dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_PRODUCT);
+            setFormData(INIT_TRANSACTION);
             refetch();
         }
         setTimeout(() => {
@@ -213,7 +215,7 @@ export default function EditPage(props: EditPageProps) {
     //--state
     const [productCategory, setProductCategory] = useState<OptionSelect>([]);
     const [errors, setErrors] = useState<string[]>([]);
-    const [formData, setFormData] = useState(INIT_PRODUCT);
+    const [formData, setFormData] = useState(INIT_TRANSACTION);
     const [popup, setPopup] = useState({
         remove: false,
         loading: true,
@@ -229,7 +231,7 @@ export default function EditPage(props: EditPageProps) {
     useEffect(() => {
         code && getDetail();
         if (open) {
-            getAllProductCategory();
+            getAllContract();
         }
     }, [code, open]);
     return (
@@ -237,38 +239,47 @@ export default function EditPage(props: EditPageProps) {
             <HeaderModalEdit onClose={handleCancel} />
             <div className="wrapper-edit-page">
                 <div className="wrapper-from items-end">
-                    {code && (
-                        <>
-                            {/* id */}
-                            <MyTextField
-                                label="Mã sản phẩm"
-                                errors={errors}
-                                required={KEY_REQUIRED}
-                                configUI={{
-                                    width: "calc(50% - 12px)",
-                                }}
-                                name="id"
-                                placeholder=""
-                                handleChange={handleOnchange}
-                                values={formData}
-                                validate={VALIDATE}
-                                disabled
-                            />
-                        </>
-                    )}
+                    <MySelect
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        label="Loại giao dịch"
+                        name="type"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        options={OptionTypeSelect}
+                        errors={errors}
+                        validate={VALIDATE}
+                        required={KEY_REQUIRED}
+                        itemsPerPage={5} // Adjust items per page as needed
+                        disabled={isView}
+                        placeholder="Chọn"
+                    />
                     {/* name */}
                     <MyTextField
-                        label="Tên sản phẩm"
+                        label="Mã giao dịch"
                         errors={errors}
                         required={KEY_REQUIRED}
                         configUI={{
                             width: "calc(50% - 12px)",
                         }}
-                        name="name"
+                        name="code"
                         placeholder="Nhập"
                         handleChange={handleOnchange}
                         values={formData}
                         validate={VALIDATE}
+                        disabled={isView}
+                    />
+                    {/* amount */}
+                    <CurrencyInput
+                        label="Số tiền"
+                        name="amount"
+                        handleChange={handleOnchangeCurrency}
+                        values={formData}
+                        errors={errors}
+                        validate={VALIDATE}
+                        required={KEY_REQUIRED}
+                        configUI={{ width: "calc(50% - 12px)" }}
                         disabled={isView}
                     />
                     {/* product_category_id */}
@@ -276,8 +287,8 @@ export default function EditPage(props: EditPageProps) {
                         configUI={{
                             width: "calc(50% - 12px)",
                         }}
-                        label="Danh mục"
-                        name="category_id"
+                        label="Hợp đồng"
+                        name="contract_id"
                         handleChange={handleOnchange}
                         values={formData}
                         options={productCategory}
@@ -287,86 +298,6 @@ export default function EditPage(props: EditPageProps) {
                         itemsPerPage={5} // Adjust items per page as needed
                         disabled={isView}
                         placeholder="Chọn"
-                    />
-
-                    {/* amount */}
-                    <CurrencyInput
-                        label="Hạn mức tối thiểu"
-                        name="min_invest"
-                        handleChange={handleOnchangeCurrency}
-                        values={formData}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        configUI={{ width: "calc(50% - 12px)" }}
-                        disabled={isView}
-                    />
-                    {/* selling_price */}
-                    <CurrencyInput
-                        label="Hạn mức tối đa"
-                        name="max_invest"
-                        handleChange={handleOnchangeCurrency}
-                        values={formData}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        configUI={{ width: "calc(50% - 12px)" }}
-                        disabled={isView}
-                    />
-                    {/* commission */}
-                    <MyTextField
-                        label="Thời hạn tối thiểu"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="min_duration"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        unit="Tháng"
-                        max={100}
-                        min={0}
-                        type="number"
-                        disabled={isView}
-                    />
-                    <MyTextField
-                        label="Thời hạn tối đa"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="max_duration"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        unit="Tháng"
-                        max={100}
-                        min={0}
-                        type="number"
-                        disabled={isView}
-                    />
-                    <MyTextField
-                        label="Mức lãi suất hiện tại"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="interest_rate"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        unit="%"
-                        max={100}
-                        min={0}
-                        type="number"
-                        disabled={isView}
                     />
                 </div>
             </div>
