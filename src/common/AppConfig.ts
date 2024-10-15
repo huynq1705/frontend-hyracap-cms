@@ -30,6 +30,10 @@ export default class AppConfig {
         GET_ACCOUNT: (params: string) => `/users${params}`,
         END_POINT: "/users",
     };
+    static SETTING = {
+        GET_SETTING: (params: string) => `/setting${params}`,
+        END_POINT: "/setting",
+    };
     static AUTH = {
         SIGN_IN: `/auth/login`,
         SIGN_UP: `/account`,
@@ -39,8 +43,12 @@ export default class AppConfig {
         GET_ALL: `all-user`,
     };
     static POSITION = {
-        GET_POSITION: (params: string) => `/permission${params}`,
-        END_POINT: `/permission`,
+        GET_POSITION: (params: string) => `/position${params}`,
+        END_POINT: `/position`,
+    };
+    static SALE_HISTORY = {
+        GET_SALE_HISTORY: (params: string) => `/sale_history${params}`,
+        END_POINT: `/sale_history`,
     };
     static ROLE = {
         GET_ROLE: (params: string) => `/role${params}`,

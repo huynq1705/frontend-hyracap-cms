@@ -14,7 +14,10 @@ import { addAdminPrefix } from "@/utils";
 import HomePage from "@/apps/pages/dashboard";
 import { contractRouter } from "@/apps/pages/contract/config";
 import { transactionRouter } from "@/apps/pages/transaction/config";
-import { adminRouter } from "@/apps/pages/admin/config";
+import { adminRouter } from "@/apps/pages/user/config";
+import { settingRouter } from "@/apps/pages/setting/config";
+import { positionRouter } from "@/apps/pages/position/config";
+import { saleHistoryRouter } from "@/apps/pages/saleHistory/config";
 
 //collections
 //auth
@@ -81,6 +84,9 @@ const init_routes: RouteExtends[] = [
                     crumb: () => <BreadCrumbLink linkTo={"404"} />,
                 },
             },
+            ...saleHistoryRouter,
+            ...positionRouter,
+            ...settingRouter,
             ...adminRouter,
             ...productCategoryRouter,
             ...productRouter,

@@ -63,6 +63,14 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             <span>{index + 1}</span>
                         </div>
                     </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup even:bg-gray-1 px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Mã người dùng
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>{item?.sub}</span>
+                        </div>
+                    </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
@@ -93,7 +101,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             Số điện thoại
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>{item?.phone_number}</span>
+                            <span>{item?.phone}</span>
                         </div>
                     </div>
 
@@ -128,14 +136,38 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Trạng thái
+                            Trạng thái tài khoản
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            {/* <span>{item?.customer_classification?.name ?? "- -"}</span>
-                             */}
                             <CStatus
-                                type={item?.status ? "success" : "error"}
-                                name={item?.status ? "Active" : "Inactive"}
+                                type={(() => {
+                                    switch (item?.kycStatus) {
+                                        case "NONE":
+                                            return "info";
+                                        case "VERIFIED":
+                                            return "success";
+                                        case "VERIFYING":
+                                            return "warning";
+                                        case "REJECTED":
+                                            return "error";
+                                        default:
+                                            return "error";
+                                    }
+                                })()}
+                                name={(() => {
+                                    switch (item?.kycStatus) {
+                                        case "NONE":
+                                            return "Chưa xác thực";
+                                        case "VERIFIED":
+                                            return "Đã xác thực";
+                                        case "VERIFYING":
+                                            return "Đang xác thực";
+                                        case "REJECTED":
+                                            return "Từ chối xác thực";
+                                        default:
+                                            return "Từ chối xác thực";
+                                    }
+                                })()}
                             />
                         </div>
                     </div>
@@ -216,6 +248,22 @@ const getColumns = (props: ColumnProps) => {
             width: 46,
         },
         {
+            title: "Mã người dùng",
+            dataIndex: "stt",
+            render: (_: any, item: any, index: number) => (
+                <Typography
+                    style={{
+                        fontSize: "14px",
+                        color: palette.textQuaternary,
+                        lineHeight: "22px",
+                    }}
+                >
+                    {item.sub}
+                </Typography>
+            ),
+            width: 100,
+        },
+        {
             title: T("fullName"),
             dataIndex: "full_name",
             // fixed: "left" as const,
@@ -270,45 +318,8 @@ const getColumns = (props: ColumnProps) => {
             dataIndex: "phone_number",
             render: (_: any, item: any) => (
                 <Typography style={{ textAlign: "left" }}>
-                    {item?.phone_number ?? "- -"}
+                    {item?.phone ?? "- -"}
                 </Typography>
-            ),
-        },
-        {
-            title: T("email"),
-            dataIndex: "email",
-            width: 249,
-            render: (_: any, item: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                            textAlign: "left",
-                        }}
-                    >
-                        {item?.email || "- -"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: T("position"),
-            dataIndex: "position",
-            width: 113,
-            render: (_: any, item: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {item?.position || "- -"}
-                    </Typography>
-                </Stack>
             ),
         },
         {
@@ -330,7 +341,7 @@ const getColumns = (props: ColumnProps) => {
             ),
         },
         {
-            title: T("verified"),
+            title: `Trạng thái tài khoản`,
             width: 124,
             dataIndex: "verified",
             render: (_: any, d: any) => (
@@ -346,8 +357,34 @@ const getColumns = (props: ColumnProps) => {
                     }}
                 >
                     <CStatus
-                        type={d?.verified ? "success" : "error"}
-                        name={d?.verified ? "True" : "False"}
+                        type={(() => {
+                            switch (d?.kycStatus) {
+                                case "NONE":
+                                    return "info";
+                                case "VERIFIED":
+                                    return "success";
+                                case "VERIFYING":
+                                    return "warning";
+                                case "REJECTED":
+                                    return "error";
+                                default:
+                                    return "error"; // giá trị mặc định nếu kycStatus không khớp
+                            }
+                        })()}
+                        name={(() => {
+                            switch (d?.kycStatus) {
+                                case "NONE":
+                                    return "Chưa xác thực";
+                                case "VERIFIED":
+                                    return "Đã xác thực";
+                                case "VERIFYING":
+                                    return "Đang xác thực";
+                                case "REJECTED":
+                                    return "Từ chối xác thực";
+                                default:
+                                    return "Từ chối xác thực"; // giá trị mặc định nếu kycStatus không khớp
+                            }
+                        })()}
                     />
                 </Stack>
             ),
@@ -415,7 +452,7 @@ interface ListRequestDepositProps {
     authorizedPermissions?: any;
 }
 
-const ListAdmin = (props: ListRequestDepositProps) => {
+const ListUser = (props: ListRequestDepositProps) => {
     const { authorizedPermissions } = props;
     const { getAccount } = apiAccountService();
     const { T } = useCustomTranslation();
@@ -448,7 +485,7 @@ const ListAdmin = (props: ListRequestDepositProps) => {
         key_search,
     });
     const param_payload = useMemo(() => {
-        return handleGetParam(searchParams, "type__eq__0");
+        return handleGetParam(searchParams, "user_positions__isnull");
     }, [searchParams]);
     const { isLoading, isError, refetch, data } = useQuery({
         queryKey: ["GET_ACCOUNT", param_payload, pathname],
@@ -462,7 +499,6 @@ const ListAdmin = (props: ListRequestDepositProps) => {
             return data.data.map((item) => ({
                 ...item,
                 key: item?.id,
-                password: "",
             }));
 
         return [];
@@ -544,7 +580,7 @@ const ListAdmin = (props: ListRequestDepositProps) => {
                         keySearch={keySearchText}
                         setKeySearch={setKeySearchText}
                         handleSearch={handleSearch}
-                        placeholder="Tìm theo tên, tên đăng nhập, sđt"
+                        placeholder="Tìm theo tên, mã người dùng, sđt"
                     />
                 </div>
 
@@ -626,4 +662,4 @@ const ListAdmin = (props: ListRequestDepositProps) => {
     );
 };
 
-export default ListAdmin;
+export default ListUser;

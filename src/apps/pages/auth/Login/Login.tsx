@@ -97,7 +97,7 @@ const Login = () => {
                     <div className="mb-2 hidden max-sm:block">
                         <img
                             className="img-logo-hyracap"
-                            src="/assets/images/Header.svg"
+                            src="/src/assets/images/logo/logo-hyracap-2.svg"
                             alt="logo_hyracap"
                         />
                     </div>
@@ -123,7 +123,7 @@ const Login = () => {
                                     <div className="logo-hyracap">
                                         <img
                                             className="img-logo-hyracap"
-                                            src="/src/assets/images/logo/logo-hyracap.jpg"
+                                            src="/src/assets/images/logo/logo-hyracap-2.svg"
                                             alt="logo_hyracap"
                                         />
                                     </div>

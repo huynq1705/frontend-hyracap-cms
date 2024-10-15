@@ -19,7 +19,8 @@ export interface ResponseAccountItem extends BaseItemResponse {
     position: string;
     password: string;
     image: string;
-    // contact_staff: { [key: string]: any }
+    role: ResponseRole;
+    user_positions: ResponseUserPosition[];
 }
 
 export interface ResponseAccountItemConvert extends BaseItemResponse {
@@ -42,8 +43,9 @@ export interface ResponseAccountItemConvert extends BaseItemResponse {
     position: string;
     password_config: string;
     image: string;
-    description: string
-    // contact_staff: { [key: string]: any }
+    description: string;
+    role: ResponseRole;
+    user_positions: ResponseUserPosition[];
 }
 export interface PayloadAccount {
     username: string;
@@ -66,7 +68,7 @@ export interface PayloadAccount {
     status: number;
     type: number;
     image: string;
-    description :string
+    description: string;
 }
 export interface PayloadAccountPass {
     old_password: string;
@@ -74,6 +76,14 @@ export interface PayloadAccountPass {
 }
 
 export interface ResponseTotal {
-    position: string,
-    total: number
+    position: string;
+    total: number;
+}
+export interface ResponseRole extends BaseItemResponse {
+    name: string;
+}
+export interface ResponseUserPosition extends BaseItemResponse {
+    position_id: number;
+    user_sub: number;
+    effective_from: string;
 }

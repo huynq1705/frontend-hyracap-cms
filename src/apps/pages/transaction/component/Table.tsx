@@ -456,7 +456,7 @@ const CTable = (props: CTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo mã sản phẩm, tên sản phẩm, nhãn hiệu"
+                                placeholder="Tìm theo tên khách hàng, mã giao dịch"
                             />
                         </div>
                     </div>

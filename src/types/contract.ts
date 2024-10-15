@@ -11,6 +11,7 @@ export interface ResponseContractItem extends BaseItemResponse {
     product_id: number;
     product: PayloadProductConTract;
     profit_before_tax: string;
+    contract_id: string;
     user: PayloadUserConTract;
 }
 
