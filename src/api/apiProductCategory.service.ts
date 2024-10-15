@@ -24,8 +24,7 @@ export default function apiProductCategoryService(): ProductCategoryService {
         const paramRaw: any = {
             page: 1,
             take: 10,
-            order_by: "id",
-            order: "DESC",
+            sort_by: "id",
             ...param,
         };
         const queryParams = Utils.parseObjectToParam(paramRaw);
