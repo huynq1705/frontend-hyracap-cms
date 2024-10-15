@@ -341,14 +341,11 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
         remove: false,
         upload: false,
     });
-    const [keySearch, setKeySearch] = useState<KeySearchType>({
-        status__in: "1;0",
-    });
+    const [keySearch, setKeySearch] = useState<KeySearchType>({});
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const { data, isLoading, refetch } = useQuery({
         queryKey: ["GET_PRODUCT_CATEGORY", param_payload, pathname],
-        queryFn: () =>
-            getProductCategory({ ...param_payload, status__in: "1;0" }),
+        queryFn: () => getProductCategory({ ...param_payload }),
         keepPreviousData: true,
     });
 
