@@ -29,6 +29,24 @@ export const TITLE_PAGE = [
         key_title: "users",
         key: "users",
     },
+    // setting
+    {
+        pathname: "/setting",
+        key_title: "setting",
+        key: "setting",
+    },
+    // position
+    {
+        pathname: "/position",
+        key_title: "position",
+        key: "position",
+    },
+    // sale_history
+    {
+        pathname: "/sale_history",
+        key_title: "sale_history",
+        key: "sale_history",
+    },
 ];
 export const GENDER = [
     { label: "Nam", value: "0" },

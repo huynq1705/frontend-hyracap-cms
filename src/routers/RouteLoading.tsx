@@ -1,7 +1,7 @@
 import LinearLoading from "@/components/LinearLoading";
 import GradientBackground from "@/layouts/GradientBackground";
 import { memo } from "react";
-import logo from "@/assets/images/logo/logo-hyracap.jpg";
+import logo from "@/assets/images/logo/logo-hyracap-2.svg";
 const RouteLoading = (): JSX.Element => {
     return (
         <div className="fixed inset-0 flex justify-center items-center">

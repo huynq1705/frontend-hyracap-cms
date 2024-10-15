@@ -98,24 +98,75 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                     },
                     {
                         label: `Hợp đồng`,
-                        icon: <ProductIcon />, // icon - name : tên ảnh svg
+                        icon: <ServiceComponent />, // icon - name : tên ảnh svg
                         key: "admin/contract",
                         type: "link",
                         // role: ["admin"],
                     },
                     {
                         label: `Giao dịch`,
-                        icon: <ProductIcon />, // icon - name : tên ảnh svg
+                        icon: <EvaluationsIcon />, // icon - name : tên ảnh svg
                         key: "admin/transaction",
                         type: "link",
                         // role: ["admin"],
                     },
                     {
-                        label: `Admin`,
-                        icon: <ProductIcon />, // icon - name : tên ảnh svg
+                        label: `Người dùng`,
+                        icon: <CustomerIcon />, // icon - name : tên ảnh svg
                         key: "admin/users",
                         type: "link",
                         // role: ["admin"],
+                    },
+                    // {
+                    //     label: `${T("manage")} ${t("team")}`, //
+                    //     icon: <PermissionsIcon />, // icon - name : tên ảnh svg
+                    //     key: "admin/manage-employee", // check width pathname => activate navbar
+                    //     betaItem: true, // type navbar
+                    //     // role: ["admin"],
+                    //     children: [
+                    //         {
+                    //             label: `QL ${t("employee-manager")}`,
+                    //             key: "admin/users-employee",
+                    //             type: "link",
+                    //             // role: ["admin"],
+                    //         },
+                    //     ],
+                    // },
+                    {
+                        label: `${T("report")}`, //
+                        icon: <ReportIcon />, // icon - name : tên ảnh svg
+                        key: "admin/report", // check width pathname => activate navbar
+                        betaItem: true, // type navbar
+                        // role: ["admin"],
+                        children: [
+                            {
+                                label: `BC Hoa hồng`,
+                                key: "admin/sale_history",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                        ],
+                    },
+                    {
+                        label: `${T("setting")} ${t("system")}`, //
+                        icon: <SettingComponent />, // icon - name : tên ảnh svg
+                        key: "admin/systems", // check width pathname => activate navbar
+                        betaItem: true, // type navbar
+                        // role: ["admin"],
+                        children: [
+                            {
+                                label: `Quản lý ${t("position")}`,
+                                key: "admin/position",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                            {
+                                label: `Cài đặt chung`,
+                                key: "admin/setting",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                        ],
                     },
                 ],
             } as NavList,

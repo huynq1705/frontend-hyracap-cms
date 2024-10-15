@@ -7,6 +7,8 @@ import {
     Button,
     Box,
 } from "@mui/material";
+import { setGlobalNoti } from "@/redux/slices/app.slice";
+import { useDispatch } from "react-redux";
 
 const OTPPopup = ({
     open,
@@ -15,6 +17,8 @@ const OTPPopup = ({
     open: boolean;
     handleClose: () => void;
 }) => {
+    const dispatch = useDispatch();
+
     const [otp, setOtp] = useState<string[]>(new Array(6).fill(""));
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -44,9 +48,34 @@ const OTPPopup = ({
         }
     };
 
-    const handleSubmit = () => {
-        console.log("OTP Entered:", otp.join(""));
-        handleClose();
+    const handleSubmit = async (values: any) => {
+        try {
+            // const response = await postTransaction(formData);
+            // let message = `Tạo ${title_page} thất bại`;
+            // let type = "error";
+            // if (typeof response === "object" && response?.missingKeys) {
+            //     setErrors(response.missingKeys);
+            //     return;
+            // }
+            // if (response === true) {
+            //     message = `Tạo ${title_page} thành công`;
+            //     type = "success";
+            //     handleCancel();
+            // }
+            // dispatch(
+            //     setGlobalNoti({
+            //         type,
+            //         message,
+            //     })
+            // );
+        } catch (error) {
+            dispatch(
+                setGlobalNoti({
+                    type: "error",
+                    message: "createError",
+                })
+            );
+        }
     };
 
     return (

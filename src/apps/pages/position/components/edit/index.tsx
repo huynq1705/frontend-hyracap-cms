@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import apiProductService from "@/api/apiProduct.service";
 import apiCommonService from "@/api/apiCommon.service";
 import ActionsEditPage from "@/components/actions-edit-page";
 import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
@@ -17,100 +16,89 @@ import HeaderModalEdit from "@/components/header-modal-edit";
 import { getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import ListImage from "@/components/list-image";
-import { UploadFile } from "antd";
+import { Timeline, UploadFile } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import CustomCurrencyInput from "@/components/input-custom-v2/currency";
-import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
+import X2ChevronDown from "@/components/icons/x2-chevron-down";
+import apiHistoryService from "@/api/apiHistory.service";
+import { formatDate } from "@/utils/date-time";
 import dayjs from "dayjs";
-import apiTransactionService from "@/api/apiTransaction.service";
-import apiContractService from "@/api/apiContract.service";
-import { INIT_TRANSACTION } from "@/constants/init-state/transaction";
+import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
+import { INIT_SETTING } from "@/constants/init-state/setting";
+import { INIT_POSITION } from "@/constants/init-state/position";
+import { ResponsePositionItem } from "@/types/position.type";
+import apiPositionService from "@/api/Position.service";
 const VALIDATE = {
-    amount: "Hãy nhập số tiền",
+    name: "Hãy nhập tên sản phẩm",
 };
-const KEY_REQUIRED = ["amount"];
-const OptionTypeSelect = [
-    {
-        value: "0",
-        label: "Nạp tiền",
-    },
-    {
-        value: "1",
-        label: "Rút tiền",
-    },
-];
+const KEY_REQUIRED = ["name"];
 interface EditPageProps {
     open: boolean;
     onClose: () => void;
     refetch: () => void;
 }
+type History = {
+    interest_rate: string;
+    effective_from: string;
+};
 export default function EditPage(props: EditPageProps) {
     //--init
     const { onClose, refetch, open } = props;
+    //--const
+    const { code } = useParams();
+    const { pathname } = useLocation();
+    //--state
+    const [productCategory, setProductCategory] = useState<OptionSelect>([]);
+    const [errors, setErrors] = useState<string[]>([]);
+    const [formData, setFormData] = useState(INIT_POSITION);
+    const [popup, setPopup] = useState({
+        remove: false,
+        loading: true,
+    });
     //--fn
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
     const { T, t } = useCustomTranslation();
     const { detailCommon } = apiCommonService();
-    const { postProduct, putProduct } = apiProductService();
-    const { postTransaction } = apiTransactionService();
-    const { getContract } = apiContractService();
+    const { postPosition, putPosition } = apiPositionService();
+    const title_page = T(getKeyPage(pathname, "key"));
 
-    const getAllContract = async () => {
-        try {
-            const param = {
-                page: 1,
-                take: 999,
-            };
-            const response = await getContract(param);
-            if (response) {
-                setProductCategory(
-                    response.data.map((it: any) => ({
-                        value: it.id.toString(),
-                        label: `Hợp đồng mã số: ${it.contract_id}`,
-                    }))
-                );
-            }
-        } catch (e) {
-            throw e;
-        }
-    };
     const getDetail = async () => {
         if (!code) return;
-        // try {
-        //     const response = await detailCommon<ResponseProductItem>(
-        //         code,
-        //         "/products"
-        //     );
-        //     if (response) {
-        //         const convert_data = {
-        //             id: response.id,
-        //             name: response.name,
-        //             min_invest: response.min_invest.toString(),
-        //             max_invest: response.max_invest.toString(),
-        //             min_duration: response.min_duration.toString(),
-        //             max_duration: response.max_duration.toString(),
-        //             interest_rate: (
-        //                 response.current_interest_rate * 100
-        //             ).toString(),
-        //             category_id: response.category_id,
-        //             effective_from: dayjs().format("DD-MM-YYYY"),
-        //         };
-        //         setFormData(convert_data);
-        //     }
-        // } catch (error) {
-        //     dispatch(
-        //         setGlobalNoti({
-        //             type: "error",
-        //             message: "Failed to fetch product details",
-        //         })
-        //     );
-        // }
+        try {
+            const response = await detailCommon<ResponsePositionItem>(
+                code,
+                "/position"
+            );
+            if (response) {
+                const convert_data = {
+                    id: response.id,
+                    name: response.name,
+                    effective_from:
+                        response.current_position_setting?.effective_from,
+                    direct_bonus_rate:
+                        response.current_position_setting?.direct_bonus_rate,
+                    kpi_bonus_base:
+                        response.current_position_setting?.kpi_bonus_base,
+                    monthly_average_target:
+                        response.current_position_setting
+                            ?.monthly_average_target,
+                };
+                setFormData(convert_data);
+            }
+        } catch (error) {
+            dispatch(
+                setGlobalNoti({
+                    type: "error",
+                    message: "Failed to fetch product details",
+                })
+            );
+        }
     };
+
     const handleCreate = async () => {
         try {
-            const response = await postTransaction(formData, KEY_REQUIRED);
+            const response = await postPosition(formData, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
             let type = "error";
             if (typeof response === "object" && response?.missingKeys) {
@@ -138,17 +126,17 @@ export default function EditPage(props: EditPageProps) {
         }
     };
     const handleCancel = () => {
-        setFormData(INIT_TRANSACTION);
-        navigate("/admin/transaction");
+        setFormData(INIT_POSITION);
+        navigate("/admin/position");
         onClose();
     };
     const handelSave = async () => {
         if (isView) {
-            navigate(`/admin/transaction/edit/${code}`);
+            navigate(`/admin/position/edit/${code}`);
         } else {
             dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_TRANSACTION);
+            setFormData(INIT_POSITION);
             refetch();
         }
         setTimeout(() => {
@@ -160,7 +148,7 @@ export default function EditPage(props: EditPageProps) {
 
         if (!code) return;
         try {
-            const response = await putProduct(formData, code, KEY_REQUIRED);
+            const response = await putPosition(formData, code, KEY_REQUIRED);
             let message = `Cập nhật ${title_page} thất bại`;
             let type = "error";
             if (typeof response === "object" && response?.missingKeys) {
@@ -206,21 +194,17 @@ export default function EditPage(props: EditPageProps) {
             [name]: value,
         }));
     };
+
+    const handleOnchangeDate = (name: string, value: any) => {
+        setFormData((prev: any) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
     const togglePopup = useCallback((params: keyof typeof popup) => {
         setPopup((prev) => ({ ...prev, [params]: !prev[params] }));
     }, []);
-    //--const
-    const { code } = useParams();
-    const { pathname } = useLocation();
-    const title_page = T(getKeyPage(pathname, "key"));
-    //--state
-    const [productCategory, setProductCategory] = useState<OptionSelect>([]);
-    const [errors, setErrors] = useState<string[]>([]);
-    const [formData, setFormData] = useState(INIT_TRANSACTION);
-    const [popup, setPopup] = useState({
-        remove: false,
-        loading: true,
-    });
+
     const isView = useMemo(() => {
         return pathname.includes("view");
     }, [pathname]);
@@ -232,7 +216,6 @@ export default function EditPage(props: EditPageProps) {
     useEffect(() => {
         code && getDetail();
         if (open) {
-            getAllContract();
         }
     }, [code, open]);
     return (
@@ -240,41 +223,63 @@ export default function EditPage(props: EditPageProps) {
             <HeaderModalEdit onClose={handleCancel} />
             <div className="wrapper-edit-page">
                 <div className="wrapper-from items-end">
-                    <MySelect
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        label="Loại giao dịch"
-                        name="type"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        options={OptionTypeSelect}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        itemsPerPage={5} // Adjust items per page as needed
-                        disabled={isView}
-                        placeholder="Chọn"
-                    />
+                    {code && (
+                        <>
+                            {/* id */}
+                            <MyTextField
+                                label="Mã chức vụ"
+                                errors={errors}
+                                required={KEY_REQUIRED}
+                                configUI={{
+                                    width: "calc(50% - 12px)",
+                                }}
+                                name="id"
+                                placeholder=""
+                                handleChange={handleOnchange}
+                                values={formData}
+                                validate={VALIDATE}
+                                disabled
+                            />
+                        </>
+                    )}
                     {/* name */}
                     <MyTextField
-                        label="Mã giao dịch"
+                        label="Tên chức vụ"
                         errors={errors}
                         required={KEY_REQUIRED}
                         configUI={{
                             width: "calc(50% - 12px)",
                         }}
-                        name="code"
+                        name="name"
                         placeholder="Nhập"
                         handleChange={handleOnchange}
                         values={formData}
                         validate={VALIDATE}
                         disabled={isView}
                     />
-                    {/* amount */}
+                    {/* direct_bonus_rate */}
+                    <MyTextField
+                        label="% thưởng trực tiếp"
+                        errors={errors}
+                        required={KEY_REQUIRED}
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        name="direct_bonus_rate"
+                        placeholder="Nhập"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        validate={VALIDATE}
+                        unit="%"
+                        max={100}
+                        min={0}
+                        type="number"
+                        disabled={isView}
+                    />
+                    {/* kpi_bonus_base */}
                     <CurrencyInput
-                        label="Số tiền"
-                        name="amount"
+                        label="Thưởng đạt kpi cơ bản"
+                        name="kpi_bonus_base"
                         handleChange={handleOnchangeCurrency}
                         values={formData}
                         errors={errors}
@@ -283,23 +288,35 @@ export default function EditPage(props: EditPageProps) {
                         configUI={{ width: "calc(50% - 12px)" }}
                         disabled={isView}
                     />
-                    {/* product_category_id */}
-                    <MySelect
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        label="Hợp đồng"
-                        name="contract_id"
-                        handleChange={handleOnchange}
+                    {/* monthly_average_target */}
+                    <CurrencyInput
+                        label="KPI tối thiểu hàng tháng"
+                        name="monthly_average_target"
+                        handleChange={handleOnchangeCurrency}
                         values={formData}
-                        options={productCategory}
                         errors={errors}
                         validate={VALIDATE}
                         required={KEY_REQUIRED}
-                        itemsPerPage={5} // Adjust items per page as needed
+                        configUI={{ width: "calc(50% - 12px)" }}
                         disabled={isView}
-                        placeholder="Chọn"
                     />
+                    {code && (
+                        <MyDatePickerMui
+                            label="Có hiệu lực từ ngày"
+                            errors={errors}
+                            required={KEY_REQUIRED}
+                            configUI={{
+                                width: "calc(50% - 12px)",
+                            }}
+                            name="effective_from"
+                            placeholder="Chọn ngày hẹn"
+                            handleChange={handleOnchangeDate}
+                            disablePastDates={true}
+                            values={formData}
+                            validate={VALIDATE}
+                            disabled={isView}
+                        />
+                    )}
                 </div>
             </div>
             <ActionsEditPage actions={actions} isView={isView} />

@@ -17,15 +17,8 @@ const PAGE_ACTIVE_EXPORT: string[] = [
     "order",
     "service-list",
 ];
-const PAGE_OFF_CREATE: string[] = [
-    "systems-position-list",
-    "prepaid-card-face",
-    "bank",
-    "order-detail",
-    "evaluation-customer",
-    "order-detail-information",
-    //   "systems-payment"
-];
+const PAGE_OFF_CREATE: string[] = ["users", "sale_history"];
+const PAGE_REPORT: string[] = ["sale_history"];
 interface TopTableCustomProps {
     actions?: {
         createFn?: () => void;
@@ -72,9 +65,13 @@ export default function TopTableCustom(props: TopTableCustomProps) {
                         margin: "0",
                     }}
                 >
-                    {`${prefix_label} ${
-                        prefix_label ? t(title_page_btn) : T(title_page_btn)
-                    }`}
+                    {PAGE_REPORT.includes(check_actions)
+                        ? "Báo cáo " + t(title_page_btn)
+                        : `${
+                              prefix_label
+                                  ? `${prefix_label} ${t(title_page_btn)}`
+                                  : T(title_page_btn)
+                          }`}
                 </Typography.Title>
             </Col>
 

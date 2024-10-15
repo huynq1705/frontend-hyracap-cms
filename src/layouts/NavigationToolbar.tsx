@@ -1,8 +1,8 @@
 import { Toolbar } from "@mui/material";
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import logo1 from "@/assets/images/logo-hyracap.jpg";
-import logo from "@/assets/images/logo-hyracap.jpg";
+import logo1 from "@/assets/images/logo/logo-hyracap-1.svg";
+import logo from "@/assets/images/logo/logo-hyracap-1.svg";
 import clsx from "clsx";
 interface NavigationToolbarProps {
     isOpen?: boolean;

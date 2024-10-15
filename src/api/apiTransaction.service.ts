@@ -27,11 +27,11 @@ export default function apiTransactionService(): TransactionService {
     };
     const postTransaction = async (payload: any, requiredKeys: string[]) => {
         const convert_payload: any = {
-            type: payload.type,
+            type: +payload.type,
             amount: +payload.amount,
             code: payload.code,
             time: new Date().toISOString().split(".")[0] + "Z",
-            contract_id: payload.contract_id,
+            contract_id: +payload.contract_id,
         };
         console.log("convert_payload", convert_payload);
         const result = validateRequiredKeys(convert_payload, requiredKeys);
