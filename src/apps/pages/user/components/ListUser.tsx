@@ -545,7 +545,7 @@ const ListUser = (props: ListRequestDepositProps) => {
         let filter = convertObjToParam(keySearch, {
             page: 1,
             take: pageSize,
-            text: keySearchText,
+            phone__ilike: keySearchText,
         });
         let url = `${pathname}${filter}`;
         navigate(url);
