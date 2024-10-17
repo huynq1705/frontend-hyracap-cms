@@ -304,14 +304,11 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
         return params;
     };
 
-    const handleSearch = (
-        objParam = {
-            ...keySearch,
-        }
-    ) => {
-        let filter = convertObjToParam(objParam, {
+    const handleSearch = () => {
+        let filter = convertObjToParam(keySearch, {
             page: currentPage,
             take: pageSize,
+            name__ilike: keySearch?.text?.toString().trim(),
         });
         let url = `${pathname}${filter}`;
         navigate(url);
@@ -364,8 +361,8 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
             .map((item: any) => item.name);
     }, [selectedRowKeys]);
     const text_search = useMemo(
-        () => keySearch?.name__ilike?.toString() ?? "",
-        [keySearch?.name__ilike, pathname]
+        () => keySearch?.text?.toString() ?? "",
+        [keySearch?.text, pathname]
     );
     //--effect
     useEffect(() => {
@@ -397,7 +394,7 @@ const ListProductCategory = (props: ListProductCategoryProps) => {
                                 setKeySearch={(value?: string) => {
                                     setKeySearch((prev) => ({
                                         ...prev,
-                                        name__like: value || "",
+                                        text: value || "",
                                     }));
                                 }}
                                 handleSearch={handleSearch}

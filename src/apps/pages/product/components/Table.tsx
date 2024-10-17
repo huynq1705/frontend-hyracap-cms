@@ -516,7 +516,7 @@ const CTable = (props: CTableProps) => {
         let filter = convertObjToParam(keySearch, {
             page: currentPage,
             take: pageSize,
-            text: keySearch?.text?.toString().trim(),
+            name__ilike: keySearch?.text?.toString().trim(),
         });
         let url = `${pathname}${filter}`;
         navigate(url);

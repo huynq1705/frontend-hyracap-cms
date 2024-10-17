@@ -3,7 +3,7 @@ import { removeVietnameseTones } from "./remove-vietnamese";
 
 export const convertObjToParam = (
     obj: KeySearchType,
-    page_obj: { page: number; take: number; text?: string }
+    page_obj: { [key: string]: any }
 ) => {
     let url = "?";
     let filter = "&"; //bỏ filter=
@@ -12,10 +12,13 @@ export const convertObjToParam = (
     delete obj["text"];
     url += `page=${page_obj.page}`;
     url += `&take=${page_obj.take}`;
-    if (page_obj.text) {
-        url += `&text=${page_obj.text}`;
-    }
+    Object.keys(page_obj).forEach((key) => {
+        if (page_obj[key]) {
+            url += `&${key}=${page_obj[key]}`;
+        }
+    });
     const keys = Object.keys(obj);
+    console.log("keys", keys);
     if (keys.length === 0) return url;
     filter = keys
         .filter((x) => !!obj[x])

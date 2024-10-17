@@ -126,7 +126,7 @@ const ListConfigSetting = (props: ListRequestDepositProps) => {
         key_search,
     });
     const param_payload = useMemo(() => {
-        return handleGetParam(searchParams, "type__eq__0");
+        return handleGetParam(searchParams);
     }, [searchParams]);
     const { isLoading, isError, refetch, data } = useQuery({
         queryKey: ["GET_SETTING", param_payload, pathname],
