@@ -21,12 +21,7 @@ export default function apiSettingService(): SettingService {
         };
         const queryParams = Utils.parseObjectToParam(paramRaw);
         return httpClient
-            .get<any>(
-                `${
-                    AppConfig.SETTING.GET_SETTING(queryParams) +
-                    "?order=DESC&sortBy=effective_from"
-                }`
-            )
+            .get<any>(`${AppConfig.SETTING.GET_SETTING(queryParams)}`)
             .then((res: ResponseFromServerV1<any>) => {
                 if (res) return res;
             })

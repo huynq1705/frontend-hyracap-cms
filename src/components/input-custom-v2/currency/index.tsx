@@ -11,7 +11,7 @@ import { NumericFormat } from "react-number-format";
 import FormHelperTextCustom from "@/components/form-helper-text";
 
 interface CurrencyInputProps {
-    label: string;
+    label?: string;
     required?: string[];
     name: string;
     handleChange: (name: string, value: any) => void;
@@ -70,18 +70,20 @@ const CustomCurrencyInput: React.FC<CurrencyInputProps> = (
             spacing={0.5}
             className="items-center"
         >
-            <Typography
-                component={"label"}
-                sx={{
-                    width: configUI?.labelWidth ?? "100%",
-                }}
-                className="label"
-            >
-                {label}
-                {required && required.includes(name) && (
-                    <span style={{ color: "red" }}>(*)</span>
-                )}
-            </Typography>
+            {label ? (
+                <Typography
+                    component={"label"}
+                    sx={{
+                        width: configUI?.labelWidth ?? "100%",
+                    }}
+                    className="label"
+                >
+                    {label}
+                    {required && required.includes(name) && (
+                        <span style={{ color: "red" }}>(*)</span>
+                    )}
+                </Typography>
+            ) : null}
             <FormControl
                 fullWidth
                 variant="outlined"

@@ -53,4 +53,5 @@ export interface PayloadContract {
     duration: number;
     product_id: number;
     user_sub: number;
+    staff_id: number;
 }

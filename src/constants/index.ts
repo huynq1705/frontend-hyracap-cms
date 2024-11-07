@@ -47,6 +47,36 @@ export const TITLE_PAGE = [
         key_title: "sale_history",
         key: "sale_history",
     },
+    // staff
+    {
+        pathname: "/staff",
+        key_title: "staff",
+        key: "staff",
+    },
+    // blog_category
+    {
+        pathname: "/blog_category",
+        key_title: "blog_category",
+        key: "blog_category",
+    },
+    // blog
+    {
+        pathname: "/blog",
+        key_title: "blog",
+        key: "blog",
+    },
+    // industry
+    {
+        pathname: "/industry",
+        key_title: "industry",
+        key: "industry",
+    },
+    // project
+    {
+        pathname: "/project",
+        key_title: "project",
+        key: "project",
+    },
 ];
 export const GENDER = [
     { label: "Nam", value: "0" },

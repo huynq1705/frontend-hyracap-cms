@@ -176,6 +176,28 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             <span>{item?.product.category.name}</span>
                         </div>
                     </div>
+                    {(hasPermission.update || hasPermission.delete) && (
+                        <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                            <span className="font-medium text-gray-9 text-sm">
+                                Thao tác
+                            </span>
+                            <div className="text-gray-9 text-base py-1">
+                                <div className="flex items-center g-8 justify-start space-x-4">
+                                    {hasPermission.getDetail && (
+                                        <ActionButton
+                                            type="view"
+                                            onClick={() => {
+                                                navigate(
+                                                    `/admin/contract/view/${item?.id}`
+                                                );
+                                                actions.togglePopup("edit");
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             ))}
         </div>
@@ -378,6 +400,41 @@ const getColumns = (props: ColumnProps) => {
             ),
         },
     ];
+    {
+        (hasPermission.update || hasPermission.delete) &&
+            columns.push({
+                title: T("action"),
+                width: 120,
+                dataIndex: "actions",
+                fixed: "right" as const,
+                render: (_: any, d: any) => (
+                    <>
+                        {true && (
+                            <Stack
+                                direction={"row"}
+                                sx={{
+                                    gap: "12px",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center",
+                                }}
+                            >
+                                {hasPermission.getDetail && (
+                                    <ActionButton
+                                        type="view"
+                                        onClick={() => {
+                                            navigate(
+                                                `/admin/contract/view/${d?.id}`
+                                            );
+                                            actions.togglePopup("edit");
+                                        }}
+                                    />
+                                )}
+                            </Stack>
+                        )}
+                    </>
+                ),
+            });
+    }
     return columns;
 };
 

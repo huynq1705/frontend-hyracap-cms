@@ -179,7 +179,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             </span>
                             <div className="text-gray-9 text-base py-1">
                                 <div className="flex items-center g-8 justify-start space-x-4">
-                                    {hasPermission.getDetail && (
+                                    {/* {hasPermission.getDetail && (
                                         <ActionButton
                                             type="view"
                                             onClick={() =>
@@ -202,7 +202,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                                 )
                                             }
                                         />
-                                    )}
+                                    )} */}
                                     {hasPermission.delete && (
                                         <ActionButton
                                             type="remove"
@@ -391,7 +391,7 @@ const getColumns = (props: ColumnProps) => {
         },
         {
             title: "Thao tác",
-            width: 120,
+            width: 100,
             dataIndex: "actions",
             fixed: "right" as const,
             shadows: " box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.5);",
@@ -412,7 +412,7 @@ const getColumns = (props: ColumnProps) => {
                             // bottom: 0
                         }}
                     >
-                        {hasPermission.getDetail && (
+                        {/* {hasPermission.getDetail && (
                             <ActionButton
                                 type="view"
                                 onClick={() =>
@@ -427,7 +427,7 @@ const getColumns = (props: ColumnProps) => {
                                     actions.openEditConfirm(true, "edit", d)
                                 }
                             />
-                        )}
+                        )} */}
                         {hasPermission.delete && (
                             <ActionButton
                                 type="remove"
@@ -485,7 +485,7 @@ const ListUser = (props: ListRequestDepositProps) => {
         key_search,
     });
     const param_payload = useMemo(() => {
-        return handleGetParam(searchParams, "user_positions__isnull");
+        return handleGetParam(searchParams);
     }, [searchParams]);
     const { isLoading, isError, refetch, data } = useQuery({
         queryKey: ["GET_ACCOUNT", param_payload, pathname],
@@ -629,7 +629,7 @@ const ListUser = (props: ListRequestDepositProps) => {
                     // style={{ height: "calc(100vh - 333px)" }}
                 />
             </Box>
-            {popup.remove && (
+            {/* {popup.remove && (
                 <PopupCreateAdmin
                     status={popup.status}
                     handleClose={() =>
@@ -647,7 +647,7 @@ const ListUser = (props: ListRequestDepositProps) => {
                     }}
                     data={popup.data}
                 />
-            )}
+            )} */}
 
             <PopupConfirmRemove
                 listItem={[popupRemove.code]}

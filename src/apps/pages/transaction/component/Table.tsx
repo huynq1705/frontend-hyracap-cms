@@ -65,89 +65,61 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 <span>{index + 1}</span>
                             </div>
                         </div>
-                        {/* <div className="min-w-[80px]">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Trạng thái
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <CStatus
-                                    type={item?.status ? "success" : "error"}
-                                    name={item?.status ? "Active" : "Inactive"}
-                                />
-                            </div>
-                        </div> */}
                     </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Mã sản phẩm
+                            Loại giao dịch
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>{item?.id}</span>
+                            <span>
+                                {item?.type === 0 ? "Nạp tiền" : "Rút tiền"}
+                            </span>
                         </div>
                     </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Tên sản phẩm
+                            Tên khách hàng
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span
                                 className="font-medium"
                                 style={{ color: "#50945d" }}
                             >
-                                {item?.name ?? "- -"}
+                                {`${item?.contract?.user?.firstName}` +
+                                    " " +
+                                    `${item?.contract?.user?.lastName}`}
                             </span>
                         </div>
                     </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối thiểu
+                            Số tiền
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {formatCurrency(item?.min_invest) ?? "- -"}
-                            </span>
+                            <span>{formatCurrency(Number(item?.amount))}</span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối đa
+                            Mã giao dịch
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {formatCurrency(item?.max_invest) ?? "- -"}
-                            </span>
+                            <span>{item?.code}</span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối thiểu
+                            Thời gian giao dịch
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>{item?.min_duration ?? "- -"} Ngày</span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối đa
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.max_duration ?? "- -"} Ngày</span>
+                            <span>{formatDate(item?.time, "DDMMYY")}</span>
                         </div>
                     </div>
 
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Mức lãi suất hiện tại
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.current_interest_rate ?? "- -"}</span>
-                        </div>
-                    </div>
-
-                    {(hasPermission.update || hasPermission.delete) && (
+                    {/* {(hasPermission.update || hasPermission.delete) && (
                         <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                             <span className="font-medium text-gray-9 text-sm">
                                 Thao tác
@@ -190,7 +162,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 </div>
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div>
             ))}
         </div>
@@ -247,7 +219,7 @@ const getColumns = (props: ColumnProps) => {
             width: 100,
         },
         {
-            title: "Têm khách hàng",
+            title: "Tên khách hàng",
             dataIndex: "name",
             width: 120,
             render: (_: any, d: any) => (
@@ -259,9 +231,9 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {`${d?.contract.user.firstName}` +
+                        {`${d?.contract?.user?.firstName}` +
                             " " +
-                            `${d?.contract.user.lastName}`}
+                            `${d?.contract?.user?.lastName}`}
                     </Typography>
                 </Stack>
             ),

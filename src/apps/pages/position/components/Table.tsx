@@ -22,8 +22,6 @@ import {
     handleGetPage,
     parseQueryParams,
 } from "@/utils/filter";
-import CStatus from "@/components/status";
-import apiCommonService from "@/api/apiCommon.service";
 import { useDispatch, useSelector } from "react-redux";
 import { selectPage } from "@/redux/selectors/page.slice";
 import EmptyIcon from "@/components/icons/empty";

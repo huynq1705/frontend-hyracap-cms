@@ -7,37 +7,21 @@ import ActionsEditPage from "@/components/actions-edit-page";
 import { INIT_PRODUCT } from "@/constants/init-state/product";
 import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
 import { ResponseProductItem } from "@/types/product";
-import MyTextField from "@/components/input-custom-v2/text-field";
-import MyTextareaAutosize from "@/components/input-custom-v2/textarea-autosize";
-import MySelect from "@/components/input-custom-v2/select";
-import CurrencyInput from "@/components/input-custom-v2/currency";
-import apiProductCategoryService from "@/api/apiProductCategory.service";
 import { OptionSelect } from "@/types/types";
-import MySwitch from "@/components/input-custom-v2/switch";
 import HeaderModalEdit from "@/components/header-modal-edit";
 import { getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
-import ListImage from "@/components/list-image";
-import { UploadFile } from "antd";
-import { v4 as uuidv4 } from "uuid";
-import CustomCurrencyInput from "@/components/input-custom-v2/currency";
 import dayjs from "dayjs";
 import apiAccountService from "@/api/Account.service";
+import MySelect from "@/components/input-custom-v2/select";
+import CurrencyInput from "@/components/input-custom-v2/currency";
+import MyTextField from "@/components/input-custom-v2/text-field";
+import { INIT_CONTRACT } from "@/constants/init-state/contract";
+import apiContractService from "@/api/apiContract.service";
 const VALIDATE = {
-    name: "Hãy nhập tên sản phẩm",
-    // max_duration: "Hãy nhập thời hạn",
-    // min_duration: "Hãy nhập thời hạn",
-    // max_invest: "Hãy nhập hạn mức đầu tư",
-    // min_invest: "Hãy nhập hạn mức đầu tư",
+    capital: "Hãy nhập số vốn đầu tư",
 };
-const KEY_REQUIRED = [
-    "name",
-    // "interest_rate",
-    // "max_duration",
-    // "min_duration",
-    // "max_invest",
-    // "min_invest",
-];
+const KEY_REQUIRED = ["capital"];
 interface EditPageProps {
     open: boolean;
     onClose: () => void;
@@ -52,6 +36,7 @@ export default function EditPage(props: EditPageProps) {
     const { T, t } = useCustomTranslation();
     const { detailCommon } = apiCommonService();
     const { postProduct, putProduct } = apiProductService();
+    const { postContract, putContract } = apiContractService();
     const { getProduct } = apiProductService();
     const { getAccount } = apiAccountService();
 
@@ -60,6 +45,7 @@ export default function EditPage(props: EditPageProps) {
             const param = {
                 page: 1,
                 take: 999,
+                total_invested__lt: "column_total_capacity",
             };
             const response = await getProduct(param);
             if (response) {
@@ -86,7 +72,7 @@ export default function EditPage(props: EditPageProps) {
                     response.data
                         .filter((it: any) => it.kycStatus === "VERIFIED")
                         .map((it: any) => ({
-                            value: it.id.toString(),
+                            value: it.sub.toString(),
                             label: `${it?.firstName}` + " " + `${it?.lastName}`,
                         }))
                 );
@@ -98,23 +84,15 @@ export default function EditPage(props: EditPageProps) {
     const getDetail = async () => {
         if (!code) return;
         try {
-            const response = await detailCommon<ResponseProductItem>(
-                code,
-                "/products"
-            );
+            const response = await detailCommon<any>(code, "/contract");
             if (response) {
                 const convert_data = {
                     id: response.id,
-                    name: response.name,
-                    min_invest: response.min_invest.toString(),
-                    max_invest: response.max_invest.toString(),
-                    min_duration: response.min_duration.toString(),
-                    max_duration: response.max_duration.toString(),
-                    interest_rate: (
-                        response.current_interest_rate * 100
-                    ).toString(),
-                    category_id: response.category_id,
-                    effective_from: dayjs().format("DD-MM-YYYY"),
+                    capital: response.capital,
+                    duration: response.duration,
+                    product_id: response.product.id,
+                    user_sub: response.user_sub,
+                    staff_id: response.staff_id,
                 };
                 setFormData(convert_data);
             }
@@ -129,14 +107,18 @@ export default function EditPage(props: EditPageProps) {
     };
     const handleCreate = async () => {
         try {
-            const response = await postProduct(formData, KEY_REQUIRED);
+            const response = await postContract(formData, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
             let type = "error";
-            if (typeof response === "object" && response?.missingKeys) {
-                setErrors(response.missingKeys);
-                return;
+            // if (typeof response === "object" && response?.missingKeys) {
+            //     setErrors(response.missingKeys);
+            //     return;
+            // }
+            if (response.statusCode === 422) {
+                message = `${response.error.message}`;
+                type = "error";
             }
-            if (response === true) {
+            if (response.statusCode === 200) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
                 handleCancel();
@@ -151,23 +133,23 @@ export default function EditPage(props: EditPageProps) {
             dispatch(
                 setGlobalNoti({
                     type: "error",
-                    message: "createError",
+                    message: "Thông tin nhập không phù hợp",
                 })
             );
         }
     };
     const handleCancel = () => {
-        setFormData(INIT_PRODUCT);
-        navigate("/admin/products");
+        setFormData(INIT_CONTRACT);
+        navigate("/admin/contract");
         onClose();
     };
     const handelSave = async () => {
         if (isView) {
-            navigate(`/admin/products/edit/${code}`);
+            navigate(`/admin/contract/edit/${code}`);
         } else {
             dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_PRODUCT);
+            setFormData(INIT_CONTRACT);
             refetch();
         }
         setTimeout(() => {
@@ -175,18 +157,20 @@ export default function EditPage(props: EditPageProps) {
         }, 200);
     };
     const handleUpdate = async () => {
-        console.log("formData", formData);
-
         if (!code) return;
         try {
-            const response = await putProduct(formData, code, KEY_REQUIRED);
+            const response = await putContract(formData, code, KEY_REQUIRED);
             let message = `Cập nhật ${title_page} thất bại`;
             let type = "error";
-            if (typeof response === "object" && response?.missingKeys) {
-                setErrors(response.missingKeys);
-                return;
+            // if (typeof response === "object" && response?.missingKeys) {
+            //     setErrors(response.missingKeys);
+            //     return;
+            // }
+            if (response.statusCode === 422) {
+                message = `${response.error.message}`;
+                type = "error";
             }
-            if (response === true) {
+            if (response.statusCode === 200) {
                 message = `Cập nhật ${title_page} thành công`;
                 type = "success";
             }
@@ -236,7 +220,7 @@ export default function EditPage(props: EditPageProps) {
     const [product, setProduct] = useState<OptionSelect>([]);
     const [account, setAccount] = useState<OptionSelect>([]);
     const [errors, setErrors] = useState<string[]>([]);
-    const [formData, setFormData] = useState(INIT_PRODUCT);
+    const [formData, setFormData] = useState(INIT_CONTRACT);
     const [popup, setPopup] = useState({
         remove: false,
         loading: true,
@@ -261,70 +245,309 @@ export default function EditPage(props: EditPageProps) {
             <HeaderModalEdit onClose={handleCancel} />
             <div className="wrapper-edit-page">
                 <div className="wrapper-from items-end">
-                    <MySelect
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        label="Khách hàng"
-                        name="user"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        options={account}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        itemsPerPage={5} // Adjust items per page as needed
-                        disabled={isView}
-                        placeholder="Chọn"
-                    />
-                    <MySelect
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        label="Sản phẩm"
-                        name="product_id"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        options={product}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        itemsPerPage={5} // Adjust items per page as needed
-                        disabled={isView}
-                        placeholder="Chọn"
-                    />
+                    <div style={{ lineHeight: 1.6 }}>
+                        <h1 style={{ textAlign: "center" }}>
+                            CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                        </h1>
+                        <h2 style={{ textAlign: "center" }}>
+                            Độc lập – Tự do – Hạnh phúc
+                        </h2>
+                        <p style={{ textAlign: "end" }}>
+                            …., ngày….tháng….năm…
+                        </p>
 
-                    {/* amount */}
-                    <CurrencyInput
-                        label="Tổng vốn đầu tư"
-                        name="capital"
-                        handleChange={handleOnchangeCurrency}
-                        values={formData}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        configUI={{ width: "calc(50% - 12px)" }}
-                        disabled={isView}
-                    />
-                    {/* commission */}
-                    <MyTextField
-                        label="Thời hạn đầu tư"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="duration"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        unit="Tháng"
-                        max={100}
-                        min={0}
-                        type="number"
-                        disabled={isView}
-                    />
+                        <h3 style={{ textAlign: "center" }}>
+                            HỢP ĐỒNG GÓP VỐN KINH DOANH
+                        </h3>
+                        <p style={{ textAlign: "center" }}>Số: …/…/HĐGVKD</p>
+
+                        <p>Căn cứ Bộ luật dân sự năm 2015;</p>
+                        <p>
+                            Căn cứ vào nhu cầu kinh doanh và năng lực của các
+                            bên.
+                        </p>
+                        <p>Chúng tôi gồm:</p>
+
+                        <h4>BÊN NHẬN GÓP VỐN (BÊN A):</h4>
+                        <p>Tên tổ chức: CÔNG TY CỔ PHẦN HYRATEK</p>
+                        <p>
+                            Trụ sở chính: Lô CX01, Khu đô thị Văn Khê, Phường La
+                            Khê, Quận Hà Đông, TP Hà Nội
+                        </p>
+                        <p>Mã số thuế: 0110057231</p>
+                        <p>
+                            Đại diện bởi: Trần Nam Chung. Chức vụ: Giám đốc
+                            chiến lược-Người sáng lập
+                        </p>
+
+                        <h4>BÊN GÓP VỐN (BÊN B):</h4>
+                        <div className="flex items-center gap-3">
+                            <p>Ông/bà: </p>
+                            <MySelect
+                                configUI={{
+                                    width: "calc(50% - 12px)",
+                                }}
+                                name="user_sub"
+                                handleChange={handleOnchange}
+                                values={formData}
+                                options={account}
+                                errors={errors}
+                                validate={VALIDATE}
+                                required={KEY_REQUIRED}
+                                itemsPerPage={5} // Adjust items per page as needed
+                                disabled={isView}
+                                placeholder="Chọn"
+                            />
+                            {/* <p>. Sinh năm: ……………………………………</p> */}
+                        </div>
+                        {/* <p>
+                            Chứng minh nhân dân số: … Ngày cấp: …/…/…. Nơi cấp:
+                            ………………………
+                        </p>
+                        <p>Thường trú: …………………………………………………………………………</p> */}
+
+                        <h4>ĐIỀU 1: ĐỐI TƯỢNG HỢP ĐỒNG</h4>
+                        <div className="flex items-center gap-3">
+                            <p>
+                                Bên B đồng ý góp vốn cho Bên A và cùng với đối
+                                tác của Bên A để đầu tư vào sản phẩm:
+                                <MySelect
+                                    configUI={{
+                                        width: "calc(50% - 12px)",
+                                    }}
+                                    name="product_id"
+                                    handleChange={handleOnchange}
+                                    values={formData}
+                                    options={product}
+                                    errors={errors}
+                                    validate={VALIDATE}
+                                    required={KEY_REQUIRED}
+                                    itemsPerPage={5} // Adjust items per page as needed
+                                    disabled={isView}
+                                    placeholder="Chọn"
+                                />
+                            </p>
+                        </div>
+
+                        <h4>
+                            ĐIỀU 2: TỔNG GIÁ TRỊ VỐN GÓP VÀ PHƯƠNG THỨC GÓP VỐN
+                        </h4>
+                        <p>
+                            Tổng giá trị vốn góp Bên A và Bên B góp để thực hiện
+                            nội dung nêu tại Điều 1 là: …
+                        </p>
+                        <p className="flex items-center gap-3">
+                            Nay Bên B góp vốn cho Bên A với số tiền:{" "}
+                            <CurrencyInput
+                                name="capital"
+                                handleChange={handleOnchangeCurrency}
+                                values={formData}
+                                errors={errors}
+                                validate={VALIDATE}
+                                required={KEY_REQUIRED}
+                                configUI={{ width: "calc(50% - 12px)" }}
+                                disabled={isView}
+                            />
+                        </p>
+                        <p className="flex items-center gap-3">
+                            Trong thời gian:{" "}
+                            <MyTextField
+                                errors={errors}
+                                required={KEY_REQUIRED}
+                                configUI={{
+                                    width: "calc(50% - 12px)",
+                                }}
+                                name="duration"
+                                placeholder="Nhập"
+                                handleChange={handleOnchange}
+                                values={formData}
+                                validate={VALIDATE}
+                                unit="Tháng"
+                                max={100}
+                                min={0}
+                                type="number"
+                                disabled={isView}
+                            />
+                        </p>
+
+                        <h4>ĐIỀU 3: PHÂN CHIA LỢI NHUẬN VÀ THUA LỖ</h4>
+                        <p>
+                            Lợi nhuận được hiểu là khoản tiền còn dư ra sau khi
+                            trừ đi các chi phí cho việc đầu tư, quản lý tài sản
+                            góp vốn.
+                        </p>
+                        <p>Lợi nhuận được phân chia theo tỷ lệ sau:</p>
+                        <ul>
+                            <li>
+                                Bên A được hưởng …% lợi nhuận trong tổng giá trị
+                                lợi nhuận thu được từ tài sản góp vốn.
+                            </li>
+                            <li>
+                                Bên B được hưởng …% lợi nhuận trong tổng giá trị
+                                lợi nhuận thu được từ tài sản góp vốn.
+                            </li>
+                            <li>
+                                Lợi nhuận chỉ được chia khi trừ hết mọi chi phí
+                                mà vẫn còn lợi nhuận. Nếu kinh doanh thua lỗ thì
+                                các bên có trách nhiệm chịu lỗ theo phần vốn góp
+                                của mình tương tự như phân chia lợi nhuận.
+                            </li>
+                            <li>
+                                Trường hợp các bên cần huy động vốn thêm từ Ngân
+                                hàng để đầu tư thực hiện dự án trên đất thì số
+                                lãi phải đóng cho Ngân hàng cũng được chia theo
+                                tỷ lệ vốn góp.
+                            </li>
+                        </ul>
+
+                        <h4>ĐIỀU 4: QUYỀN VÀ NGHĨA VỤ CỦA BÊN A</h4>
+                        <p>4.1 Quyền của Bên A:</p>
+                        <ul>
+                            <li>
+                                Yêu cầu Bên B góp vốn đúng thời điểm và số tiền
+                                theo thỏa thuận trong hợp đồng này.
+                            </li>
+                            <li>
+                                Được quyền đơn phương chấm dứt thực hiện hợp
+                                đồng trong trường hợp Bên B không góp đủ vốn
+                                hoặc góp vốn không đúng thời hạn.
+                            </li>
+                            <li>
+                                Được hưởng lợi nhuận tương đương với phần vốn
+                                góp của mình.
+                            </li>
+                            <li>
+                                Yêu cầu Bên B thanh toán lỗ trong trường hợp có
+                                thua lỗ.
+                            </li>
+                            <li>
+                                Ưu tiên nhận chuyển nhượng phần vốn góp trong
+                                trường hợp Bên B có nhu cầu chuyển nhượng phần
+                                vốn góp.
+                            </li>
+                            <li>
+                                Các quyền khác theo Hợp đồng này hoặc do pháp
+                                luật quy định.
+                            </li>
+                        </ul>
+
+                        <p>4.2 Nghĩa vụ của Bên A:</p>
+                        <ul>
+                            <li>
+                                Trả lại số tiền tương đương với phần vốn góp của
+                                Bên B cho Bên B trong trường hợp đơn phương chấm
+                                dứt hợp đồng.
+                            </li>
+                            <li>
+                                Báo cáo việc thay đổi, bổ sung thành viên góp
+                                vốn cho Bên B.
+                            </li>
+                            <li>
+                                Thông báo cho Bên B về việc đầu tư, xây dựng,
+                                khai thác tài sản góp vốn.
+                            </li>
+                            <li>
+                                Hỗ trợ cho Bên B để thực hiện các giao dịch
+                                chuyển nhượng phần vốn góp này khi có yêu cầu từ
+                                Bên B hoặc bên thứ ba;
+                            </li>
+                            <li>
+                                Các nghĩa vụ khác theo Hợp đồng này hoặc do pháp
+                                luật quy định.
+                            </li>
+                        </ul>
+
+                        <h4>ĐIỀU 5: QUYỀN VÀ NGHĨA VỤ CỦA BÊN B</h4>
+                        <p>5.1 Quyền của Bên B:</p>
+                        <ul>
+                            <li>
+                                Được hưởng lợi nhuận tương đương với phần vốn
+                                góp của mình.
+                            </li>
+                            <li>
+                                Yêu cầu Bên A cùng thanh toán lỗ trong trường
+                                hợp có thua lỗ.
+                            </li>
+                            <li>
+                                Chuyển nhượng phần vốn góp cho Bên thứ ba nếu
+                                được Bên A đồng ý bằng văn bản.
+                            </li>
+                            <li>
+                                Được quyền đơn phương chấm dứt thực hiện hợp
+                                đồng trong trường hợp Bên A không thanh toán lợi
+                                nhuận cho mình hoặc vi phạm nghĩa vụ của mình
+                                theo quy định tại Điều 4.2.
+                            </li>
+                            <li>
+                                Ưu tiên nhận chuyển nhượng phần vốn góp trong
+                                trường hợp Bên A có nhu cầu chuyển nhượng phần
+                                vốn góp.
+                            </li>
+                        </ul>
+
+                        <p>5.2 Nghĩa vụ của Bên B:</p>
+                        <ul>
+                            <li>
+                                Góp vốn vào đúng thời điểm và giá trị theo các
+                                thỏa thuận của Hợp đồng này.
+                            </li>
+                            <li>
+                                Chịu lỗ tương ứng với phần vốn góp của mình.
+                            </li>
+                            <li>
+                                Hỗ trợ cho Bên A để thực hiện các giao dịch liên
+                                quan đến phần vốn góp nếu Bên A có yêu cầu.
+                            </li>
+                            <li>
+                                Thông báo trước 01 tháng cho Bên A biết việc
+                                chuyển nhượng phần vốn góp của mình cho Bên thứ
+                                ba.
+                            </li>
+                            <li>
+                                Các nghĩa vụ khác theo Hợp đồng này hoặc do pháp
+                                luật quy định.
+                            </li>
+                        </ul>
+
+                        <h4>ĐIỀU 6: CHUYỂN NHƯỢNG HỢP ĐỒNG</h4>
+                        <p>
+                            Trong quá trình thực hiện hợp đồng này, Bên B có
+                            quyền đề nghị chuyển nhượng toàn bộ quyền và nghĩa
+                            vụ của hợp đồng này cho bên thứ ba. Đề nghị chuyển
+                            nhượng phải được lập thành văn bản và được sự chấp
+                            thuận của Bên A.
+                        </p>
+
+                        <h4>ĐIỀU 7: ĐIỀU KHOẢN CUỐI</h4>
+                        <p>
+                            Các bên cam kết thực hiện đúng và đầy đủ các thỏa
+                            thuận tại Hợp đồng này.
+                        </p>
+
+                        <h4>ĐIỀU 8: HIỆU LỰC CỦA HỢP ĐỒNG</h4>
+                        <p>
+                            Hợp đồng này có hiệu lực từ ngày ký và có giá trị
+                            pháp lý cho đến khi các bên hoàn thành nghĩa vụ của
+                            mình.
+                        </p>
+
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                marginTop: 50,
+                            }}
+                        >
+                            <div>
+                                <p>BÊN A</p>
+                                <p>(Ký và ghi rõ họ tên)</p>
+                            </div>
+                            <div>
+                                <p>BÊN B</p>
+                                <p>(Ký và ghi rõ họ tên)</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <ActionsEditPage actions={actions} isView={isView} />
