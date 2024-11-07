@@ -25,6 +25,7 @@ import MediaIcon from "@/components/icons/media";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ButtonCore from "@/components/button/core";
+import BLogIcon from "@/components/icons/blog_icon";
 const getRoutePath = (location: Location, params: Params): string => {
     const { pathname } = location;
 
@@ -117,31 +118,80 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         type: "link",
                         // role: ["admin"],
                     },
-                    // {
-                    //     label: `${T("manage")} ${t("team")}`, //
-                    //     icon: <PermissionsIcon />, // icon - name : tên ảnh svg
-                    //     key: "admin/manage-employee", // check width pathname => activate navbar
-                    //     betaItem: true, // type navbar
-                    //     // role: ["admin"],
-                    //     children: [
-                    //         {
-                    //             label: `QL ${t("employee-manager")}`,
-                    //             key: "admin/users-employee",
-                    //             type: "link",
-                    //             // role: ["admin"],
-                    //         },
-                    //     ],
-                    // },
                     {
-                        label: `${T("report")}`, //
+                        label: `${T("manage")} ${t("team")}`, //
+                        icon: <PermissionsIcon />, // icon - name : tên ảnh svg
+                        key: "admin/manage-employee", // check width pathname => activate navbar
+                        betaItem: true, // type navbar
+                        // role: ["admin"],
+                        children: [
+                            {
+                                label: `QL ${t("employee-manager")}`,
+                                key: "admin/staff",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                        ],
+                    },
+                    {
+                        label: `Hoa hồng`, //
                         icon: <ReportIcon />, // icon - name : tên ảnh svg
-                        key: "admin/report", // check width pathname => activate navbar
+                        key: "admin/reported", // check width pathname => activate navbar
                         betaItem: true, // type navbar
                         // role: ["admin"],
                         children: [
                             {
                                 label: `BC Hoa hồng`,
                                 key: "admin/sale_history",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                        ],
+                    },
+                    {
+                        label: `Báo cáo`,
+                        icon: <CustomerIcon />, // icon - name : tên ảnh svg
+                        key: "admin/report",
+                        type: "link",
+                        // role: ["admin"],
+                    },
+                    {
+                        label: `Quản lý dự án`, //
+                        icon: <ReportIcon />, // icon - name : tên ảnh svg
+                        key: "admin/report", // check width pathname => activate navbar
+                        betaItem: true, // type navbar
+                        // role: ["admin"],
+                        children: [
+                            {
+                                label: `Danh sách dự án`,
+                                key: "admin/project",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                            {
+                                label: `Danh mục dự án`,
+                                key: "admin/industry",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                        ],
+                    },
+                    {
+                        label: `${T("manage")} Blog`, //
+                        icon: <BLogIcon />, // icon - name : tên ảnh svg
+                        key: "admin/blog_manage", // check width pathname => activate navbar
+                        betaItem: true, // type navbar
+                        // role: ["admin"],
+                        children: [
+                            {
+                                label: `Danh sách Blog`,
+                                key: "admin/blog",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                            {
+                                label: `Danh mục Blog`,
+                                key: "admin/blog_category",
                                 type: "link",
                                 // role: ["admin"],
                             },

@@ -5,6 +5,8 @@ import { ResponseFromServerV1, ResponseFromServerV2 } from "@/types/types";
 import { validateRequiredKeys } from "@/utils";
 import { PayloadContract, ResponseContractItem } from "@/types/contract";
 import { InitContractKeys } from "@/constants/init-state/contract";
+import { useSelector } from "react-redux";
+import { selectUserInfo } from "@/redux/selectors/user.selector";
 type ContractService = {
     getContract: (
         param?: any
@@ -13,6 +15,7 @@ type ContractService = {
     putContract: (payload: any, code: string, requiredKeys: string[]) => any;
 };
 export default function apiContractService(): ContractService {
+    const userInfo = useSelector(selectUserInfo);
     const httpClient = useHttpClient();
     const getContract = (param?: any): Promise<any> => {
         const paramRaw: any = param ?? {
@@ -35,9 +38,10 @@ export default function apiContractService(): ContractService {
     ) => {
         const convert_payload: PayloadContract = {
             capital: payload.capital,
-            duration: payload.duration,
-            product_id: payload.product_id,
-            user_sub: payload.user_sub,
+            duration: +payload.duration,
+            product_id: +payload.product_id,
+            user_sub: +payload.user_sub,
+            staff_id: userInfo[0].id,
         };
         console.log("convert_payload", convert_payload);
         const result = validateRequiredKeys(convert_payload, requiredKeys);
@@ -51,7 +55,7 @@ export default function apiContractService(): ContractService {
                 {}
             )
             .then((res: ResponseFromServerV2<any>) => {
-                return res.statusCode === 200;
+                return res;
             })
             .catch((err) => {
                 throw err;
@@ -67,6 +71,7 @@ export default function apiContractService(): ContractService {
             duration: payload.duration,
             product_id: payload.product_id,
             user_sub: payload.user_sub,
+            staff_id: userInfo?.[0].id,
         };
         console.log("convert_payload", convert_payload);
 
@@ -79,7 +84,7 @@ export default function apiContractService(): ContractService {
                 {}
             )
             .then((res: ResponseFromServerV2<any>) => {
-                return res.statusCode === 200;
+                return res;
             })
             .catch((err) => {
                 throw err;

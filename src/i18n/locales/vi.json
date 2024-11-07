@@ -95,6 +95,10 @@
     "username": "tên tài khoản",
     "confirmPassword": "xác nhận mật khẩu",
     "detail": "chi tiết",
+    "staff": "nhân viên",
+    "blog_category": "danh mục bài viết",
+    "industry": "lĩnh vực dự án",
+    "project": "dự án",
 
     "thereWasError": "đã có lỗi xảy ra",
     "retry": "thử lại",

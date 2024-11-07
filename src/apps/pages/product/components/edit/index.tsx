@@ -70,7 +70,6 @@ export default function EditPage(props: EditPageProps) {
             const param = {
                 page: 1,
                 take: 999,
-                filter: "status__eq__1",
             };
             const response = await getProductCategory(param);
             if (response) {

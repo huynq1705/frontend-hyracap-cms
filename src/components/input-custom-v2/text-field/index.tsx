@@ -23,7 +23,7 @@ interface MyTextFieldProps {
         [key: string]: string;
     };
     [x: string]: any; // This allows any additional props
-    widthBox ?: string
+    widthBox?: string;
 }
 
 const MyTextField: React.FC<MyTextFieldProps> = (props: MyTextFieldProps) => {
@@ -42,7 +42,7 @@ const MyTextField: React.FC<MyTextFieldProps> = (props: MyTextFieldProps) => {
         },
         configUI,
         direction = "column",
-        widthBox ,
+        widthBox,
         ...prop
     } = props;
     const [showPassword, setShowPassword] = useState(false);
@@ -80,12 +80,14 @@ const MyTextField: React.FC<MyTextFieldProps> = (props: MyTextFieldProps) => {
                 height: "fit-content",
             }}
         >
-            <label className="label">
-                {label}
-                {required && required.includes(name) && (
-                    <span style={{ color: "red" }}>(*)</span>
-                )}
-            </label>
+            {label ? (
+                <label className="label">
+                    {label}
+                    {required && required.includes(name) && (
+                        <span style={{ color: "red" }}>(*)</span>
+                    )}
+                </label>
+            ) : null}
             <FormControl
                 fullWidth
                 variant="outlined"

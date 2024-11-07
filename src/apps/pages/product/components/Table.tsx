@@ -451,8 +451,6 @@ const CTable = (props: CTableProps) => {
     const [popup, setPopup] = useState({
         edit: false,
         remove: false,
-        upload: false,
-        create_category: false,
     });
     // search
     const [keySearch, setKeySearch] = useState<KeySearchType>({});
@@ -492,10 +490,6 @@ const CTable = (props: CTableProps) => {
     useEffect(() => {
         const new_key_search = parseQueryParams(param_payload);
         setKeySearch(new_key_search);
-        if (pathname.includes("add_category") && !popup.create_category) {
-            togglePopup("create_category");
-            return;
-        }
 
         if (!code && !pathname.includes("create")) return;
         if (pathname.includes("view") && !popup.edit) {
@@ -624,28 +618,6 @@ const CTable = (props: CTableProps) => {
                 refetch={refetch}
                 name_item={selectedRowLabels}
             />
-            {/*  */}
-            <PopupConfirmImport
-                open={popup.upload}
-                handleClose={() => {
-                    togglePopup("upload");
-                }}
-                refetch={refetch}
-            />
-            {/*  */}
-            {popup.create_category && (
-                <ModalEdit
-                    open={popup.create_category}
-                    toggle={() => togglePopup("create_category")}
-                    refetch={() => {}}
-                />
-            )}
-            {/* <PopupCreateProductCategory
-        open={popup.create_category}
-        onClose={() => {
-          togglePopup("create_category", false);
-        }}
-      /> */}
         </>
     );
 };

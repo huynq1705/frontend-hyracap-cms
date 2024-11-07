@@ -103,12 +103,14 @@ const MySelect: React.FC<MySelectProps> = (props: MySelectProps) => {
                 minWidth: "154px",
             }}
         >
-            <label className="label">
-                {label}{" "}
-                {required && required.includes(name) && (
-                    <span style={{ color: "red" }}>(*)</span>
-                )}
-            </label>
+            {label ? (
+                <label className="label">
+                    {label}{" "}
+                    {required && required.includes(name) && (
+                        <span style={{ color: "red" }}>(*)</span>
+                    )}
+                </label>
+            ) : null}
             <FormControl
                 fullWidth
                 variant="outlined"
@@ -128,8 +130,8 @@ const MySelect: React.FC<MySelectProps> = (props: MySelectProps) => {
                         type === "select-multi"
                             ? values[name] || ""
                             : values[name]
-                                ? values[name][0]
-                                : "" || ""
+                            ? values[name][0]
+                            : "" || ""
                     }
                     onChange={handleChange}
                     renderValue={() => (

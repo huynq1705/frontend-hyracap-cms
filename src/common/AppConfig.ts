@@ -46,6 +46,26 @@ export default class AppConfig {
         GET_POSITION: (params: string) => `/position${params}`,
         END_POINT: `/position`,
     };
+    static STAFF = {
+        GET_STAFF: (params: string) => `/staff${params}&`,
+        END_POINT: `/staff`,
+    };
+    static BLOG_CATEGORY = {
+        GET_BLOG_CATEGORY: (params: string) => `/blog_category${params}&`,
+        END_POINT: `/blog_category`,
+    };
+    static BLOG = {
+        GET_BLOG: (params: string) => `/blog${params}&`,
+        END_POINT: `/blog`,
+    };
+    static INDUSTRY = {
+        GET_INDUSTRY: (params: string) => `/industry${params}&`,
+        END_POINT: `/industry`,
+    };
+    static PROJECT = {
+        GET_PROJECT: (params: string) => `/project${params}&`,
+        END_POINT: `/project`,
+    };
     static SALE_HISTORY = {
         GET_SALE_HISTORY: (params: string) => `/sale_history${params}`,
         END_POINT: `/sale_history`,
