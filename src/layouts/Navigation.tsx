@@ -141,8 +141,14 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         // role: ["admin"],
                         children: [
                             {
-                                label: `BC Hoa hồng`,
+                                label: `BC Hoa hồng cá nhân`,
                                 key: "admin/sale_history",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                            {
+                                label: `BC Hoa hồng nhóm`,
+                                key: "admin/group_sale_history",
                                 type: "link",
                                 // role: ["admin"],
                             },
@@ -150,7 +156,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                     },
                     {
                         label: `Báo cáo`,
-                        icon: <CustomerIcon />, // icon - name : tên ảnh svg
+                        icon: <BLogIcon />, // icon - name : tên ảnh svg
                         key: "admin/report",
                         type: "link",
                         // role: ["admin"],
@@ -158,7 +164,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                     {
                         label: `Quản lý dự án`, //
                         icon: <ReportIcon />, // icon - name : tên ảnh svg
-                        key: "admin/report", // check width pathname => activate navbar
+                        key: "admin/manage_project", // check width pathname => activate navbar
                         betaItem: true, // type navbar
                         // role: ["admin"],
                         children: [

@@ -17,8 +17,12 @@ const PAGE_ACTIVE_EXPORT: string[] = [
     "order",
     "service-list",
 ];
-const PAGE_OFF_CREATE: string[] = ["users", "sale_history"];
-const PAGE_REPORT: string[] = ["sale_history"];
+const PAGE_OFF_CREATE: string[] = [
+    "users",
+    "sale_history",
+    "group_sale_history",
+];
+const PAGE_REPORT: string[] = ["sale_history", "group_sale_history"];
 interface TopTableCustomProps {
     actions?: {
         createFn?: () => void;

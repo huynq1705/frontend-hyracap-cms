@@ -6,7 +6,7 @@ import ImgCrop from "antd-img-crop";
 const { Dragger } = Upload;
 type UploadImageProps = {
     isEditable?: boolean;
-    imageUrl: string[];
+    imageUrl: string[] | string;
     setImgUrl: (value: string[]) => void;
     hasError?: string;
     isFirstRemoved?: boolean;
@@ -21,6 +21,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
     isFirstRemoved,
     setIsFirstRemoved,
 }) => {
+    console.log(imageUrl.length, ">>>>>>", imageUrl[0]);
     const BASE_URL = import.meta.env.VITE_APP_BASE_API_URL;
     const BASE_IMG_URL = import.meta.env.VITE_APP_URL_IMG;
     const propsUpload: UploadProps = useMemo(
@@ -39,16 +40,17 @@ const UploadImage: React.FC<UploadImageProps> = ({
                 return isImg || Upload.LIST_IGNORE;
             },
 
-            defaultFileList: imageUrl.length
-                ? [
-                      {
-                          uid: "1",
-                          name: imageUrl[0],
-                          status: "done",
-                          url: `${imageUrl[0]}`,
-                      },
-                  ]
-                : [],
+            defaultFileList:
+                imageUrl.length === 1
+                    ? [
+                          {
+                              uid: "1",
+                              name: imageUrl[0],
+                              status: "done",
+                              url: `${imageUrl[0]}`,
+                          },
+                      ]
+                    : [],
             onChange(info) {
                 const { status } = info.file;
                 if (status !== "uploading") {
