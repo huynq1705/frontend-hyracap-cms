@@ -21,7 +21,6 @@ const UploadImage: React.FC<UploadImageProps> = ({
     isFirstRemoved,
     setIsFirstRemoved,
 }) => {
-    console.log(imageUrl.length, ">>>>>>", imageUrl[0]);
     const BASE_URL = import.meta.env.VITE_APP_BASE_API_URL;
     const BASE_IMG_URL = import.meta.env.VITE_APP_URL_IMG;
     const propsUpload: UploadProps = useMemo(
@@ -32,13 +31,13 @@ const UploadImage: React.FC<UploadImageProps> = ({
             disabled: !isEditable,
             action: `${BASE_URL}files/upload_blog`,
             listType: "picture",
-            beforeUpload: (file) => {
-                const isImg = file.type.startsWith("image/");
-                if (!isImg) {
-                    message.error(`${file.name} is not an image file`);
-                }
-                return isImg || Upload.LIST_IGNORE;
-            },
+            // beforeUpload: (file) => {
+            //     const isImg = file.type.startsWith("image/");
+            //     if (!isImg) {
+            //         message.error(`${file.name} is not an image file`);
+            //     }
+            //     return isImg || Upload.LIST_IGNORE;
+            // },
 
             defaultFileList:
                 imageUrl.length === 1
