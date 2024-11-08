@@ -66,7 +66,7 @@ const MyTextareaAutosize: React.FC<MyTextareaAutosizeProps> = (
                     width: "100%",
                     padding: "10px",
                     fontSize: "16px",
-                    border: "1px solid #475467",
+                    border: "1px solid #ccc",
                     borderRadius: "4px",
                     resize: "none",
                     ...inputStyle,

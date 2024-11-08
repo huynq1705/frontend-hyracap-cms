@@ -12,25 +12,23 @@ import {
     useParams,
     useSearchParams,
 } from "react-router-dom";
-import { formatCurrency } from "@/utils";
+import { formatCurrency, formatCurrencyNoUnit } from "@/utils";
 import usePermissionCheck from "@/hooks/usePermission";
 import SearchBoxTable from "@/components/search-box-table";
 import ActionButton from "@/components/button/action";
-import ModalEditProduct from "./ModalEdit";
-import apiProductService from "@/api/apiProduct.service";
 import { KeySearchType } from "@/types/types";
-import ModalEdit from "../../productCategory/component/ModalEdit";
 import {
     convertObjToParam,
     handleGetPage,
     parseQueryParams,
 } from "@/utils/filter";
-import CStatus from "@/components/status";
-import apiCommonService from "@/api/apiCommon.service";
 import { useDispatch, useSelector } from "react-redux";
 import { selectPage } from "@/redux/selectors/page.slice";
 import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
+import StatusCardV2 from "@/components/status-card/index-v2";
+import apiGroupSaleHistoryService from "@/api/apiGroupSaleHistory.service";
+import { formatDate } from "@/utils/date-time";
 
 interface ColumnProps {
     actions: {
@@ -48,13 +46,6 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                     key={item.id}
                     className="border border-solid border-gray-4 shadow rounded-lg mb-4"
                 >
-                    {/* <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup even:bg-gray-1 px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">STT</span>
-            <div className="text-gray-9 text-base py-1">
-              <span>{index + 1}</span>
-            </div>
-          </div> */}
-
                     <div className="flex flex-row justify-between border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <div>
                             <span className="font-medium text-gray-9 text-sm">
@@ -64,104 +55,55 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 <span>{index + 1}</span>
                             </div>
                         </div>
-                        {/* <div className="min-w-[80px]">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Trạng thái
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <CStatus
-                                    type={item?.status ? "success" : "error"}
-                                    name={item?.status ? "Active" : "Inactive"}
-                                />
-                            </div>
-                        </div> */}
                     </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Mã sản phẩm
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.id}</span>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Danh mục sản phẩm
+                            Tên nhóm
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span
                                 className="font-medium"
                                 style={{ color: "#50945d" }}
                             >
-                                {item?.name ?? "- -"}
+                                {item?.group.name}
                             </span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Tên sản phẩm
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span
-                                className="font-medium"
-                                style={{ color: "#50945d" }}
-                            >
-                                {item?.category.name ?? "- -"}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối thiểu
+                            Quản lý
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>
-                                {formatCurrency(Number(item?.min_invest)) ??
-                                    "- -"}
+                                {`${item?.leader.first_name}` +
+                                    " " +
+                                    `${item?.leader.last_name}`}
                             </span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối đa
+                            Mốc KPI nhóm
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {formatCurrency(Number(item?.max_invest)) ??
-                                    "- -"}
-                            </span>
+                            <span>{formatCurrency(+item?.kpi)}</span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối thiểu
+                            KPI thực tế
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>{item?.min_duration ?? "- -"} Ngày</span>
+                            {formatCurrency(+item?.sales_revenue)}
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối đa
+                            Thời gian
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>{item?.max_duration ?? "- -"} Ngày</span>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Mức lãi suất hiện tại
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {(item?.current_interest_rate * 100).toFixed(
-                                    2
-                                ) + " %"}
-                            </span>
+                            {formatDate(item?.month, "DDMMYY")}
                         </div>
                     </div>
 
@@ -177,31 +119,9 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="view"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/products/view/${item?.id}`
+                                                    `/admin/group_sale_history/view/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
-                                            }}
-                                        />
-                                    )}
-                                    {hasPermission.update && (
-                                        <ActionButton
-                                            type="edit"
-                                            onClick={() => {
-                                                navigate(
-                                                    `/admin/products/edit/${item?.id}`
-                                                );
-                                                actions.togglePopup("edit");
-                                            }}
-                                        />
-                                    )}
-                                    {hasPermission.delete && (
-                                        <ActionButton
-                                            type="remove"
-                                            onClick={() => {
-                                                actions.openRemoveConfirm(
-                                                    "remove",
-                                                    item?.id
-                                                );
                                             }}
                                         />
                                     )}
@@ -220,13 +140,13 @@ const getColumns = (props: ColumnProps) => {
     const { T } = useCustomTranslation();
     const { pathname } = useLocation();
     //permissions
-    const { hasPermission } = usePermissionCheck("products");
+    const { hasPermission } = usePermissionCheck("group_sale_history");
 
     const { actions } = props;
     const columns: any = [
         {
             title: "STT",
-            dataIndex: "products",
+            dataIndex: "group_sale_history",
 
             render: (_: any, item: any, index: number) => (
                 <Stack direction={"column"} spacing={1}>
@@ -245,28 +165,8 @@ const getColumns = (props: ColumnProps) => {
             width: 50,
         },
         {
-            title: "Mã sản phẩm",
-            dataIndex: "products",
-
-            render: (_: any, item: any, index: number) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                            textAlign: "left",
-                        }}
-                    >
-                        {item?.id}
-                    </Typography>
-                </Stack>
-            ),
-            width: 120,
-        },
-        {
-            title: "Tên sản phẩm",
-            dataIndex: "product",
+            title: "Tên nhóm",
+            dataIndex: "group_sale_history",
             fixed: "left" as const,
             render: (_: any, item: any) => (
                 <Typography
@@ -275,30 +175,14 @@ const getColumns = (props: ColumnProps) => {
                         fontWeight: 500,
                     }}
                 >
-                    {item?.name ?? "- -"}
+                    {item?.group.name}
                 </Typography>
             ),
             width: 220,
         },
         {
-            title: "Danh mục sản phẩm",
-            dataIndex: "product",
-            fixed: "left" as const,
-            render: (_: any, item: any) => (
-                <Typography
-                    style={{
-                        fontSize: "14px",
-                        fontWeight: 500,
-                    }}
-                >
-                    {item?.category.name ?? "- -"}
-                </Typography>
-            ),
-            width: 220,
-        },
-        {
-            title: "Hạn mức tối thiểu",
-            dataIndex: "min_invest",
+            title: "Quản lý",
+            dataIndex: "leader",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -309,14 +193,16 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {formatCurrency(Number(d?.min_invest))}
+                        {`${d?.leader.first_name}` +
+                            " " +
+                            `${d?.leader.last_name}`}
                     </Typography>
                 </Stack>
             ),
         },
         {
-            title: "Hạn mức tối đa",
-            dataIndex: "max_invest",
+            title: "Mốc KPI nhóm",
+            dataIndex: "kpi",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -327,14 +213,14 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {formatCurrency(Number(d?.max_invest))}
+                        {formatCurrency(+d?.kpi)}
                     </Typography>
                 </Stack>
             ),
         },
         {
-            title: "Thời hạn tối thiểu",
-            dataIndex: "min_duration",
+            title: "KPI thực tế",
+            dataIndex: "sales_revenue",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -345,14 +231,14 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.min_duration + " Tháng"}
+                        {formatCurrency(+d?.sales_revenue)}
                     </Typography>
                 </Stack>
             ),
         },
         {
-            title: "Thời hạn tối đa",
-            dataIndex: "max_duration",
+            title: "Thời gian",
+            dataIndex: "month",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -363,25 +249,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.max_duration + " Tháng"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Mức lãi suất hiện tại",
-            dataIndex: "current_interest_rate",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {(d?.current_interest_rate * 100).toFixed(2) + " %"}
+                        {formatDate(d?.month, "DDMMYY")}
                     </Typography>
                 </Stack>
             ),
@@ -411,31 +279,9 @@ const getColumns = (props: ColumnProps) => {
                                         type="view"
                                         onClick={() => {
                                             navigate(
-                                                `/admin/products/view/${d?.id}`
+                                                `/admin/group_sale_history/view/${d?.id}`
                                             );
                                             actions.togglePopup("edit");
-                                        }}
-                                    />
-                                )}
-                                {hasPermission.update && (
-                                    <ActionButton
-                                        type="edit"
-                                        onClick={() => {
-                                            navigate(
-                                                `/admin/products/edit/${d?.id}`
-                                            );
-                                            actions.togglePopup("edit");
-                                        }}
-                                    />
-                                )}
-                                {hasPermission.delete && (
-                                    <ActionButton
-                                        type="remove"
-                                        onClick={() => {
-                                            actions.openRemoveConfirm(
-                                                "remove",
-                                                d?.id
-                                            );
                                         }}
                                     />
                                 )}
@@ -448,11 +294,11 @@ const getColumns = (props: ColumnProps) => {
     return columns;
 };
 
-interface CTableProps {
+interface GroupSaleHistoryTableProps {
     authorizedPermissions?: any;
 }
 
-const CTable = (props: CTableProps) => {
+const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
     const { code } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -460,6 +306,11 @@ const CTable = (props: CTableProps) => {
     const dispatch = useDispatch();
     // --state
     const page = useSelector(selectPage);
+    const [total, setTotal] = useState({
+        total_user: 0,
+        total_kpi: 0,
+        total_sales_revenue: 0,
+    });
 
     // search
     const handleGetParam = () => {
@@ -480,18 +331,20 @@ const CTable = (props: CTableProps) => {
     const [popup, setPopup] = useState({
         edit: false,
         remove: false,
+        upload: false,
+        create_category: false,
     });
     // search
     const [keySearch, setKeySearch] = useState<KeySearchType>({});
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const { getProduct } = apiProductService();
+    const { getGroupSaleHistory } = apiGroupSaleHistoryService();
     //permissions
-    const { hasPermission } = usePermissionCheck("products");
+    const { hasPermission } = usePermissionCheck("group_sale_history");
 
     const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ["GET_PRODUCT", param_payload, pathname],
-        queryFn: () => getProduct(param_payload),
+        queryKey: ["GET_GROUP_SALE_HISTORY", param_payload, pathname],
+        queryFn: () => getGroupSaleHistory(param_payload),
         keepPreviousData: true,
     });
     console.log("data", data);
@@ -510,7 +363,7 @@ const CTable = (props: CTableProps) => {
     const selectedRowLabels = useMemo(() => {
         return dataConvert
             .filter((item) => selectedRowKeys.includes(item.key))
-            .map((item) => item.name);
+            .map((item) => item.kpi);
     }, [selectedRowKeys]);
     const togglePopup = (params: keyof typeof popup, value?: boolean) => {
         setPopup((prev) => ({ ...prev, [params]: value ?? !prev[params] }));
@@ -520,18 +373,9 @@ const CTable = (props: CTableProps) => {
         const new_key_search = parseQueryParams(param_payload);
         setKeySearch(new_key_search);
 
-        if (!code && !pathname.includes("create")) return;
         if (pathname.includes("view") && !popup.edit) {
-            navigate(`/admin/products/view/${code}`);
+            navigate(`/admin/group_sale_history/view/${code}`);
             togglePopup("edit");
-        }
-        if (pathname.includes("edit") && !popup.edit) {
-            navigate(`/admin/products/edit/${code}`);
-            togglePopup("edit");
-        }
-        if (pathname.includes("create") && !popup.edit) {
-            togglePopup("edit");
-            return;
         }
     }, [window.location.href]);
     // search
@@ -539,7 +383,7 @@ const CTable = (props: CTableProps) => {
         let filter = convertObjToParam(keySearch, {
             page: currentPage,
             take: pageSize,
-            name__ilike: keySearch?.text?.toString().trim(),
+            text: keySearch?.text?.toString().trim(),
         });
         let url = `${pathname}${filter}`;
         navigate(url);
@@ -556,6 +400,23 @@ const CTable = (props: CTableProps) => {
         () => keySearch?.text?.toString() ?? "",
         [keySearch?.text, pathname]
     );
+    useEffect(() => {
+        if (data?.data) {
+            setTotal({
+                total_user: data?.data.length || 0,
+                total_kpi:
+                    data?.data.reduce(
+                        (sum, item) => sum + (+item.kpi || 0),
+                        0
+                    ) || 0,
+                total_sales_revenue:
+                    data?.data.reduce(
+                        (sum, item) => sum + (+item.sales_revenue || 0),
+                        0
+                    ) || 0,
+            });
+        }
+    }, [data]);
     useEffect(() => {
         refetch();
     }, [window.location.href]);
@@ -574,7 +435,7 @@ const CTable = (props: CTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo mã sản phẩm, tên sản phẩm, nhãn hiệu"
+                                placeholder="Tìm theo mã nhân viên, tên nhân viên"
                             />
                         </div>
                     </div>
@@ -585,6 +446,38 @@ const CTable = (props: CTableProps) => {
                                 : `Không tìm thấy nội dung nào phù hợp với '${key_search?.text}'`}
                         </div>
                     )}
+                    <div className="wrapper-from">
+                        <StatusCardV2
+                            statusData={{
+                                label: "Tổng nhóm",
+                                value: total.total_user,
+                                color: "#217732",
+                            }}
+                            customCss="min-w-[250px]"
+                        />
+                        <StatusCardV2
+                            statusData={{
+                                label: "Tổng kpi",
+                                value: `${
+                                    data &&
+                                    formatCurrencyNoUnit(+total.total_kpi)
+                                } vnđ`,
+                                color: "#7A52DE",
+                            }}
+                            customCss="min-w-[250px]"
+                        />
+                        <StatusCardV2
+                            statusData={{
+                                label: "Tổng tiền hoa hồng",
+                                value: `${
+                                    data &&
+                                    formatCurrencyNoUnit(+total.total_kpi)
+                                } vnđ`,
+                                color: "#7A52DE",
+                            }}
+                            customCss="min-w-[250px]"
+                        />
+                    </div>
                     {/* <Card> */}
                     <Table
                         size="middle"
@@ -627,17 +520,6 @@ const CTable = (props: CTableProps) => {
             </Box>
 
             {/*  */}
-            {popup.edit && (
-                <ModalEditProduct
-                    open={popup.edit}
-                    toggle={(param) => {
-                        togglePopup(param);
-                        navigate(`/admin/products`);
-                    }}
-                    refetch={refetch}
-                />
-            )}
-            {/*  */}
             <PopupConfirmRemove
                 listItem={selectedRowKeys}
                 open={popup.remove}
@@ -647,8 +529,16 @@ const CTable = (props: CTableProps) => {
                 refetch={refetch}
                 name_item={selectedRowLabels}
             />
+            {/*  */}
+            <PopupConfirmImport
+                open={popup.upload}
+                handleClose={() => {
+                    togglePopup("upload");
+                }}
+                refetch={refetch}
+            />
         </>
     );
 };
 
-export default CTable;
+export default GroupSaleHistoryTable;

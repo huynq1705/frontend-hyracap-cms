@@ -54,7 +54,9 @@ export const INIT_PROJECT: {
     investors: "",
     funding_round: "",
     investment_field: "",
-    date_of_establishment: "",
+    date_of_establishment: new Date(new Date().setDate(new Date().getDate()))
+        .toISOString()
+        .split("T")[0],
     head_office: "",
     operating_status: "",
     founder: "",

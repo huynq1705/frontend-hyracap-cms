@@ -47,6 +47,12 @@ export const TITLE_PAGE = [
         key_title: "sale_history",
         key: "sale_history",
     },
+    // group_sale_history
+    {
+        pathname: "/group_sale_history",
+        key_title: "group_sale_history",
+        key: "group_sale_history",
+    },
     // staff
     {
         pathname: "/staff",
@@ -76,6 +82,12 @@ export const TITLE_PAGE = [
         pathname: "/project",
         key_title: "project",
         key: "project",
+    },
+    // report
+    {
+        pathname: "/report",
+        key_title: "report",
+        key: "report",
     },
 ];
 export const GENDER = [

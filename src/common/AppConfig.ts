@@ -66,9 +66,18 @@ export default class AppConfig {
         GET_PROJECT: (params: string) => `/project${params}&`,
         END_POINT: `/project`,
     };
+    static REPORT = {
+        GET_REPORT: (params: string) => `/report${params}&`,
+        END_POINT: `/report`,
+    };
     static SALE_HISTORY = {
         GET_SALE_HISTORY: (params: string) => `/sale_history${params}`,
         END_POINT: `/sale_history`,
+    };
+    static GROUP_SALE_HISTORY = {
+        GET_GROUP_SALE_HISTORY: (params: string) =>
+            `/group_sale_history${params}`,
+        END_POINT: `/group_sale_history`,
     };
     static ROLE = {
         GET_ROLE: (params: string) => `/role${params}`,

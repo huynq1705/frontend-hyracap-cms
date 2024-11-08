@@ -35,11 +35,72 @@ export default function apiProjectService(): ProjectService {
     ) => {
         const convert_payload: any = {
             name: payload.name,
+            images: payload.images,
+            thumbnail: payload.images[0],
+            status: 1,
+            capital_raising_target: +payload.valuation,
+            mobilized_fund: +payload.funding_amount,
+            data: {
+                address: payload.address,
+                company_size: payload.company_size,
+                website: payload.website,
+                project_information: {
+                    description: payload.project_information_description,
+                    valuation: payload.valuation,
+                    funding_amount: payload.funding_amount,
+                    total_slots: payload.total_slots,
+                    price_per_slot: (
+                        +payload.valuation / +payload.total_slots
+                    ).toString(),
+                    investors: payload.investors,
+                    funding_round: payload.funding_round,
+                },
+                company_information: {
+                    investment_field: payload.investment_field,
+                    date_of_establishment: payload.date_of_establishment,
+                    head_office: payload.head_office,
+                    operating_status: payload.operating_status,
+                    founder: payload.founder,
+                    company_name: payload.company_name,
+                    email: payload.email,
+                    phone: payload.phone,
+                },
+                growth_prospects: payload.growth_prospects,
+                metrics: [
+                    {
+                        icon: "revenue_icon.png",
+                        name: "Doanh thu",
+                        value: "$2,000,000",
+                    },
+                    {
+                        icon: "project_icon.png",
+                        name: "Dự án hoàn thành",
+                        value: "30",
+                    },
+                    {
+                        icon: "customer_icon.png",
+                        name: "Số khách hàng",
+                        value: "500+",
+                    },
+                    {
+                        icon: "team_icon.png",
+                        name: "Đội ngũ",
+                        value: "250 nhân viên",
+                    },
+                ],
+                description: payload.description,
+            },
+            industry_ids: [+payload.industry_ids],
+            pitching_deck: payload.pitching_deck[0],
+            contract_template: payload.contract_template[0],
+            financial_roadmap: payload.financial_roadmap[0],
+            business_plan: payload.business_plan[0],
         };
-        const result = validateRequiredKeys(convert_payload, requiredKeys);
+        console.log("convert_payload", convert_payload);
+        // const result = validateRequiredKeys(convert_payload, requiredKeys);
 
-        console.log(result);
-        if (!result.isValid) return result;
+        // console.log(result);
+        // if (!result.isValid) return result;
         return httpClient
             .post<ResponseFromServerV2<any>>(
                 AppConfig.PROJECT.END_POINT,
@@ -60,11 +121,71 @@ export default function apiProjectService(): ProjectService {
     ) => {
         const convert_payload: any = {
             name: payload.name,
+            images: payload.images,
+            thumbnail: payload.images[0],
+            status: 1,
+            capital_raising_target: +payload.valuation,
+            mobilized_fund: +payload.funding_amount,
+            data: {
+                address: payload.address,
+                company_size: payload.company_size,
+                website: payload.website,
+                project_information: {
+                    description: payload.project_information_description,
+                    valuation: payload.valuation,
+                    funding_amount: payload.funding_amount,
+                    total_slots: payload.total_slots,
+                    price_per_slot: (
+                        +payload.valuation / +payload.total_slots
+                    ).toString(),
+                    investors: payload.investors,
+                    funding_round: payload.funding_round,
+                },
+                company_information: {
+                    investment_field: payload.investment_field,
+                    date_of_establishment: payload.date_of_establishment,
+                    head_office: payload.head_office,
+                    operating_status: payload.operating_status,
+                    founder: payload.founder,
+                    company_name: payload.company_name,
+                    email: payload.email,
+                    phone: payload.phone,
+                },
+                growth_prospects: payload.growth_prospects,
+                metrics: [
+                    {
+                        icon: "revenue_icon.png",
+                        name: "Doanh thu",
+                        value: "$2,000,000",
+                    },
+                    {
+                        icon: "project_icon.png",
+                        name: "Dự án hoàn thành",
+                        value: "30",
+                    },
+                    {
+                        icon: "customer_icon.png",
+                        name: "Số khách hàng",
+                        value: "500+",
+                    },
+                    {
+                        icon: "team_icon.png",
+                        name: "Đội ngũ",
+                        value: "250 nhân viên",
+                    },
+                ],
+                description: payload.description,
+            },
+            industry_ids: [+payload.industry_ids],
+            pitching_deck: payload.pitching_deck[0],
+            contract_template: payload.contract_template[0],
+            financial_roadmap: payload.financial_roadmap[0],
+            business_plan: payload.business_plan[0],
         };
-        console.log("convert_payload", convert_payload);
+        // console.log("convert_payload", convert_payload);
 
-        const result = validateRequiredKeys(convert_payload, requiredKeys);
-        if (!result.isValid) return result;
+        // const result = validateRequiredKeys(convert_payload, requiredKeys);
+        // if (!result.isValid) return result;
         return httpClient
             .put<ResponseFromServerV2<any>>(
                 AppConfig.PROJECT.END_POINT + "/" + code,
@@ -72,7 +193,7 @@ export default function apiProjectService(): ProjectService {
                 {}
             )
             .then((res: ResponseFromServerV2<any>) => {
-                return res.statusCode === 200;
+                return res;
             })
             .catch((err) => {
                 throw err;

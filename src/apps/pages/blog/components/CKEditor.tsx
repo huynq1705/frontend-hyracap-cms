@@ -13,6 +13,7 @@ const CkEditorCustom = (props: Props) => {
     const handleChange = (e: any) => {
         // const { name, value } = e.target;
         setContentData(e.target.value);
+        console.log("contentData", contentData);
     };
     console.log("contentData", contentData);
     return (

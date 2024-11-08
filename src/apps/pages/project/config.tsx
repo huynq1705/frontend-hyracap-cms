@@ -17,7 +17,7 @@ export const projectRouter = [
     {
         path: "/project/view/:code",
         canGuard: true,
-        element: <ProjectPage />,
+        element: <ProjectCreatePage />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"project"} label="label-project" />
@@ -28,7 +28,7 @@ export const projectRouter = [
     {
         path: "/project/edit/:code",
         canGuard: true,
-        element: <ProjectPage />,
+        element: <ProjectCreatePage />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"project"} label="label-project" />

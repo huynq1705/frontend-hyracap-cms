@@ -16,21 +16,19 @@ import { formatCurrency } from "@/utils";
 import usePermissionCheck from "@/hooks/usePermission";
 import SearchBoxTable from "@/components/search-box-table";
 import ActionButton from "@/components/button/action";
-import ModalEditProduct from "./ModalEdit";
-import apiProductService from "@/api/apiProduct.service";
 import { KeySearchType } from "@/types/types";
-import ModalEdit from "../../productCategory/component/ModalEdit";
 import {
     convertObjToParam,
     handleGetPage,
     parseQueryParams,
 } from "@/utils/filter";
-import CStatus from "@/components/status";
-import apiCommonService from "@/api/apiCommon.service";
 import { useDispatch, useSelector } from "react-redux";
 import { selectPage } from "@/redux/selectors/page.slice";
 import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
+import ModalEditReport from "./ModalEdit";
+import apiReportService from "@/api/report.service";
+import CStatus from "@/components/status";
 
 interface ColumnProps {
     actions: {
@@ -48,13 +46,6 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                     key={item.id}
                     className="border border-solid border-gray-4 shadow rounded-lg mb-4"
                 >
-                    {/* <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup even:bg-gray-1 px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">STT</span>
-            <div className="text-gray-9 text-base py-1">
-              <span>{index + 1}</span>
-            </div>
-          </div> */}
-
                     <div className="flex flex-row justify-between border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <div>
                             <span className="font-medium text-gray-9 text-sm">
@@ -64,31 +55,11 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 <span>{index + 1}</span>
                             </div>
                         </div>
-                        {/* <div className="min-w-[80px]">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Trạng thái
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <CStatus
-                                    type={item?.status ? "success" : "error"}
-                                    name={item?.status ? "Active" : "Inactive"}
-                                />
-                            </div>
-                        </div> */}
                     </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Mã sản phẩm
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.id}</span>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Danh mục sản phẩm
+                            Tên báo cáo
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span
@@ -99,69 +70,25 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             </span>
                         </div>
                     </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Tên sản phẩm
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span
-                                className="font-medium"
-                                style={{ color: "#50945d" }}
-                            >
-                                {item?.category.name ?? "- -"}
-                            </span>
-                        </div>
-                    </div>
 
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                    <div className="min-w-[80px]">
                         <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối thiểu
+                            Loại báo cáo
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {formatCurrency(Number(item?.min_invest)) ??
-                                    "- -"}
-                            </span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối đa
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {formatCurrency(Number(item?.max_invest)) ??
-                                    "- -"}
-                            </span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối thiểu
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.min_duration ?? "- -"} Ngày</span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối đa
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.max_duration ?? "- -"} Ngày</span>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Mức lãi suất hiện tại
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {(item?.current_interest_rate * 100).toFixed(
-                                    2
-                                ) + " %"}
-                            </span>
+                            <CStatus
+                                name={
+                                    item?.type === 0
+                                        ? "Báo cáo tài chính"
+                                        : item?.type === 1
+                                        ? "Báo cáo dự án"
+                                        : item?.type === 2
+                                        ? "Báo cáo xã hội"
+                                        : item?.type === 3
+                                        ? "Báo cáo khác"
+                                        : "Không xác định"
+                                }
+                            />
                         </div>
                     </div>
 
@@ -177,7 +104,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="view"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/products/view/${item?.id}`
+                                                    `/admin/report/view/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -188,7 +115,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="edit"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/products/edit/${item?.id}`
+                                                    `/admin/report/edit/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -220,13 +147,13 @@ const getColumns = (props: ColumnProps) => {
     const { T } = useCustomTranslation();
     const { pathname } = useLocation();
     //permissions
-    const { hasPermission } = usePermissionCheck("products");
+    const { hasPermission } = usePermissionCheck("report");
 
     const { actions } = props;
     const columns: any = [
         {
             title: "STT",
-            dataIndex: "products",
+            dataIndex: "report",
 
             render: (_: any, item: any, index: number) => (
                 <Stack direction={"column"} spacing={1}>
@@ -245,28 +172,8 @@ const getColumns = (props: ColumnProps) => {
             width: 50,
         },
         {
-            title: "Mã sản phẩm",
-            dataIndex: "products",
-
-            render: (_: any, item: any, index: number) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                            textAlign: "left",
-                        }}
-                    >
-                        {item?.id}
-                    </Typography>
-                </Stack>
-            ),
-            width: 120,
-        },
-        {
-            title: "Tên sản phẩm",
-            dataIndex: "product",
+            title: "Tên báo cáo",
+            dataIndex: "report",
             fixed: "left" as const,
             render: (_: any, item: any) => (
                 <Typography
@@ -281,8 +188,8 @@ const getColumns = (props: ColumnProps) => {
             width: 220,
         },
         {
-            title: "Danh mục sản phẩm",
-            dataIndex: "product",
+            title: "Loại báo cáo",
+            dataIndex: "status",
             fixed: "left" as const,
             render: (_: any, item: any) => (
                 <Typography
@@ -291,100 +198,25 @@ const getColumns = (props: ColumnProps) => {
                         fontWeight: 500,
                     }}
                 >
-                    {item?.category.name ?? "- -"}
+                    <Typography
+                        style={{
+                            fontSize: "14px",
+                            fontWeight: 500,
+                        }}
+                    >
+                        {item?.type === 0
+                            ? "Báo cáo tài chính"
+                            : item?.type === 1
+                            ? "Báo cáo dự án"
+                            : item?.type === 2
+                            ? "Báo cáo xã hội"
+                            : item?.type === 3
+                            ? "Báo cáo khác"
+                            : "Không xác định"}
+                    </Typography>
                 </Typography>
             ),
-            width: 220,
-        },
-        {
-            title: "Hạn mức tối thiểu",
-            dataIndex: "min_invest",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {formatCurrency(Number(d?.min_invest))}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Hạn mức tối đa",
-            dataIndex: "max_invest",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {formatCurrency(Number(d?.max_invest))}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Thời hạn tối thiểu",
-            dataIndex: "min_duration",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {d?.min_duration + " Tháng"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Thời hạn tối đa",
-            dataIndex: "max_duration",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {d?.max_duration + " Tháng"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Mức lãi suất hiện tại",
-            dataIndex: "current_interest_rate",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {(d?.current_interest_rate * 100).toFixed(2) + " %"}
-                    </Typography>
-                </Stack>
-            ),
+            width: 150,
         },
     ];
     {
@@ -411,7 +243,7 @@ const getColumns = (props: ColumnProps) => {
                                         type="view"
                                         onClick={() => {
                                             navigate(
-                                                `/admin/products/view/${d?.id}`
+                                                `/admin/report/view/${d?.id}`
                                             );
                                             actions.togglePopup("edit");
                                         }}
@@ -422,7 +254,7 @@ const getColumns = (props: ColumnProps) => {
                                         type="edit"
                                         onClick={() => {
                                             navigate(
-                                                `/admin/products/edit/${d?.id}`
+                                                `/admin/report/edit/${d?.id}`
                                             );
                                             actions.togglePopup("edit");
                                         }}
@@ -448,11 +280,11 @@ const getColumns = (props: ColumnProps) => {
     return columns;
 };
 
-interface CTableProps {
+interface ReportTableProps {
     authorizedPermissions?: any;
 }
 
-const CTable = (props: CTableProps) => {
+const ReportTable = (props: ReportTableProps) => {
     const { code } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -480,18 +312,20 @@ const CTable = (props: CTableProps) => {
     const [popup, setPopup] = useState({
         edit: false,
         remove: false,
+        upload: false,
+        create_category: false,
     });
     // search
     const [keySearch, setKeySearch] = useState<KeySearchType>({});
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const { getProduct } = apiProductService();
+    const { getReport } = apiReportService();
     //permissions
-    const { hasPermission } = usePermissionCheck("products");
+    const { hasPermission } = usePermissionCheck("report");
 
     const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ["GET_PRODUCT", param_payload, pathname],
-        queryFn: () => getProduct(param_payload),
+        queryKey: ["GET_REPORT", param_payload, pathname],
+        queryFn: () => getReport(param_payload),
         keepPreviousData: true,
     });
     console.log("data", data);
@@ -519,14 +353,18 @@ const CTable = (props: CTableProps) => {
     useEffect(() => {
         const new_key_search = parseQueryParams(param_payload);
         setKeySearch(new_key_search);
+        if (pathname.includes("add_category") && !popup.create_category) {
+            togglePopup("create_category");
+            return;
+        }
 
         if (!code && !pathname.includes("create")) return;
         if (pathname.includes("view") && !popup.edit) {
-            navigate(`/admin/products/view/${code}`);
+            navigate(`/admin/report/view/${code}`);
             togglePopup("edit");
         }
         if (pathname.includes("edit") && !popup.edit) {
-            navigate(`/admin/products/edit/${code}`);
+            navigate(`/admin/report/edit/${code}`);
             togglePopup("edit");
         }
         if (pathname.includes("create") && !popup.edit) {
@@ -574,7 +412,7 @@ const CTable = (props: CTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo mã sản phẩm, tên sản phẩm, nhãn hiệu"
+                                placeholder="Tìm theo tên báo cáo"
                             />
                         </div>
                     </div>
@@ -628,11 +466,11 @@ const CTable = (props: CTableProps) => {
 
             {/*  */}
             {popup.edit && (
-                <ModalEditProduct
+                <ModalEditReport
                     open={popup.edit}
                     toggle={(param) => {
                         togglePopup(param);
-                        navigate(`/admin/products`);
+                        navigate(`/admin/report`);
                     }}
                     refetch={refetch}
                 />
@@ -647,8 +485,16 @@ const CTable = (props: CTableProps) => {
                 refetch={refetch}
                 name_item={selectedRowLabels}
             />
+            {/*  */}
+            <PopupConfirmImport
+                open={popup.upload}
+                handleClose={() => {
+                    togglePopup("upload");
+                }}
+                refetch={refetch}
+            />
         </>
     );
 };
 
-export default CTable;
+export default ReportTable;

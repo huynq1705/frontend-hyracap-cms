@@ -60,15 +60,6 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Mã nhân viên
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.user_sub}</span>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
                             Họ và tên
                         </span>
                         <div className="text-gray-9 text-base py-1">
@@ -76,9 +67,9 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 className="font-medium"
                                 style={{ color: "#50945d" }}
                             >
-                                {`${item?.user.firstName}` +
+                                {`${item?.staff.first_name}` +
                                     " " +
-                                    `${item?.user.lastName}`}
+                                    `${item?.staff.last_name}`}
                             </span>
                         </div>
                     </div>
@@ -88,7 +79,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             Email
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            {item?.user.email}
+                            {item?.staff.email}
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
@@ -96,7 +87,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             SĐT
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            {item?.user.phone}
+                            {item?.staff.phone}
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
@@ -124,7 +115,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </div>
                     </div>
 
-                    {(hasPermission.update || hasPermission.delete) && (
+                    {/* {(hasPermission.update || hasPermission.delete) && (
                         <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                             <span className="font-medium text-gray-9 text-sm">
                                 Thao tác
@@ -145,7 +136,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 </div>
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div>
             ))}
         </div>
@@ -182,26 +173,6 @@ const getColumns = (props: ColumnProps) => {
             width: 50,
         },
         {
-            title: "Mã nhân viên",
-            dataIndex: "sale_history",
-
-            render: (_: any, item: any, index: number) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                            textAlign: "left",
-                        }}
-                    >
-                        {item?.user_sub}
-                    </Typography>
-                </Stack>
-            ),
-            width: 120,
-        },
-        {
             title: "Họ và tên",
             dataIndex: "sale_history",
             fixed: "left" as const,
@@ -212,7 +183,9 @@ const getColumns = (props: ColumnProps) => {
                         fontWeight: 500,
                     }}
                 >
-                    {`${item?.user.firstName}` + " " + `${item?.user.lastName}`}
+                    {`${item?.staff.first_name}` +
+                        " " +
+                        `${item?.staff.last_name}`}
                 </Typography>
             ),
             width: 220,
@@ -230,7 +203,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.user.email}
+                        {d?.staff.email}
                     </Typography>
                 </Stack>
             ),
@@ -248,7 +221,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.user.phone}
+                        {d?.staff.phone}
                     </Typography>
                 </Stack>
             ),
@@ -308,42 +281,42 @@ const getColumns = (props: ColumnProps) => {
             ),
         },
     ];
-    {
-        (hasPermission.update || hasPermission.delete) &&
-            columns.push({
-                title: T("action"),
-                width: 120,
-                dataIndex: "actions",
-                fixed: "right" as const,
-                render: (_: any, d: any) => (
-                    <>
-                        {/* check permission */}
-                        {true && (
-                            <Stack
-                                direction={"row"}
-                                sx={{
-                                    gap: "12px",
-                                    justifyContent: "flex-start",
-                                    alignItems: "center",
-                                }}
-                            >
-                                {hasPermission.getDetail && (
-                                    <ActionButton
-                                        type="view"
-                                        onClick={() => {
-                                            navigate(
-                                                `/admin/sale_history/view/${d?.id}`
-                                            );
-                                            actions.togglePopup("edit");
-                                        }}
-                                    />
-                                )}
-                            </Stack>
-                        )}
-                    </>
-                ),
-            });
-    }
+    // {
+    //     (hasPermission.update || hasPermission.delete) &&
+    //         columns.push({
+    //             title: T("action"),
+    //             width: 120,
+    //             dataIndex: "actions",
+    //             fixed: "right" as const,
+    //             render: (_: any, d: any) => (
+    //                 <>
+    //                     {/* check permission */}
+    //                     {true && (
+    //                         <Stack
+    //                             direction={"row"}
+    //                             sx={{
+    //                                 gap: "12px",
+    //                                 justifyContent: "flex-start",
+    //                                 alignItems: "center",
+    //                             }}
+    //                         >
+    //                             {hasPermission.getDetail && (
+    //                                 <ActionButton
+    //                                     type="view"
+    //                                     onClick={() => {
+    //                                         navigate(
+    //                                             `/admin/sale_history/view/${d?.id}`
+    //                                         );
+    //                                         actions.togglePopup("edit");
+    //                                     }}
+    //                                 />
+    //                             )}
+    //                         </Stack>
+    //                     )}
+    //                 </>
+    //             ),
+    //         });
+    // }
     return columns;
 };
 
