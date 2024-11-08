@@ -177,10 +177,22 @@ export default function apiProjectService(): ProjectService {
                 description: payload.description,
             },
             industry_ids: [+payload.industry_ids],
-            pitching_deck: payload.pitching_deck[0],
-            contract_template: payload.contract_template[0],
-            financial_roadmap: payload.financial_roadmap[0],
-            business_plan: payload.business_plan[0],
+            pitching_deck:
+                payload.pitching_deck.length === 1
+                    ? payload.pitching_deck[0]
+                    : payload.pitching_deck,
+            contract_template:
+                payload.contract_template.length === 1
+                    ? payload.contract_template[0]
+                    : payload.contract_template,
+            financial_roadmap:
+                payload.financial_roadmap.length === 1
+                    ? payload.financial_roadmap[0]
+                    : payload.financial_roadmap,
+            business_plan:
+                payload.business_plan.length === 1
+                    ? payload.business_plan[0]
+                    : payload.business_plan,
         };
         // console.log("convert_payload", convert_payload);
 

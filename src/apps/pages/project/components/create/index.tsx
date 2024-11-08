@@ -191,7 +191,7 @@ export default function ProjectCreatePage() {
             if (response === true) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
-                navigate(`/admin/project/view/${response.data.id}`);
+                navigate(`/admin/project`);
             }
             dispatch(
                 setGlobalNoti({
@@ -240,6 +240,12 @@ export default function ProjectCreatePage() {
     };
     const isView = React.useMemo(() => {
         return pathname.includes("view");
+    }, [pathname]);
+    const isEdit = React.useMemo(() => {
+        return pathname.includes("edit");
+    }, [pathname]);
+    const isCreate = React.useMemo(() => {
+        return pathname.includes("create");
     }, [pathname]);
 
     React.useEffect(() => {
@@ -305,28 +311,44 @@ export default function ProjectCreatePage() {
                         justifyContent={"center"}
                         sx={{ gap: "12px" }}
                     >
-                        <ButtonCore
-                            title={T("cancel")}
-                            type="bgWhite"
-                            onClick={() => {
-                                navigate("/admin/schedule");
-                            }}
-                        />
-                        <ButtonCore onClick={handleCreate} title={"Hoàn tất"} />
-                        <ButtonCore
-                            onClick={() => {
-                                navigate(`/admin/project/edit/${code}`);
-                            }}
-                            title={"Chỉnh sửa"}
-                        />
-                        <ButtonCore
-                            title={T("cancel")}
-                            type="bgWhite"
-                            onClick={() => {
-                                navigate(`/admin/project/view/${code}`);
-                            }}
-                        />
-                        <ButtonCore onClick={handleUpdate} title={"Hoàn tất"} />
+                        {isCreate && (
+                            <ButtonCore
+                                title={T("cancel")}
+                                type="bgWhite"
+                                onClick={() => {
+                                    navigate("/admin/schedule");
+                                }}
+                            />
+                        )}
+                        {isCreate && (
+                            <ButtonCore
+                                onClick={handleCreate}
+                                title={"Hoàn tất"}
+                            />
+                        )}
+                        {isView && (
+                            <ButtonCore
+                                onClick={() => {
+                                    navigate(`/admin/project/edit/${code}`);
+                                }}
+                                title={"Chỉnh sửa"}
+                            />
+                        )}
+                        {isEdit && (
+                            <ButtonCore
+                                title={T("cancel")}
+                                type="bgWhite"
+                                onClick={() => {
+                                    navigate(`/admin/project/view/${code}`);
+                                }}
+                            />
+                        )}
+                        {isEdit && (
+                            <ButtonCore
+                                onClick={handleUpdate}
+                                title={"Hoàn tất"}
+                            />
+                        )}
                     </Stack>
                 </Stack>
                 <Box
