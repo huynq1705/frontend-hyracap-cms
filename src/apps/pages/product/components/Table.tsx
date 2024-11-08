@@ -88,7 +88,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Tên sản phẩm
+                            Danh mục sản phẩm
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span
@@ -96,6 +96,19 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 style={{ color: "#50945d" }}
                             >
                                 {item?.name ?? "- -"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Tên sản phẩm
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span
+                                className="font-medium"
+                                style={{ color: "#50945d" }}
+                            >
+                                {item?.category.name ?? "- -"}
                             </span>
                         </div>
                     </div>
@@ -263,6 +276,22 @@ const getColumns = (props: ColumnProps) => {
                     }}
                 >
                     {item?.name ?? "- -"}
+                </Typography>
+            ),
+            width: 220,
+        },
+        {
+            title: "Danh mục sản phẩm",
+            dataIndex: "product",
+            fixed: "left" as const,
+            render: (_: any, item: any) => (
+                <Typography
+                    style={{
+                        fontSize: "14px",
+                        fontWeight: 500,
+                    }}
+                >
+                    {item?.category.name ?? "- -"}
                 </Typography>
             ),
             width: 220,

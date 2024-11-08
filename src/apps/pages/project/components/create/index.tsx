@@ -214,11 +214,11 @@ export default function ProjectCreatePage() {
             const response = await putProject(formData, code, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
             let type = "error";
-            if (typeof response === "object" && response?.missingKeys) {
+            if (response.status === false && response?.missingKeys) {
                 setErrors(response.missingKeys);
                 return;
             }
-            if (response === true) {
+            if (response.status === true) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
                 navigate(`/admin/project/view/${response.data.id}`);
@@ -753,7 +753,7 @@ export default function ProjectCreatePage() {
                                 setIsFirstRemoved={setIsfirstRemoved}
                             />
                         </Stack>
-                        {/* <Stack className="flex flex-col ">
+                        <Stack className="flex flex-col ">
                             <p className={styles.thirdTitle}>
                                 Pitchingdeck <span>*</span>
                             </p>
@@ -804,7 +804,7 @@ export default function ProjectCreatePage() {
                                 hasError={""}
                                 setIsFirstRemoved={(e) => {}}
                             />
-                        </Stack> */}
+                        </Stack>
                     </Stack>
                 </Box>
             </Stack>

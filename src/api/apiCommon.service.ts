@@ -10,6 +10,7 @@ type CommonService = {
     detailCommon: <T>(payload: string, url: string) => Promise<T | null>;
     getStatistics: (url: string) => Promise<any>;
     uploads: (files: File[]) => Promise<any>;
+    uploadsImageBlog: (files: File[]) => Promise<any>;
     importData: (files: File, url: string) => Promise<boolean>;
     exportData: (payload: string, url: string) => Promise<any>;
 };
@@ -135,6 +136,28 @@ export default function apiCommonService(): CommonService {
                 console.error(error); // Handle any errors that occur during the upload process
             });
     };
+    const uploadsImageBlog = (files: File[]) => {
+        const accessToken = localStorage.getItem(AppConfig.ACCESS_TOKEN);
+        const API_URL = import.meta.env.VITE_APP_BASE_API_URL;
+        const UPLOAD_ENDPOINT = "files/upload_blog";
+        const uploadData = new FormData();
+        // Append each selected file to the FormData object
+        for (let i = 0; i < files.length; i++) {
+            uploadData.append("files", files[i]);
+        }
+        // Make a POST request to the server using Axios
+        return axios
+            .post(API_URL + UPLOAD_ENDPOINT, uploadData, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => response.data)
+            .catch((error) => {
+                console.error(error); // Handle any errors that occur during the upload process
+            });
+    };
     const importData = (files: File, url: string): Promise<boolean> => {
         const accessToken = localStorage.getItem(AppConfig.ACCESS_TOKEN);
         const API_URL = import.meta.env.VITE_APP_BASE_API_URL;
@@ -178,6 +201,7 @@ export default function apiCommonService(): CommonService {
         detailCommon,
         getStatistics,
         uploads,
+        uploadsImageBlog,
         importData,
         exportData,
     };
