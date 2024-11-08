@@ -191,7 +191,7 @@ export default function ProjectCreatePage() {
             if (response === true) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
-                navigate(`/admin/project/view/${response.data.id}`);
+                navigate(`/admin/project`);
             }
             dispatch(
                 setGlobalNoti({
