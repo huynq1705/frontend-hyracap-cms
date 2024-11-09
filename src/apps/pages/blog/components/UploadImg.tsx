@@ -87,8 +87,8 @@ const UploadImage: React.FC<UploadImageProps> = ({
     return (
         <section className={`${hasError ? "hasErrorUpload" : ""}`}>
             <ImgCrop
-                aspect={16 / 9}
-                beforeCrop={(file) => true}
+                // aspect={1}
+                // beforeCrop={(file) => true}
                 quality={1}
                 rotationSlider
                 showReset

@@ -30,6 +30,20 @@ interface Option {
     value: string;
 }
 
+const statusList = [
+    {
+        value: "0",
+        label: "Đã hoàn thành",
+    },
+    {
+        value: "1",
+        label: "Đang gọi vốn",
+    },
+    {
+        value: "2",
+        label: "Đã đầu tư",
+    },
+];
 const fundingRound = [
     {
         value: "Seed",
@@ -160,10 +174,22 @@ export default function ProjectCreatePage() {
                     metrics: response.data.metric,
                     description: response.data.description,
                     industry_ids: response.industry_ids,
-                    pitching_deck: response.pitching_deck,
-                    contract_template: response.contract_template,
-                    financial_roadmap: response.financial_roadmap,
-                    business_plan: response.business_plan,
+                    pitching_deck:
+                        response.pitching_deck === null
+                            ? ""
+                            : response.pitching_deck,
+                    contract_template:
+                        response.contract_template === null
+                            ? ""
+                            : response.contract_template,
+                    financial_roadmap:
+                        response.financial_roadmap === null
+                            ? ""
+                            : response.financial_roadmap,
+                    business_plan:
+                        response.business_plan === null
+                            ? ""
+                            : response.business_plan,
                 };
                 console.log("convert_data", convert_data);
 
@@ -591,6 +617,20 @@ export default function ProjectCreatePage() {
                                 >
                                     Chi tiết dự án
                                 </Typography.Title>
+                                <MyTextField
+                                    label="Tên dự án"
+                                    errors={errors}
+                                    required={KEY_REQUIRED}
+                                    configUI={{
+                                        width: "100%",
+                                    }}
+                                    name="name"
+                                    placeholder="Nhập"
+                                    handleChange={handleOnchange}
+                                    values={formData}
+                                    validate={VALIDATE}
+                                    disabled={isView}
+                                />
                                 <Stack
                                     direction={"row"}
                                     gap={3}
@@ -598,20 +638,6 @@ export default function ProjectCreatePage() {
                                         width: "100%",
                                     }}
                                 >
-                                    <MyTextField
-                                        label="Tên dự án"
-                                        errors={errors}
-                                        required={KEY_REQUIRED}
-                                        configUI={{
-                                            width: "100%",
-                                        }}
-                                        name="name"
-                                        placeholder="Nhập"
-                                        handleChange={handleOnchange}
-                                        values={formData}
-                                        validate={VALIDATE}
-                                        disabled={isView}
-                                    />
                                     <MySelect
                                         configUI={{
                                             width: "100%",
@@ -621,6 +647,22 @@ export default function ProjectCreatePage() {
                                         handleChange={handleOnchange}
                                         values={formData}
                                         options={industry}
+                                        errors={errors}
+                                        validate={VALIDATE}
+                                        required={KEY_REQUIRED}
+                                        itemsPerPage={5} // Adjust items per page as needed
+                                        disabled={isView}
+                                        placeholder="Chọn"
+                                    />
+                                    <MySelect
+                                        configUI={{
+                                            width: "100%",
+                                        }}
+                                        label="Trạng thái"
+                                        name="status"
+                                        handleChange={handleOnchange}
+                                        values={formData}
+                                        options={statusList}
                                         errors={errors}
                                         validate={VALIDATE}
                                         required={KEY_REQUIRED}
