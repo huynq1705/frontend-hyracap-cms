@@ -37,7 +37,7 @@ export default function apiProjectService(): ProjectService {
             name: payload.name,
             images: payload.images,
             thumbnail: payload.images[0],
-            status: 1,
+            status: +payload.status,
             capital_raising_target: +payload.valuation,
             mobilized_fund: +payload.funding_amount,
             data: {
@@ -123,7 +123,7 @@ export default function apiProjectService(): ProjectService {
             name: payload.name,
             images: payload.images,
             thumbnail: payload.images[0],
-            status: 1,
+            status: +payload.status,
             capital_raising_target: +payload.valuation,
             mobilized_fund: +payload.funding_amount,
             data: {

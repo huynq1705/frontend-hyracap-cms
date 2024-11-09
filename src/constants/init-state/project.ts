@@ -40,7 +40,7 @@ export const INIT_PROJECT: {
     name: "",
     thumbnail: "",
     images: [],
-    status: 1,
+    status: 0,
     capital_raising_target: 0,
     mobilized_fund: 0,
     address: "",
