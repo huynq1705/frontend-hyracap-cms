@@ -47,7 +47,6 @@ export default function SelectSearchInput() {
                     const filtered = filter(options, params);
                     const { inputValue } = params;
 
-                    // Gợi ý tạo mới nếu không có giá trị phù hợp
                     const isExisting = options.some(
                         (option) => inputValue === option.title
                     );
@@ -65,7 +64,6 @@ export default function SelectSearchInput() {
                 handleHomeEndKeys
                 options={arr}
                 getOptionLabel={(option) => {
-                    // Thêm điều kiện để hiển thị tùy chọn tạo mới
                     if (typeof option === "string") {
                         return option;
                     }

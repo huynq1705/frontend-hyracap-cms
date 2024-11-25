@@ -22,8 +22,9 @@ export interface PayloadProduct {
     name: string;
     min_invest: string;
     max_invest: string;
-    min_duration: string;
-    max_duration: string;
+    total_capacity: string;
+    min_duration: number;
+    max_duration: number;
     interest_rate?: string;
     new_interest_rate?: string;
     current_interest_rate?: string;

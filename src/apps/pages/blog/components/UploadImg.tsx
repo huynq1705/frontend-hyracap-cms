@@ -23,6 +23,8 @@ const UploadImage: React.FC<UploadImageProps> = ({
 }) => {
     const BASE_URL = import.meta.env.VITE_APP_BASE_API_URL;
     const BASE_IMG_URL = import.meta.env.VITE_APP_URL_IMG;
+
+    console.log("imageUrl", imageUrl);
     const propsUpload: UploadProps = useMemo(
         () => ({
             name: "files",
@@ -43,7 +45,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
                 imageUrl.length === 1
                     ? [
                           {
-                              uid: "1",
+                              uid: imageUrl[0],
                               name: imageUrl[0],
                               status: "done",
                               url: `${imageUrl[0]}`,

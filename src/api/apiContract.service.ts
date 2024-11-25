@@ -68,7 +68,7 @@ export default function apiContractService(): ContractService {
     ) => {
         const convert_payload: PayloadContract = {
             capital: payload.capital,
-            duration: payload.duration,
+            duration: +payload.duration,
             product_id: payload.product_id,
             user_sub: payload.user_sub,
             staff_id: userInfo?.[0].id,

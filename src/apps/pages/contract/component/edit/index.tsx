@@ -20,8 +20,11 @@ import { INIT_CONTRACT } from "@/constants/init-state/contract";
 import apiContractService from "@/api/apiContract.service";
 const VALIDATE = {
     capital: "Hãy nhập số vốn đầu tư",
+    user_sub: "Hãy chọn tên khách hàng",
+    product_id: "Hãy chọn sản phẩm đầu tư",
+    duration: "Hãy nhập thời hạn đầu tư",
 };
-const KEY_REQUIRED = ["capital"];
+const KEY_REQUIRED = ["capital", "duration", "user_sub", "product_id"];
 interface EditPageProps {
     open: boolean;
     onClose: () => void;
@@ -110,10 +113,10 @@ export default function EditPage(props: EditPageProps) {
             const response = await postContract(formData, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
             let type = "error";
-            // if (typeof response === "object" && response?.missingKeys) {
-            //     setErrors(response.missingKeys);
-            //     return;
-            // }
+            if (typeof response === "object" && response?.missingKeys) {
+                setErrors(response.missingKeys);
+                return;
+            }
             if (response.statusCode === 422) {
                 message = `${response.error.message}`;
                 type = "error";
@@ -121,6 +124,8 @@ export default function EditPage(props: EditPageProps) {
             if (response.statusCode === 200) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
+                setFormData(INIT_CONTRACT);
+
                 handleCancel();
             }
             dispatch(
@@ -147,10 +152,10 @@ export default function EditPage(props: EditPageProps) {
         if (isView) {
             navigate(`/admin/contract/edit/${code}`);
         } else {
-            dispatch(setIsLoading(true));
+            // dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_CONTRACT);
-            refetch();
+            // setFormData(INIT_CONTRACT);
+            // refetch();
         }
         setTimeout(() => {
             dispatch(setIsLoading(false));
@@ -173,6 +178,7 @@ export default function EditPage(props: EditPageProps) {
             if (response.statusCode === 200) {
                 message = `Cập nhật ${title_page} thành công`;
                 type = "success";
+                setFormData(INIT_CONTRACT);
             }
             dispatch(
                 setGlobalNoti({
@@ -281,7 +287,7 @@ export default function EditPage(props: EditPageProps) {
                         </p>
 
                         <h4>BÊN GÓP VỐN (BÊN B):</h4>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 pb-3">
                             <p>Ông/bà: </p>
                             <MySelect
                                 configUI={{

@@ -54,22 +54,11 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 <span>{index + 1}</span>
                             </div>
                         </div>
-                        <div className="min-w-[80px]">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Trạng thái
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <CStatus
-                                    type={item?.status ? "success" : "error"}
-                                    name={item?.status ? "Active" : "Inactive"}
-                                />
-                            </div>
-                        </div>
                     </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Tên sản phẩm
+                            Tên danh mục
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span
@@ -77,6 +66,36 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 style={{ color: "#50945d" }}
                             >
                                 {item?.name ?? "- -"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Thời hạn tối thiểu
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span className="font-medium">
+                                {item?.min_duration + " Tháng"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Thời hạn tối đa
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span className="font-medium">
+                                {item?.max_duration + " Tháng"}
+                            </span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Lãi xuất tối thiếu
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span className="font-medium">
+                                {(+item?.min_interest_rate).toFixed(2) + " %"}
                             </span>
                         </div>
                     </div>
@@ -218,7 +237,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {(d?.min_interest_rate * 100).toFixed(2) + " %"}
+                        {(+d?.min_interest_rate).toFixed(2) + " %"}
                     </Typography>
                 </Stack>
             ),

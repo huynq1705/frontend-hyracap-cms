@@ -34,20 +34,19 @@ export default function apiProductService(): ProductService {
         payload: InitProductKeys,
         requiredKeys: string[]
     ) => {
-        const convert_payload: PayloadProduct = {
+        const convert_payload: any = {
             name: payload.name,
             min_invest: payload.min_invest,
             max_invest: payload.max_invest,
-            min_duration: payload.min_duration,
-            max_duration: payload.max_duration,
-            category_id: payload.category_id,
+            total_capacity: (+payload.max_invest).toFixed(4).toString(),
+            min_duration: +payload.min_duration,
+            max_duration: +payload.max_duration,
+            category_id: +payload.category_id,
             interest_rate: (+(Number(payload.interest_rate) / 100).toFixed(
                 4
             )).toString(),
         };
         const result = validateRequiredKeys(convert_payload, requiredKeys);
-
-        console.log(result);
         if (!result.isValid) return result;
         return httpClient
             .post<ResponseFromServerV2<any>>(
@@ -67,13 +66,14 @@ export default function apiProductService(): ProductService {
         code: string,
         requiredKeys: string[]
     ) => {
-        const convert_payload: PayloadProduct = {
+        const convert_payload: any = {
             name: payload.name,
             min_invest: payload.min_invest,
             max_invest: payload.max_invest,
-            min_duration: payload.min_duration,
-            max_duration: payload.max_duration,
-            category_id: payload.category_id,
+            total_capacity: (+payload.max_invest).toFixed(4).toString(),
+            min_duration: +payload.min_duration,
+            max_duration: +payload.max_duration,
+            category_id: +payload.category_id,
             new_interest_rate: (+(Number(payload.interest_rate) / 100).toFixed(
                 4
             )).toString(),

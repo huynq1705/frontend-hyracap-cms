@@ -28,18 +28,20 @@ import dayjs from "dayjs";
 import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
 const VALIDATE = {
     name: "Hãy nhập tên sản phẩm",
-    // max_duration: "Hãy nhập thời hạn",
-    // min_duration: "Hãy nhập thời hạn",
-    // max_invest: "Hãy nhập hạn mức đầu tư",
-    // min_invest: "Hãy nhập hạn mức đầu tư",
+    category_id: "Hãy chọn danh sản phẩm",
+    max_duration: "Hãy nhập thời hạn",
+    min_duration: "Hãy nhập thời hạn",
+    max_invest: "Hãy nhập hạn mức đầu tư",
+    min_invest: "Hãy nhập hạn mức đầu tư",
 };
 const KEY_REQUIRED = [
     "name",
-    // "interest_rate",
-    // "max_duration",
-    // "min_duration",
-    // "max_invest",
-    // "min_invest",
+    "category_id",
+    "interest_rate",
+    "max_duration",
+    "min_duration",
+    "max_invest",
+    "min_invest",
 ];
 interface EditPageProps {
     open: boolean;
@@ -138,6 +140,10 @@ export default function EditPage(props: EditPageProps) {
     };
 
     const handleCreate = async () => {
+        if (formData.category_id === 409) {
+            setErrors(["category_id"]);
+            VALIDATE.category_id = "Tên danh mục sản phẩm đã tồn tại";
+        }
         try {
             const response = await postProduct(formData, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
@@ -161,7 +167,7 @@ export default function EditPage(props: EditPageProps) {
             dispatch(
                 setGlobalNoti({
                     type: "error",
-                    message: "createError",
+                    message: "Tạo thất bại",
                 })
             );
         }
@@ -175,9 +181,7 @@ export default function EditPage(props: EditPageProps) {
         if (isView) {
             navigate(`/admin/products/edit/${code}`);
         } else {
-            dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_PRODUCT);
             refetch();
         }
         setTimeout(() => {
@@ -213,7 +217,7 @@ export default function EditPage(props: EditPageProps) {
             dispatch(
                 setGlobalNoti({
                     type: "error",
-                    message: "updateError",
+                    message: "Cập nhật thất bại",
                 })
             );
             console.error(error);
@@ -281,21 +285,23 @@ export default function EditPage(props: EditPageProps) {
             <HeaderModalEdit onClose={handleCancel} />
             <div className="wrapper-edit-page">
                 <div className="history">
-                    <div
-                        className="flex items-center gap-1 my-3 cursor-pointer"
-                        onClick={toggleShowHistory}
-                    >
-                        <div className="title font-medium text-base text-[#50945D]">
-                            Xem lịch sử thay đổi lãi suất
-                        </div>
+                    {!pathname.includes("create") && (
                         <div
-                            className={`transform transition-transform ${
-                                isShow ? "rotate-0" : "rotate-180"
-                            }`}
+                            className="flex items-center gap-1 my-3 cursor-pointer"
+                            onClick={toggleShowHistory}
                         >
-                            <X2ChevronDown />
+                            <div className="title font-medium text-base text-[#50945D]">
+                                Xem lịch sử thay đổi lãi suất
+                            </div>
+                            <div
+                                className={`transform transition-transform ${
+                                    isShow ? "rotate-0" : "rotate-180"
+                                }`}
+                            >
+                                <X2ChevronDown />
+                            </div>
                         </div>
-                    </div>
+                    )}
                     {isShow && (
                         <div className="list-history bg-[#F6FAF7] p-5 rounded-xl my-3 flex flex-col gap-3">
                             {history.length > 0 ? (

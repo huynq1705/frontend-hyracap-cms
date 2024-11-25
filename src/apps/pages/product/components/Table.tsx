@@ -48,13 +48,6 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                     key={item.id}
                     className="border border-solid border-gray-4 shadow rounded-lg mb-4"
                 >
-                    {/* <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup even:bg-gray-1 px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">STT</span>
-            <div className="text-gray-9 text-base py-1">
-              <span>{index + 1}</span>
-            </div>
-          </div> */}
-
                     <div className="flex flex-row justify-between border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <div>
                             <span className="font-medium text-gray-9 text-sm">
@@ -64,17 +57,6 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 <span>{index + 1}</span>
                             </div>
                         </div>
-                        {/* <div className="min-w-[80px]">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Trạng thái
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <CStatus
-                                    type={item?.status ? "success" : "error"}
-                                    name={item?.status ? "Active" : "Inactive"}
-                                />
-                            </div>
-                        </div> */}
                     </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
@@ -267,7 +249,6 @@ const getColumns = (props: ColumnProps) => {
         {
             title: "Tên sản phẩm",
             dataIndex: "product",
-            fixed: "left" as const,
             render: (_: any, item: any) => (
                 <Typography
                     style={{
@@ -283,7 +264,6 @@ const getColumns = (props: ColumnProps) => {
         {
             title: "Danh mục sản phẩm",
             dataIndex: "product",
-            fixed: "left" as const,
             render: (_: any, item: any) => (
                 <Typography
                     style={{
@@ -556,9 +536,9 @@ const CTable = (props: CTableProps) => {
         () => keySearch?.text?.toString() ?? "",
         [keySearch?.text, pathname]
     );
-    useEffect(() => {
-        refetch();
-    }, [window.location.href]);
+    // useEffect(() => {
+    //     refetch();
+    // }, [window.location.href]);
     return (
         <>
             <Box className="h-full">
@@ -574,7 +554,7 @@ const CTable = (props: CTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo mã sản phẩm, tên sản phẩm, nhãn hiệu"
+                                placeholder="Tìm theo tên sản phẩm"
                             />
                         </div>
                     </div>
@@ -630,8 +610,8 @@ const CTable = (props: CTableProps) => {
             {popup.edit && (
                 <ModalEditProduct
                     open={popup.edit}
-                    toggle={(param) => {
-                        togglePopup(param);
+                    toggle={() => {
+                        togglePopup("edit");
                         navigate(`/admin/products`);
                     }}
                     refetch={refetch}

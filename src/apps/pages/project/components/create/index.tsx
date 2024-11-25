@@ -1,7 +1,5 @@
 import * as React from "react";
 import styles from "@/apps/pages/blog/createPage.module.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { Breadcrumb, Switch, Typography } from "antd";
 import { INIT_PROJECT } from "@/constants/init-state/project";
 import apiCommonService from "@/api/apiCommon.service";
@@ -176,20 +174,20 @@ export default function ProjectCreatePage() {
                     industry_ids: response.industry_ids,
                     pitching_deck:
                         response.pitching_deck === null
-                            ? ""
-                            : response.pitching_deck,
+                            ? [""]
+                            : [response.pitching_deck],
                     contract_template:
                         response.contract_template === null
-                            ? ""
-                            : response.contract_template,
+                            ? [""]
+                            : [response.contract_template],
                     financial_roadmap:
                         response.financial_roadmap === null
-                            ? ""
-                            : response.financial_roadmap,
+                            ? [""]
+                            : [response.financial_roadmap],
                     business_plan:
                         response.business_plan === null
-                            ? ""
-                            : response.business_plan,
+                            ? [""]
+                            : [response.business_plan],
                 };
                 console.log("convert_data", convert_data);
 
@@ -279,7 +277,7 @@ export default function ProjectCreatePage() {
         getAllIndustry();
     }, []);
     return (
-        <Stack>
+        <Stack className="h-fit">
             <Stack direction={"row"} gap={2} className="p-4 bg-white">
                 <Typography.Title
                     level={4}
@@ -797,77 +795,99 @@ export default function ProjectCreatePage() {
                                 />
                             </Stack>
                         </Stack>
-                        <Stack className="flex flex-col">
-                            <p className={styles.thirdTitle}>
-                                Ảnh bìa bài viết <span>*</span>
-                            </p>
-                            {/* <UploadImage
-                                setImgUrl={handleChangeImage("images")}
-                                imageUrl={formData.images}
-                                isEditable={true}
-                                hasError={""}
-                                setIsFirstRemoved={(e) => {}}
-                            /> */}
-                            <UploadImage
-                                setImgUrl={handleChangeImage("images")}
-                                imageUrl={formData.images}
-                                isEditable={true}
-                                hasError={""}
-                                isFirstRemoved={isFirstRemoved}
-                                setIsFirstRemoved={setIsfirstRemoved}
-                            />
-                        </Stack>
-                        <Stack className="flex flex-col ">
-                            <p className={styles.thirdTitle}>
-                                Pitchingdeck <span>*</span>
-                            </p>
-                            <UploadImage
-                                setImgUrl={handleChangeImage("pitching_deck")}
-                                imageUrl={formData.pitching_deck}
-                                isEditable={true}
-                                hasError={""}
-                                setIsFirstRemoved={(e) => {}}
-                            />
-                        </Stack>
-                        <Stack className="flex flex-col ">
-                            <p className={styles.thirdTitle}>
-                                Hợp đồng mẫu <span>*</span>
-                            </p>
-                            <UploadImage
-                                setImgUrl={handleChangeImage(
-                                    "contract_template"
+                        <Stack
+                            direction={"row"}
+                            className="w-full justify-between"
+                        >
+                            <div className="flex flex-col w-[calc(20%-12px)]   ">
+                                <p className={styles.thirdTitle}>
+                                    Ảnh bìa bài viết <span>*</span>
+                                </p>
+                                {(formData.images.length > 0 ||
+                                    isFirstRemoved) && (
+                                    <UploadImage
+                                        key="upload_image_images"
+                                        setImgUrl={handleChangeImage("images")}
+                                        imageUrl={formData.images}
+                                        isEditable={!isView}
+                                        hasError={""}
+                                        isFirstRemoved={isFirstRemoved}
+                                        setIsFirstRemoved={setIsfirstRemoved}
+                                    />
                                 )}
-                                imageUrl={formData.contract_template}
-                                isEditable={true}
-                                hasError={""}
-                                setIsFirstRemoved={(e) => {}}
-                            />
-                        </Stack>
-                        <Stack className="flex flex-col">
-                            <p className={styles.thirdTitle}>
-                                Lộ trình tài chính <span>*</span>
-                            </p>
-                            <UploadImage
-                                setImgUrl={handleChangeImage(
-                                    "financial_roadmap"
+                            </div>
+                            <div className="flex flex-col w-[calc(20%-12px)]">
+                                <p className={styles.thirdTitle}>
+                                    Pitchingdeck <span>*</span>
+                                </p>
+                                {(formData.pitching_deck.length > 0 ||
+                                    isFirstRemoved) && (
+                                    <UploadImage
+                                        key="upload_image_pitching_deck"
+                                        setImgUrl={handleChangeImage(
+                                            "pitching_deck"
+                                        )}
+                                        imageUrl={formData.pitching_deck}
+                                        isEditable={!isView}
+                                        hasError={""}
+                                        setIsFirstRemoved={(e) => {}}
+                                    />
                                 )}
-                                imageUrl={formData.financial_roadmap}
-                                isEditable={true}
-                                hasError={""}
-                                setIsFirstRemoved={(e) => {}}
-                            />
-                        </Stack>
-                        <Stack className="flex flex-col ">
-                            <p className={styles.thirdTitle}>
-                                Kế hoạch kinh doanh <span>*</span>
-                            </p>
-                            <UploadImage
-                                setImgUrl={handleChangeImage("business_plan")}
-                                imageUrl={formData.business_plan}
-                                isEditable={true}
-                                hasError={""}
-                                setIsFirstRemoved={(e) => {}}
-                            />
+                            </div>
+                            <div className="flex flex-col w-[calc(20%-12px)]">
+                                <p className={styles.thirdTitle}>
+                                    Hợp đồng mẫu <span>*</span>
+                                </p>
+                                {(formData.contract_template.length > 0 ||
+                                    isFirstRemoved) && (
+                                    <UploadImage
+                                        key="upload_image_contract_template"
+                                        setImgUrl={handleChangeImage(
+                                            "contract_template"
+                                        )}
+                                        imageUrl={formData.contract_template}
+                                        isEditable={!isView}
+                                        hasError={""}
+                                        setIsFirstRemoved={(e) => {}}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex flex-col w-[calc(20%-12px)]">
+                                <p className={styles.thirdTitle}>
+                                    Lộ trình tài chính <span>*</span>
+                                </p>
+                                {(formData.financial_roadmap.length > 0 ||
+                                    isFirstRemoved) && (
+                                    <UploadImage
+                                        key="upload_image_financial_roadmap"
+                                        setImgUrl={handleChangeImage(
+                                            "financial_roadmap"
+                                        )}
+                                        imageUrl={formData.financial_roadmap}
+                                        isEditable={!isView}
+                                        hasError={""}
+                                        setIsFirstRemoved={(e) => {}}
+                                    />
+                                )}
+                            </div>
+                            <div className="flex flex-col w-[calc(20%-12px)]">
+                                <p className={styles.thirdTitle}>
+                                    Kế hoạch kinh doanh <span>*</span>
+                                </p>
+                                {(formData.business_plan.length > 0 ||
+                                    isFirstRemoved) && (
+                                    <UploadImage
+                                        key="upload_image_business_plan"
+                                        setImgUrl={handleChangeImage(
+                                            "business_plan"
+                                        )}
+                                        imageUrl={formData.business_plan}
+                                        isEditable={!isView}
+                                        hasError={""}
+                                        setIsFirstRemoved={(e) => {}}
+                                    />
+                                )}
+                            </div>
                         </Stack>
                     </Stack>
                 </Box>
