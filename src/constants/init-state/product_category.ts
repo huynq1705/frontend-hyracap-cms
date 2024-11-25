@@ -1,7 +1,7 @@
 export const INIT_PRODUCT_CATEGORY = {
     name: "",
-    min_duration: 0,
-    max_duration: 0,
-    min_interest_rate: 0,
+    min_duration: "",
+    max_duration: "",
+    min_interest_rate: "",
 };
 export type InitProductCategoryKeys = typeof INIT_PRODUCT_CATEGORY;

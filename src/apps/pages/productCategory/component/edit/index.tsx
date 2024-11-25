@@ -9,12 +9,19 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import MyTextField from "@/components/input-custom-v2/text-field";
 import { INIT_PRODUCT_CATEGORY } from "@/constants/init-state/product_category";
 import HeaderModalEdit from "@/components/header-modal-edit";
-import MySwitch from "@/components/input-custom-v2/switch";
 
 const VALIDATE = {
     name: "Hãy nhập tên danh mục sản phẩm",
+    min_duration: "Hãy nhập thời hạn",
+    max_duration: "Hãy nhập thời hạn",
+    min_interest_rate: "Hãy nhập lãi suất",
 };
-const KEY_REQUIRED = ["name"];
+const KEY_REQUIRED = [
+    "name",
+    "min_duration",
+    "max_duration",
+    "min_interest_rate",
+];
 interface EditPageProps {
     onClose: () => void;
     refetch: () => void;
@@ -51,9 +58,11 @@ export default function EditProductCategoryPage(props: EditPageProps) {
             if (response) {
                 const convert_data = {
                     name: response.name,
-                    min_duration: response.min_duration,
-                    max_duration: response.max_duration,
-                    min_interest_rate: response.min_interest_rate,
+                    min_duration: response.min_duration ?? "",
+                    max_duration: response.max_duration ?? "",
+                    min_interest_rate: response.min_interest_rate
+                        ? response.min_interest_rate
+                        : "",
                 };
                 setFormData(convert_data);
             }
@@ -98,7 +107,7 @@ export default function EditProductCategoryPage(props: EditPageProps) {
             dispatch(
                 setGlobalNoti({
                     type: "error",
-                    message: "createError",
+                    message: "Tạo thất bại",
                 })
             );
             console.error(error);
@@ -142,7 +151,7 @@ export default function EditProductCategoryPage(props: EditPageProps) {
                 type = "info";
             }
             if (response.statusCode === 200) {
-                message = "Tạo danh mục sản phẩm thành công";
+                message = "Chỉnh sửa thành công";
                 type = "success";
                 handleCancel();
             }
@@ -182,8 +191,8 @@ export default function EditProductCategoryPage(props: EditPageProps) {
         <>
             <HeaderModalEdit onClose={handleCancel} />
             <div className="wrapper-edit-page">
-                <div className="">
-                    {/* name */}
+                {/* name */}
+                <div className="wrapper-from items-end">
                     <MyTextField
                         label="Tên danh mục"
                         errors={errors}
@@ -253,12 +262,12 @@ export default function EditProductCategoryPage(props: EditPageProps) {
                         disabled={isView}
                     />
                 </div>
-                <ActionsEditPage
-                    actions={actions}
-                    isView={isView}
-                    isBigBtn={true}
-                />
             </div>
+            <ActionsEditPage
+                actions={actions}
+                isView={isView}
+                isBigBtn={true}
+            />
         </>
     );
 }

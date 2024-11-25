@@ -32,10 +32,10 @@ export const INIT_PROJECT: {
     metrics: Metric[];
     description: string;
     industry_ids: number[];
-    pitching_deck: string;
-    contract_template: string;
-    financial_roadmap: string;
-    business_plan: string;
+    pitching_deck: string[];
+    contract_template: string[];
+    financial_roadmap: string[];
+    business_plan: string[];
 } = {
     name: "",
     thumbnail: "",
@@ -67,10 +67,10 @@ export const INIT_PROJECT: {
     metrics: [],
     description: "",
     industry_ids: [],
-    pitching_deck: "",
-    contract_template: "",
-    financial_roadmap: "",
-    business_plan: "",
+    pitching_deck: [],
+    contract_template: [],
+    financial_roadmap: [],
+    business_plan: [],
 };
 
 export type InitProjectKeys = typeof INIT_PROJECT;
