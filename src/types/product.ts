@@ -2,11 +2,13 @@ import { BaseItemResponse } from "./types";
 
 export interface ResponseProductItem extends BaseItemResponse {
     name: string;
-    min_invest: number;
-    max_invest: number;
-    min_duration: number;
-    max_duration: number;
-    current_interest_rate: number;
+    min_invest: string;
+    max_invest: string;
+    min_duration: string;
+    max_duration: string;
+    total_capacity: string;
+    total_invested: string;
+    current_interest_rate: string;
     category_id: number;
 }
 

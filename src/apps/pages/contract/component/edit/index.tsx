@@ -287,7 +287,7 @@ export default function EditPage(props: EditPageProps) {
                         </p>
 
                         <h4>BÊN GÓP VỐN (BÊN B):</h4>
-                        <div className="flex items-center gap-3 pb-3">
+                        <div className="flex items-center gap-3 pb-5">
                             <p>Ông/bà: </p>
                             <MySelect
                                 configUI={{

@@ -464,9 +464,9 @@ const StaffTable = (props: ListStaffProps) => {
         () => keySearch?.text?.toString() ?? "",
         [keySearch?.text, pathname]
     );
-    useEffect(() => {
-        refetch();
-    }, [window.location.href]);
+    // useEffect(() => {
+    //     refetch();
+    // }, [window.location.href]);
     return (
         <>
             <Box className="h-full">

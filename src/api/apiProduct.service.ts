@@ -38,13 +38,11 @@ export default function apiProductService(): ProductService {
             name: payload.name,
             min_invest: payload.min_invest,
             max_invest: payload.max_invest,
-            total_capacity: (+payload.max_invest).toFixed(4).toString(),
+            total_capacity: (+payload.total_capacity).toFixed(4).toString(),
             min_duration: +payload.min_duration,
             max_duration: +payload.max_duration,
             category_id: +payload.category_id,
-            interest_rate: (+(Number(payload.interest_rate) / 100).toFixed(
-                4
-            )).toString(),
+            interest_rate: payload.interest_rate.toString(),
         };
         const result = validateRequiredKeys(convert_payload, requiredKeys);
         if (!result.isValid) return result;
@@ -70,13 +68,11 @@ export default function apiProductService(): ProductService {
             name: payload.name,
             min_invest: payload.min_invest,
             max_invest: payload.max_invest,
-            total_capacity: (+payload.max_invest).toFixed(4).toString(),
+            total_capacity: (+payload.total_capacity).toFixed(4).toString(),
             min_duration: +payload.min_duration,
             max_duration: +payload.max_duration,
             category_id: +payload.category_id,
-            new_interest_rate: (+(Number(payload.interest_rate) / 100).toFixed(
-                4
-            )).toString(),
+            new_interest_rate: payload.interest_rate.toString(),
             effective_from: formatDate(payload.effective_from, "YYYYMMDD"),
         };
         console.log("convert_payload", convert_payload);

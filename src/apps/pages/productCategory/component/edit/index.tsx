@@ -77,7 +77,11 @@ export default function EditProductCategoryPage(props: EditPageProps) {
     };
     const handleCreate = async () => {
         console.log("formData", formData);
-
+        if (+formData.min_duration >= +formData.max_duration) {
+            setErrors(["min_duration", "max_duration"]);
+            VALIDATE.min_duration = "Thời hạn tối thiểu < Thời hạn tối đa";
+            VALIDATE.max_duration = "Thời hạn tối đa > Thời hạn tối thiểu";
+        }
         try {
             const response = await postProductCategory(formData, KEY_REQUIRED);
             let message = "Tạo danh mục sản phẩm thất bại";

@@ -33,6 +33,8 @@ const VALIDATE = {
     min_duration: "Hãy nhập thời hạn",
     max_invest: "Hãy nhập hạn mức đầu tư",
     min_invest: "Hãy nhập hạn mức đầu tư",
+    total_capacity: "Hãy nhập tổng hạn mức đầu tư",
+    interest_rate: "Hãy nhập mức lãi xuất",
 };
 const KEY_REQUIRED = [
     "name",
@@ -42,6 +44,7 @@ const KEY_REQUIRED = [
     "min_duration",
     "max_invest",
     "min_invest",
+    "total_capacity",
 ];
 interface EditPageProps {
     open: boolean;
@@ -121,9 +124,9 @@ export default function EditPage(props: EditPageProps) {
                     max_invest: response.max_invest.toString(),
                     min_duration: response.min_duration.toString(),
                     max_duration: response.max_duration.toString(),
-                    interest_rate: (
-                        response.current_interest_rate * 100
-                    ).toString(),
+                    total_capacity: response.total_capacity.toString(),
+                    total_invested: response.total_invested.toString(),
+                    interest_rate: response.current_interest_rate,
                     category_id: response.category_id,
                     effective_from: dayjs().add(1, "day").format("DD-MM-YYYY"),
                 };
@@ -140,9 +143,15 @@ export default function EditPage(props: EditPageProps) {
     };
 
     const handleCreate = async () => {
-        if (formData.category_id === 409) {
-            setErrors(["category_id"]);
-            VALIDATE.category_id = "Tên danh mục sản phẩm đã tồn tại";
+        if (+formData.min_invest > +formData.max_invest) {
+            VALIDATE.category_id = "Hạn mức tối thiểu < hạn mức tối đa";
+            setErrors(["min_invest"]);
+            return;
+        }
+        if (+formData.min_duration > +formData.max_duration) {
+            VALIDATE.category_id = "Thời hạn tối thiểu < thời hạn tối đa";
+            setErrors(["min_duration"]);
+            return;
         }
         try {
             const response = await postProduct(formData, KEY_REQUIRED);
@@ -391,6 +400,32 @@ export default function EditPage(props: EditPageProps) {
 
                     {/* amount */}
                     <CurrencyInput
+                        label="Tổng hạn mức"
+                        name="total_capacity"
+                        handleChange={handleOnchangeCurrency}
+                        values={formData}
+                        errors={errors}
+                        validate={VALIDATE}
+                        required={KEY_REQUIRED}
+                        configUI={{ width: "calc(50% - 12px)" }}
+                        disabled={isView}
+                    />
+                    {/* amount */}
+                    {!pathname.includes("create") && (
+                        <CurrencyInput
+                            label="Tổng tiền đã gọi vốn"
+                            name="total_invested"
+                            handleChange={handleOnchangeCurrency}
+                            values={formData}
+                            errors={errors}
+                            validate={VALIDATE}
+                            required={KEY_REQUIRED}
+                            configUI={{ width: "calc(50% - 12px)" }}
+                            disabled={true}
+                        />
+                    )}
+                    {/* amount */}
+                    <CurrencyInput
                         label="Hạn mức tối thiểu"
                         name="min_invest"
                         handleChange={handleOnchangeCurrency}
@@ -411,6 +446,24 @@ export default function EditPage(props: EditPageProps) {
                         validate={VALIDATE}
                         required={KEY_REQUIRED}
                         configUI={{ width: "calc(50% - 12px)" }}
+                        disabled={isView}
+                    />
+                    <MyTextField
+                        label="Mức lãi suất hiện tại"
+                        errors={errors}
+                        required={KEY_REQUIRED}
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        name="interest_rate"
+                        placeholder="Nhập"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        validate={VALIDATE}
+                        unit="%"
+                        max={100}
+                        min={0}
+                        type="number"
                         disabled={isView}
                     />
                     {/* commission */}
@@ -450,24 +503,7 @@ export default function EditPage(props: EditPageProps) {
                         type="number"
                         disabled={isView}
                     />
-                    <MyTextField
-                        label="Mức lãi suất hiện tại"
-                        errors={errors}
-                        required={KEY_REQUIRED}
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        name="interest_rate"
-                        placeholder="Nhập"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        validate={VALIDATE}
-                        unit="%"
-                        max={100}
-                        min={0}
-                        type="number"
-                        disabled={isView}
-                    />
+
                     {!isView && (
                         <MyDatePickerMui
                             label="Lãi suất có hiệu lực từ ngày"
