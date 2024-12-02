@@ -36,6 +36,7 @@ const VALIDATE = {
     email: "Hãy nhập tên sản phẩm",
     phone: "Hãy nhập số điện thoại",
     current_staff_position: "Hãy chọn chức vụ",
+    password: "Hãy nhập mật khẩu",
 };
 const KEY_REQUIRED = [
     "first_name",
@@ -43,6 +44,7 @@ const KEY_REQUIRED = [
     "email",
     "phone",
     "current_staff_position",
+    "password",
 ];
 interface EditPageProps {
     open: boolean;
@@ -167,7 +169,7 @@ export default function EditPage(props: EditPageProps) {
         } else {
             dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_STAFF);
+            // setFormData(INIT_STAFF);
             refetch();
         }
         setTimeout(() => {

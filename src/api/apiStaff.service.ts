@@ -39,7 +39,7 @@ export default function apiStaffService(): StaffService {
             email: payload.email,
             phone: payload.phone,
             password: payload.password,
-            role_id: +payload.role_id,
+            role_id: null,
             current_staff_position: +payload.current_staff_position,
         };
         const result = validateRequiredKeys(new_payload, requiredKeys);
@@ -47,14 +47,14 @@ export default function apiStaffService(): StaffService {
         console.log(result);
         if (!result.isValid) return result;
         const convert_payload = {
-            first_name: payload.first_name,
-            last_name: payload.last_name,
-            email: payload.email,
-            phone: payload.phone,
-            password: payload.password,
+            first_name: new_payload.first_name,
+            last_name: new_payload.last_name,
+            email: new_payload.email,
+            phone: new_payload.phone,
+            password: new_payload.password,
             role_id: null,
             staff_position: {
-                position_id: +payload.current_staff_position,
+                position_id: +new_payload.current_staff_position,
             },
         };
         return httpClient
@@ -81,20 +81,18 @@ export default function apiStaffService(): StaffService {
             email: payload.email,
             phone: payload.phone,
             password: payload.password,
-            role_id: +payload.role_id,
             current_staff_position: +payload.current_staff_position,
         };
 
         const result = validateRequiredKeys(new_payload, requiredKeys);
         if (!result.isValid) return result;
         const convert_payload = {
-            first_name: payload.first_name,
-            last_name: payload.last_name,
-            email: payload.email,
-            phone: payload.phone,
-            role_id: null,
+            first_name: new_payload.first_name,
+            last_name: new_payload.last_name,
+            email: new_payload.email,
+            phone: new_payload.phone,
             staff_position: {
-                position_id: +payload.current_staff_position,
+                position_id: +new_payload.current_staff_position,
             },
         };
         return httpClient

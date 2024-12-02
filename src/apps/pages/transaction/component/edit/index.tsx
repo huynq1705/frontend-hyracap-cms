@@ -27,8 +27,10 @@ import apiContractService from "@/api/apiContract.service";
 import { INIT_TRANSACTION } from "@/constants/init-state/transaction";
 const VALIDATE = {
     amount: "Hãy nhập số tiền",
+    code: "Nhập mã giao dịch",
+    contract_id: "Chọn hợp đồng",
 };
-const KEY_REQUIRED = ["amount"];
+const KEY_REQUIRED = ["amount", "contract_id", "code"];
 const OptionTypeSelect = [
     {
         value: "0",
@@ -148,7 +150,7 @@ export default function EditPage(props: EditPageProps) {
         } else {
             dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_TRANSACTION);
+            // setFormData(INIT_TRANSACTION);
             refetch();
         }
         setTimeout(() => {

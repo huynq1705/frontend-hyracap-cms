@@ -146,6 +146,22 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             </span>
                         </div>
                     </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Tổng tiền đã gọi vốn
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>{formatCurrency(+item?.total_invested)}</span>
+                        </div>
+                    </div>
+                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                        <span className="font-medium text-gray-9 text-sm">
+                            Mục tiêu
+                        </span>
+                        <div className="text-gray-9 text-base py-1">
+                            <span>{formatCurrency(+item?.total_capacity)}</span>
+                        </div>
+                    </div>
 
                     {(hasPermission.update || hasPermission.delete) && (
                         <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
@@ -362,6 +378,42 @@ const getColumns = (props: ColumnProps) => {
                         }}
                     >
                         {(d?.current_interest_rate * 100).toFixed(2) + " %"}
+                    </Typography>
+                </Stack>
+            ),
+        },
+        {
+            title: "Tổng tiền đã gọi vốn",
+            dataIndex: "total_invested",
+            width: 200,
+            render: (_: any, d: any) => (
+                <Stack direction={"column"} spacing={1}>
+                    <Typography
+                        style={{
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            color: "var(--text-color-three)",
+                        }}
+                    >
+                        {formatCurrency(+d?.total_invested)}
+                    </Typography>
+                </Stack>
+            ),
+        },
+        {
+            title: "Mục tiêu",
+            dataIndex: "total_capacity",
+            width: 200,
+            render: (_: any, d: any) => (
+                <Stack direction={"column"} spacing={1}>
+                    <Typography
+                        style={{
+                            fontSize: "14px",
+                            fontWeight: 400,
+                            color: "var(--text-color-three)",
+                        }}
+                    >
+                        {formatCurrency(+d?.total_capacity)}
                     </Typography>
                 </Stack>
             ),
