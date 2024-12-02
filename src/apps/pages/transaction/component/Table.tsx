@@ -369,10 +369,6 @@ const CTable = (props: CTableProps) => {
     useEffect(() => {
         const new_key_search = parseQueryParams(param_payload);
         setKeySearch(new_key_search);
-        if (pathname.includes("add_category") && !popup.create_category) {
-            togglePopup("create_category");
-            return;
-        }
 
         if (!code && !pathname.includes("create")) return;
         if (pathname.includes("view") && !popup.edit) {
@@ -484,8 +480,8 @@ const CTable = (props: CTableProps) => {
             {popup.edit && (
                 <ModalEditTransaction
                     open={popup.edit}
-                    toggle={(param) => {
-                        togglePopup(param);
+                    toggle={() => {
+                        togglePopup("edit");
                         navigate(`/admin/transaction`);
                     }}
                     refetch={refetch}
