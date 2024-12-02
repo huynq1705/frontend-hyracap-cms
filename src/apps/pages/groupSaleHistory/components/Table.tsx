@@ -76,9 +76,9 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>
-                                {`${item?.leader.first_name}` +
-                                    " " +
-                                    `${item?.leader.last_name}`}
+                                {item?.leader
+                                    ? `${item.leader.first_name} ${item.leader.last_name}`
+                                    : "Đang cập nhật"}
                             </span>
                         </div>
                     </div>
@@ -193,9 +193,9 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {`${d?.leader.first_name}` +
-                            " " +
-                            `${d?.leader.last_name}`}
+                        {d?.leader
+                            ? `${d.leader.first_name} ${d.leader.last_name}`
+                            : "Đang cập nhật"}
                     </Typography>
                 </Stack>
             ),

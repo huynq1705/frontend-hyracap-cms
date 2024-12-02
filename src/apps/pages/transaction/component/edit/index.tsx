@@ -148,7 +148,7 @@ export default function EditPage(props: EditPageProps) {
         if (isView) {
             navigate(`/admin/transaction/edit/${code}`);
         } else {
-            dispatch(setIsLoading(true));
+            // dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
             // setFormData(INIT_TRANSACTION);
             refetch();
