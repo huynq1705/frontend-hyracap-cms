@@ -21,6 +21,7 @@ export interface PayloadBlogItem {
     blog_category_id: number;
     creator_id: number;
     link_video: string[];
+    project_id: number;
 }
 export interface ResponseAccountItemConvert extends BaseItemResponse {
     id: number;

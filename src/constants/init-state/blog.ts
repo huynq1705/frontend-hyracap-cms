@@ -12,6 +12,7 @@ export const INIT_BLOG = {
     update_at: new Date(),
     is_active: true,
     description: "",
+    project_id: 0,
 };
 
 export type InitBlogKeys = typeof INIT_BLOG;
