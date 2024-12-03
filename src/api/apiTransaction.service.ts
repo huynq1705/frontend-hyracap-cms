@@ -33,10 +33,9 @@ export default function apiTransactionService(): TransactionService {
             time: new Date().toISOString().split(".")[0] + "Z",
             contract_id: +payload.contract_id,
         };
-        console.log("convert_payload", convert_payload);
+
         const result = validateRequiredKeys(convert_payload, requiredKeys);
 
-        console.log(result);
         if (!result.isValid) return result;
         return httpClient
             .post<ResponseFromServerV2<any>>(

@@ -24,8 +24,8 @@ const FlexBox = styled(Box)(() => ({ display: "flex", alignItems: "center" }));
 
 // inital login credentials
 const initialValues = {
-    username: "0559611720",
-    password: "123456",
+    username: "mailyhai814@gmail.com",
+    password: "992003Hai",
     remember: true,
 };
 

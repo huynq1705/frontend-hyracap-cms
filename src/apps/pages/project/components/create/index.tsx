@@ -20,6 +20,7 @@ import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui"
 import UploadImage from "@/apps/pages/blog/components/UploadImg";
 import MySelect from "@/components/input-custom-v2/select";
 import { ResponseProjectItem } from "@/types/project.type";
+import UploadFile from "../UploadFile";
 const VALIDATE = {};
 
 const KEY_REQUIRED = [""];
@@ -340,7 +341,7 @@ export default function ProjectCreatePage() {
                                 title={T("cancel")}
                                 type="bgWhite"
                                 onClick={() => {
-                                    navigate("/admin/schedule");
+                                    navigate("/admin/project");
                                 }}
                             />
                         )}
@@ -803,90 +804,75 @@ export default function ProjectCreatePage() {
                                 <p className={styles.thirdTitle}>
                                     Ảnh bìa bài viết <span>*</span>
                                 </p>
-                                {(formData.images.length > 0 ||
-                                    isFirstRemoved) && (
-                                    <UploadImage
-                                        key="upload_image_images"
-                                        setImgUrl={handleChangeImage("images")}
-                                        imageUrl={formData.images}
-                                        isEditable={!isView}
-                                        hasError={""}
-                                        isFirstRemoved={isFirstRemoved}
-                                        setIsFirstRemoved={setIsfirstRemoved}
-                                    />
-                                )}
+                                <UploadImage
+                                    key="upload_image_images"
+                                    setImgUrl={handleChangeImage("images")}
+                                    imageUrl={formData.images}
+                                    isEditable={!isView}
+                                    hasError={""}
+                                    isFirstRemoved={isFirstRemoved}
+                                    setIsFirstRemoved={setIsfirstRemoved}
+                                />
                             </div>
                             <div className="flex flex-col w-[calc(20%-12px)]">
                                 <p className={styles.thirdTitle}>
                                     Pitchingdeck <span>*</span>
                                 </p>
-                                {(formData.pitching_deck.length > 0 ||
-                                    isFirstRemoved) && (
-                                    <UploadImage
-                                        key="upload_image_pitching_deck"
-                                        setImgUrl={handleChangeImage(
-                                            "pitching_deck"
-                                        )}
-                                        imageUrl={formData.pitching_deck}
-                                        isEditable={!isView}
-                                        hasError={""}
-                                        setIsFirstRemoved={(e) => {}}
-                                    />
-                                )}
+                                <UploadFile
+                                    key="upload_image_pitching_deck"
+                                    setImgUrl={handleChangeImage(
+                                        "pitching_deck"
+                                    )}
+                                    imageUrl={formData.pitching_deck}
+                                    isEditable={!isView}
+                                    hasError={""}
+                                    setIsFirstRemoved={(e) => {}}
+                                />
                             </div>
                             <div className="flex flex-col w-[calc(20%-12px)]">
                                 <p className={styles.thirdTitle}>
                                     Hợp đồng mẫu <span>*</span>
                                 </p>
-                                {(formData.contract_template.length > 0 ||
-                                    isFirstRemoved) && (
-                                    <UploadImage
-                                        key="upload_image_contract_template"
-                                        setImgUrl={handleChangeImage(
-                                            "contract_template"
-                                        )}
-                                        imageUrl={formData.contract_template}
-                                        isEditable={!isView}
-                                        hasError={""}
-                                        setIsFirstRemoved={(e) => {}}
-                                    />
-                                )}
+                                <UploadFile
+                                    key="upload_image_contract_template"
+                                    setImgUrl={handleChangeImage(
+                                        "contract_template"
+                                    )}
+                                    imageUrl={formData.contract_template}
+                                    isEditable={!isView}
+                                    hasError={""}
+                                    setIsFirstRemoved={(e) => {}}
+                                />
                             </div>
                             <div className="flex flex-col w-[calc(20%-12px)]">
                                 <p className={styles.thirdTitle}>
                                     Lộ trình tài chính <span>*</span>
                                 </p>
-                                {(formData.financial_roadmap.length > 0 ||
-                                    isFirstRemoved) && (
-                                    <UploadImage
-                                        key="upload_image_financial_roadmap"
-                                        setImgUrl={handleChangeImage(
-                                            "financial_roadmap"
-                                        )}
-                                        imageUrl={formData.financial_roadmap}
-                                        isEditable={!isView}
-                                        hasError={""}
-                                        setIsFirstRemoved={(e) => {}}
-                                    />
-                                )}
+                                <UploadFile
+                                    key="upload_image_financial_roadmap"
+                                    setImgUrl={handleChangeImage(
+                                        "financial_roadmap"
+                                    )}
+                                    imageUrl={formData.financial_roadmap}
+                                    isEditable={!isView}
+                                    hasError={""}
+                                    setIsFirstRemoved={(e) => {}}
+                                />
                             </div>
                             <div className="flex flex-col w-[calc(20%-12px)]">
                                 <p className={styles.thirdTitle}>
                                     Kế hoạch kinh doanh <span>*</span>
                                 </p>
-                                {(formData.business_plan.length > 0 ||
-                                    isFirstRemoved) && (
-                                    <UploadImage
-                                        key="upload_image_business_plan"
-                                        setImgUrl={handleChangeImage(
-                                            "business_plan"
-                                        )}
-                                        imageUrl={formData.business_plan}
-                                        isEditable={!isView}
-                                        hasError={""}
-                                        setIsFirstRemoved={(e) => {}}
-                                    />
-                                )}
+                                <UploadFile
+                                    key="upload_image_business_plan"
+                                    setImgUrl={handleChangeImage(
+                                        "business_plan"
+                                    )}
+                                    imageUrl={formData.business_plan}
+                                    isEditable={!isView}
+                                    hasError={""}
+                                    setIsFirstRemoved={(e) => {}}
+                                />
                             </div>
                         </Stack>
                     </Stack>
