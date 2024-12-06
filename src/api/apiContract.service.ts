@@ -36,13 +36,15 @@ export default function apiContractService(): ContractService {
         payload: InitContractKeys,
         requiredKeys: string[]
     ) => {
+        console.log("payload", payload);
         const convert_payload: PayloadContract = {
             capital: payload.capital,
             duration: +payload.duration,
             product_id: +payload.product_id,
             user_sub: +payload.user_sub,
-            staff_id: userInfo[0].id,
+            staff_id: userInfo.id,
         };
+
         console.log("convert_payload", convert_payload);
         const result = validateRequiredKeys(convert_payload, requiredKeys);
 
@@ -69,9 +71,9 @@ export default function apiContractService(): ContractService {
         const convert_payload: PayloadContract = {
             capital: payload.capital,
             duration: +payload.duration,
-            product_id: payload.product_id,
-            user_sub: payload.user_sub,
-            staff_id: userInfo?.[0].id,
+            product_id: +payload.product_id,
+            user_sub: +payload.user_sub,
+            staff_id: userInfo.id,
         };
         console.log("convert_payload", convert_payload);
 

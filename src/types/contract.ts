@@ -49,7 +49,7 @@ export interface PayloadUserConTract {
 }
 
 export interface PayloadContract {
-    capital: number;
+    capital: string;
     duration: number;
     product_id: number;
     user_sub: number;
