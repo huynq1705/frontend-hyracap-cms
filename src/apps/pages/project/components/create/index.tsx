@@ -278,7 +278,7 @@ export default function ProjectCreatePage() {
         getAllIndustry();
     }, []);
     return (
-        <Stack className="h-fit">
+        <Stack className="h-auto">
             <Stack direction={"row"} gap={2} className="p-4 bg-white">
                 <Typography.Title
                     level={4}

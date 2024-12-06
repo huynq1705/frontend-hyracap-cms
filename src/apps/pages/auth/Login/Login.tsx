@@ -82,7 +82,7 @@ const Login = () => {
                     <div className="content">
                         <img
                             className="img-preview-login"
-                            src="/assets/images/bg_login.jpg"
+                            src="/assets/images/trading_bg.jpeg"
                             alt="preview_login"
                         />
                     </div>

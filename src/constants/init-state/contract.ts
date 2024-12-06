@@ -1,8 +1,8 @@
 export const INIT_CONTRACT = {
-    capital: 0,
+    capital: "",
     duration: "",
-    product_id: 0,
-    user_sub: 0,
-    staff_id: 0,
+    product_id: "",
+    user_sub: "",
+    staff_id: "",
 };
 export type InitContractKeys = typeof INIT_CONTRACT;

@@ -18,6 +18,7 @@ import CurrencyInput from "@/components/input-custom-v2/currency";
 import MyTextField from "@/components/input-custom-v2/text-field";
 import { INIT_CONTRACT } from "@/constants/init-state/contract";
 import apiContractService from "@/api/apiContract.service";
+import CustomAutocomplete from "@/components/input-custom-v2/select/index-autocomplete";
 const VALIDATE = {
     capital: "Hãy nhập số vốn đầu tư",
     user_sub: "Hãy chọn tên khách hàng",
@@ -110,6 +111,7 @@ export default function EditPage(props: EditPageProps) {
     };
     const handleCreate = async () => {
         try {
+            console.log("first");
             const response = await postContract(formData, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
             let type = "error";
@@ -125,7 +127,6 @@ export default function EditPage(props: EditPageProps) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
                 setFormData(INIT_CONTRACT);
-
                 handleCancel();
             }
             dispatch(
@@ -209,6 +210,21 @@ export default function EditPage(props: EditPageProps) {
             [name]: value,
         }));
     };
+    const handleFindName = (value: string, label: string) => {
+        const accountMatch = account.find((c) => c.value === value);
+
+        if (accountMatch) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                user_sub: accountMatch.value,
+            }));
+        } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                user_sub: value,
+            }));
+        }
+    };
     const handleOnchangeCurrency = (name: string, value: any) => {
         setFormData((prev) => ({
             ...prev,
@@ -287,14 +303,14 @@ export default function EditPage(props: EditPageProps) {
                         </p>
 
                         <h4>BÊN GÓP VỐN (BÊN B):</h4>
-                        <div className="flex items-center gap-3 pb-5">
+                        <div className="flex items-center gap-3 pb-3">
                             <p>Ông/bà: </p>
-                            <MySelect
+                            <CustomAutocomplete
                                 configUI={{
                                     width: "calc(50% - 12px)",
                                 }}
                                 name="user_sub"
-                                handleChange={handleOnchange}
+                                handleChange={handleFindName}
                                 values={formData}
                                 options={account}
                                 errors={errors}
@@ -302,7 +318,7 @@ export default function EditPage(props: EditPageProps) {
                                 required={KEY_REQUIRED}
                                 itemsPerPage={5} // Adjust items per page as needed
                                 disabled={isView}
-                                placeholder="Chọn"
+                                placeholder="Chọn khách hàng"
                             />
                             {/* <p>. Sinh năm: ……………………………………</p> */}
                         </div>
@@ -313,7 +329,7 @@ export default function EditPage(props: EditPageProps) {
                         <p>Thường trú: …………………………………………………………………………</p> */}
 
                         <h4>ĐIỀU 1: ĐỐI TƯỢNG HỢP ĐỒNG</h4>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 pb-3">
                             <p>
                                 Bên B đồng ý góp vốn cho Bên A và cùng với đối
                                 tác của Bên A để đầu tư vào sản phẩm:
@@ -342,7 +358,7 @@ export default function EditPage(props: EditPageProps) {
                             Tổng giá trị vốn góp Bên A và Bên B góp để thực hiện
                             nội dung nêu tại Điều 1 là: …
                         </p>
-                        <p className="flex items-center gap-3">
+                        <p className="flex items-center gap-3 pb-3">
                             Nay Bên B góp vốn cho Bên A với số tiền:{" "}
                             <CurrencyInput
                                 name="capital"
@@ -355,7 +371,7 @@ export default function EditPage(props: EditPageProps) {
                                 disabled={isView}
                             />
                         </p>
-                        <p className="flex items-center gap-3">
+                        <p className="flex items-center gap-3 pb-3">
                             Trong thời gian:{" "}
                             <MyTextField
                                 errors={errors}
