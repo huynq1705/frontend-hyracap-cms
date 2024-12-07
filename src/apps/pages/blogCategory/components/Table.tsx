@@ -282,7 +282,7 @@ const getColumns = (props: ColumnProps) => {
                                     navigate(
                                         `/admin/blog_category/view/${d?.id}?${searchParams}`
                                     );
-                                    // actions.togglePopup("edit");
+                                    actions.togglePopup("edit");
                                 }}
                             />
                             {/* )} */}
@@ -293,7 +293,7 @@ const getColumns = (props: ColumnProps) => {
                                     navigate(
                                         `/admin/blog_category/edit/${d?.id}?${searchParams}`
                                     );
-                                    // actions.togglePopup("edit");
+                                    actions.togglePopup("edit");
                                 }}
                             />
                             {/* )} */}
@@ -336,15 +336,12 @@ const ListBlogCategory = (props: ListBlogCategoryProps) => {
         return params;
     };
 
-    const handleSearch = (
-        objParam = {
-            ...keySearch,
-            // text: keySearch?.text?.toString().trim(),
-        }
-    ) => {
-        let filter = convertObjToParam(objParam, {
-            page: 1,
+    // search
+    const handleSearch = () => {
+        let filter = convertObjToParam(keySearch, {
+            page: currentPage,
             take: pageSize,
+            name__ilike: keySearch?.text?.toString().trim(),
         });
         let url = `${pathname}${filter}`;
         navigate(url);
@@ -367,20 +364,17 @@ const ListBlogCategory = (props: ListBlogCategoryProps) => {
     const param_payload = useMemo(() => {
         return handleGetParam();
     }, [searchParams]);
+    console.log("pppppp", param_payload);
+
     const [popup, setPopup] = useState({
         edit: false,
         remove: false,
         upload: false,
     });
-    const [keySearch, setKeySearch] = useState<KeySearchType>({
-        is_public__eq: "",
-        // category__in:"3;4;5",
-        name__ilike: "",
-        ...key_search,
-    });
+    const [keySearch, setKeySearch] = useState<KeySearchType>({});
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const { data, isLoading, refetch } = useQuery({
-        queryKey: ["GET_BLOG_CATEGORY", param_payload, pathname],
+        queryKey: ["GET_BLOG_CATEGORY", param_payload, window.location.href],
         queryFn: () => getBlogCategory({ ...param_payload }),
         keepPreviousData: true,
     });
@@ -399,13 +393,16 @@ const ListBlogCategory = (props: ListBlogCategoryProps) => {
             .filter((item: any) => selectedRowKeys.includes(item.key))
             .map((item: any) => item.name);
     }, [selectedRowKeys]);
+
     const text_search = useMemo(
-        () => keySearch?.name__ilike?.toString() ?? "",
-        [keySearch?.name__ilike, pathname]
+        () => keySearch?.text?.toString() ?? "",
+        [keySearch?.text, pathname]
     );
     //--effect
 
     useEffect(() => {
+        const new_key_search = parseQueryParams(param_payload);
+        setKeySearch(new_key_search);
         if (code || !pathname.includes("create")) return;
 
         if (pathname.includes("create") && !popup.edit) {
@@ -439,39 +436,11 @@ const ListBlogCategory = (props: ListBlogCategoryProps) => {
                             setKeySearch={(value?: string) => {
                                 setKeySearch((prev) => ({
                                     ...prev,
-                                    name__ilike: value || "",
+                                    text: value || "",
                                 }));
                             }}
                             handleSearch={handleSearch}
                             placeholder="Tìm theo tên danh mục"
-                        />
-                        <MySelect
-                            options={[
-                                { label: "Tất cả", value: "" },
-                                { label: "Public", value: "1" },
-                                { label: "Unpublic", value: "0" },
-                            ]}
-                            label={T("status")}
-                            errors={[]}
-                            required={[]}
-                            configUI={{
-                                width: "calc(25% - 12px)",
-                            }}
-                            className="max-sm:!w-full"
-                            name="is_public__eq"
-                            placeholder="Tất cả"
-                            handleChange={(e) => {
-                                const name = e?.target?.name;
-                                const value = e?.target?.value;
-                                const new_key_search: any = { ...keySearch };
-                                new_key_search[name] = value;
-                                setKeySearch(new_key_search);
-                                handleSearch(new_key_search);
-                            }}
-                            values={keySearch}
-                            validate={{}}
-                            type="select-one"
-                            itemsPerPage={5}
                         />
                     </div>
 
@@ -529,9 +498,9 @@ const ListBlogCategory = (props: ListBlogCategoryProps) => {
             {popup.edit && (
                 <ModalEdit
                     open={popup.edit}
-                    toggle={() => {
-                        togglePopup("edit");
-                        navigate(`/admin/blog_category?${searchParams}`);
+                    toggle={(param) => {
+                        togglePopup(param);
+                        navigate(`/admin/blog_category`);
                     }}
                     refetch={refetch}
                 />

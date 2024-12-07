@@ -20,6 +20,7 @@ import useCustomTranslation from "@/hooks/useCustomTranslation";
 import { useDispatch } from "react-redux";
 import { setGlobalNoti } from "@/redux/slices/app.slice";
 import { v4 as uuidv4 } from "uuid";
+import LogoIcon from "@/components/icons/logo";
 const FlexBox = styled(Box)(() => ({ display: "flex", alignItems: "center" }));
 
 // inital login credentials
@@ -121,11 +122,14 @@ const Login = () => {
                             >
                                 <div className="max-sm:!hidden">
                                     <div className="logo-hyracap">
-                                        <img
+                                        {/* <img
                                             className="img-logo-hyracap"
                                             src="/src/assets/images/logo/logo-hyracap-2.svg"
                                             alt="logo_hyracap"
-                                        />
+                                        /> */}
+                                        <div>
+                                            <LogoIcon />
+                                        </div>
                                     </div>
                                     <div className="title-login">
                                         Chào mừng bạn quay trở lại

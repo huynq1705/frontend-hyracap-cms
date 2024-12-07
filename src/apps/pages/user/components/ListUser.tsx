@@ -478,12 +478,7 @@ const ListUser = (props: ListRequestDepositProps) => {
     const [searchParams] = useSearchParams();
     const { currentPage, pageSize, key_search } = handleGetPage(searchParams);
     const [keySearchText, setKeySearchText] = useState<any>(key_search.text);
-    const [keySearch, setKeySearch] = useState<KeySearchType>({
-        status__eq: "",
-        position__like: "",
-        type__eq: "0",
-        key_search,
-    });
+    const [keySearch, setKeySearch] = useState<KeySearchType>({});
     const param_payload = useMemo(() => {
         return handleGetParam(searchParams);
     }, [searchParams]);
@@ -545,7 +540,7 @@ const ListUser = (props: ListRequestDepositProps) => {
         let filter = convertObjToParam(keySearch, {
             page: 1,
             take: pageSize,
-            phone__ilike: keySearchText,
+            text: keySearchText,
         });
         let url = `${pathname}${filter}`;
         navigate(url);

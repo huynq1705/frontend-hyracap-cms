@@ -13,6 +13,7 @@ interface PositionCurrent {
     direct_bonus_rate: string;
     kpi_bonus_base: string;
     monthly_average_target: string;
+    management_bonus_rate: string;
     position_id: number;
 }
 export interface PayloadPosition {
@@ -22,5 +23,6 @@ export interface PayloadPosition {
         direct_bonus_rate: string;
         kpi_bonus_base: string;
         monthly_average_target: string;
+        management_bonus_rate: string;
     };
 }

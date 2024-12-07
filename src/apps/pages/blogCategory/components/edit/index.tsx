@@ -23,13 +23,14 @@ const VALIDATE = {
 };
 const KEY_REQUIRED = ["name"];
 interface EditPageProps {
+    open: boolean;
     onClose: () => void;
     refetch: () => void;
 }
 // add new page : 7. giao diện edit
 
 export default function EditBlogCategoryPage(props: EditPageProps) {
-    const { onClose, refetch } = props;
+    const { onClose, refetch, open } = props;
     const { code } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -189,8 +190,10 @@ export default function EditBlogCategoryPage(props: EditPageProps) {
     }, []);
 
     useEffect(() => {
-        getDetail();
-    }, [code]);
+        code && getDetail();
+        if (open) {
+        }
+    }, [code, open]);
     return (
         <>
             <HeaderModalEdit onClose={handleCancel} />

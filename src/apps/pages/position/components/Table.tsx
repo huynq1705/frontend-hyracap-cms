@@ -85,10 +85,8 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>
-                                {(
-                                    +item?.current_position_setting
-                                        .direct_bonus_rate * 100
-                                ).toFixed(2) + " %"}
+                                {(+item?.current_position_setting
+                                    .direct_bonus_rate).toFixed(2) + " %"}
                             </span>
                         </div>
                     </div>
@@ -245,9 +243,8 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {(
-                            +d?.current_position_setting.direct_bonus_rate * 100
-                        ).toFixed(2) + " %"}
+                        {(+d?.current_position_setting
+                            .direct_bonus_rate).toFixed(2) + " %"}
                     </Typography>
                 </Stack>
             ),
@@ -456,6 +453,7 @@ const PositionTable = (props: PositionTableProps) => {
         let url = `${pathname}${filter}`;
         navigate(url);
     };
+    console.log("filter>>>>>>>>>>>", keySearch);
 
     const actions = {
         openRemoveConfirm: (key_popup: string, code_item: string) => {

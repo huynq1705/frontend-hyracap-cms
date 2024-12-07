@@ -88,12 +88,12 @@ const CustomAutocomplete: React.FC<CustomAutocompleteProps> = (
                 height: "fit-content",
             }}
         >
-            {/* <label className="label">
+            <label className="label">
                 {label}
                 {required && required.includes(name) && (
                     <span style={{ color: "red" }}>(*)</span>
                 )}
-            </label> */}
+            </label>
             <FormControl
                 fullWidth
                 variant="outlined"

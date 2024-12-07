@@ -3,14 +3,13 @@ import { Box, Dialog } from "@mui/material";
 import EditBlogCategoryPage from "./edit";
 export interface ModalEditProps {
     open: boolean;
-    toggle: () => void;
+    toggle: (key: any) => void;
     refetch: () => void;
-    keyOther?: string;
 }
 const transition = (props: any) => <Transition direction="up" {...props} />;
 
 export default function ModalEdit(props: ModalEditProps) {
-    const { keyOther, open, toggle, refetch } = props;
+    const { open, toggle, refetch } = props;
 
     return (
         <Dialog
@@ -19,14 +18,22 @@ export default function ModalEdit(props: ModalEditProps) {
             keepMounted
             fullWidth
             maxWidth={"sm"}
-            onClose={toggle}
+            onClose={() => {
+                toggle("edit");
+            }}
             aria-describedby="alert-dialog-slide-description"
+            sx={{
+                zIndex: "998 !important",
+            }}
         >
-            <Box
-                height={"fit-content"}
-                className="relative overflow-x-hidden  boxEditType"
-            >
-                <EditBlogCategoryPage onClose={toggle} refetch={refetch} />
+            <Box height={"fit-content"} className="relative overflow-x-hidden">
+                <EditBlogCategoryPage
+                    onClose={() => {
+                        toggle("edit");
+                    }}
+                    refetch={refetch}
+                    open={open}
+                />
             </Box>
         </Dialog>
     );

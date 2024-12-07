@@ -59,6 +59,12 @@ export const TITLE_PAGE = [
         key_title: "staff",
         key: "staff",
     },
+    // group
+    {
+        pathname: "/group",
+        key_title: "group",
+        key: "group",
+    },
     // blog_category
     {
         pathname: "/blog_category",
