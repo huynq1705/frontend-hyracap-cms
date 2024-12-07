@@ -4,4 +4,4 @@ export const INIT_TRANSACTION = {
     code: "",
     contract_id: 0,
 };
-export type InitContractKeys = typeof INIT_TRANSACTION;
+export type InitTransactionKeys = typeof INIT_TRANSACTION;

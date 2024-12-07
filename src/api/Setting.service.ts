@@ -43,18 +43,20 @@ export default function apiSettingService(): SettingService {
             kpi_bonus_max_percent: (
                 +payload.kpi_bonus_max_percent / 100
             ).toString(),
-            jan_rate: (+payload.jan_rate / 100).toString(),
-            mar_rate: (+payload.mar_rate / 100).toString(),
-            feb_rate: (+payload.feb_rate / 100).toString(),
-            apr_rate: (+payload.apr_rate / 100).toString(),
-            may_rate: (+payload.may_rate / 100).toString(),
-            jun_rate: (+payload.jun_rate / 100).toString(),
-            jul_rate: (+payload.jul_rate / 100).toString(),
-            aug_rate: (+payload.aug_rate / 100).toString(),
-            sep_rate: (+payload.sep_rate / 100).toString(),
-            oct_rate: (+payload.oct_rate / 100).toString(),
-            nov_rate: (+payload.nov_rate / 100).toString(),
-            dec_rate: (+payload.dec_rate / 100).toString(),
+            monthly_rates: [
+                payload.jan_rate,
+                payload.mar_rate,
+                payload.feb_rate,
+                payload.apr_rate,
+                payload.may_rate,
+                payload.jun_rate,
+                payload.jul_rate,
+                payload.aug_rate,
+                payload.sep_rate,
+                payload.oct_rate,
+                payload.nov_rate,
+                payload.dec_rate,
+            ],
             effective_from: payload.effective_from,
         };
         const result = validateRequiredKeys(convert_payload, requiredKeys);

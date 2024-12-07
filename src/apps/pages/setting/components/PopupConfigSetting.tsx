@@ -39,35 +39,11 @@ const KEY_REQUIRED = [
     "direct_bonus_min_percent",
     "kpi_bonus_min_percent",
     "kpi_bonus_max_percent",
-    "jan_rate",
-    "feb_rate",
-    "mar_rate",
-    "apr_rate",
-    "may_rate",
-    "jun_rate",
-    "jul_rate",
-    "aug_rate",
-    "sep_rate",
-    "oct_rate",
-    "nov_rate",
-    "dec_rate",
 ];
 const VALIDATE = {
     direct_bonus_min_percent: "Vui lòng điền đủ thông tin",
     kpi_bonus_min_percent: "Vui lòng điền đủ thông tin",
     kpi_bonus_max_percent: "Vui lòng điền đủ thông tin",
-    jan_rate: "Vui lòng điền đủ thông tin",
-    feb_rate: "Vui lòng điền đủ thông tin",
-    mar_rate: "Vui lòng điền đủ thông tin",
-    apr_rate: "Vui lòng điền đủ thông tin",
-    may_rate: "Vui lòng điền đủ thông tin",
-    jun_rate: "Vui lòng điền đủ thông tin",
-    jul_rate: "Vui lòng điền đủ thông tin",
-    aug_rate: "Vui lòng điền đủ thông tin",
-    sep_rate: "Vui lòng điền đủ thông tin",
-    oct_rate: "Vui lòng điền đủ thông tin",
-    nov_rate: "Vui lòng điền đủ thông tin",
-    dec_rate: "Vui lòng điền đủ thông tin",
     effective_from: "2024-09-10",
 };
 const months = [
@@ -185,11 +161,11 @@ function PopupConfigSetting(props: PopupConfirmRemoveProps) {
                 TransitionComponent={Transition}
                 onClose={handleClose}
                 fullWidth={true}
-                maxWidth={"sm"}
+                maxWidth={"md"}
                 // hidden
-                // scroll="paper"
+                // scroll=""
                 aria-describedby="alert-dialog-slide-description"
-                PaperProps={{ sx: { borderRadius: 2.5 } }}
+                PaperProps={{ sx: { borderRadius: 2.5, overflow: "hidden" } }}
                 sx={{ zIndex: 1000 }}
             >
                 <Box>
@@ -228,7 +204,7 @@ function PopupConfigSetting(props: PopupConfirmRemoveProps) {
                     <Stack
                         spacing={3}
                         sx={{
-                            overflowY: "auto",
+                            overflowY: "scroll",
                             scrollbarWidth: "thin",
                             maxHeight: "64vh",
                             p: 3,

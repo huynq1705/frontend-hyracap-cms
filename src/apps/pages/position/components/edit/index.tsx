@@ -4,34 +4,28 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import apiCommonService from "@/api/apiCommon.service";
 import ActionsEditPage from "@/components/actions-edit-page";
 import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
-import { ResponseProductItem } from "@/types/product";
 import MyTextField from "@/components/input-custom-v2/text-field";
-import MyTextareaAutosize from "@/components/input-custom-v2/textarea-autosize";
-import MySelect from "@/components/input-custom-v2/select";
 import CurrencyInput from "@/components/input-custom-v2/currency";
-import apiProductCategoryService from "@/api/apiProductCategory.service";
 import { OptionSelect } from "@/types/types";
-import MySwitch from "@/components/input-custom-v2/switch";
 import HeaderModalEdit from "@/components/header-modal-edit";
 import { getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
-import ListImage from "@/components/list-image";
-import { Timeline, UploadFile } from "antd";
-import { v4 as uuidv4 } from "uuid";
-import CustomCurrencyInput from "@/components/input-custom-v2/currency";
-import X2ChevronDown from "@/components/icons/x2-chevron-down";
-import apiHistoryService from "@/api/apiHistory.service";
-import { formatDate } from "@/utils/date-time";
-import dayjs from "dayjs";
 import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
-import { INIT_SETTING } from "@/constants/init-state/setting";
 import { INIT_POSITION } from "@/constants/init-state/position";
 import { ResponsePositionItem } from "@/types/position.type";
 import apiPositionService from "@/api/Position.service";
 const VALIDATE = {
     name: "Hãy nhập tên sản phẩm",
+    direct_bonus_rate: "Vui lòng điền đầy đủ thông tin",
+    kpi_bonus_base: "Vui lòng điền đầy đủ thông tin",
+    monthly_average_target: "Vui lòng điền đầy đủ thông tin",
 };
-const KEY_REQUIRED = ["name"];
+const KEY_REQUIRED = [
+    "name",
+    "direct_bonus_rate",
+    "kpi_bonus_base",
+    "monthly_average_target",
+];
 interface EditPageProps {
     open: boolean;
     onClose: () => void;
@@ -48,7 +42,6 @@ export default function EditPage(props: EditPageProps) {
     const { code } = useParams();
     const { pathname } = useLocation();
     //--state
-    const [productCategory, setProductCategory] = useState<OptionSelect>([]);
     const [errors, setErrors] = useState<string[]>([]);
     const [formData, setFormData] = useState(INIT_POSITION);
     const [popup, setPopup] = useState({
@@ -76,6 +69,9 @@ export default function EditPage(props: EditPageProps) {
                     name: response.name,
                     effective_from:
                         response.current_position_setting?.effective_from,
+                    management_bonus_rate:
+                        response.current_position_setting
+                            ?.management_bonus_rate,
                     direct_bonus_rate:
                         response.current_position_setting?.direct_bonus_rate,
                     kpi_bonus_base:
@@ -97,6 +93,8 @@ export default function EditPage(props: EditPageProps) {
     };
 
     const handleCreate = async () => {
+        console.log("formData", formData);
+
         try {
             const response = await postPosition(formData, KEY_REQUIRED);
             let message = `Tạo ${title_page} thất bại`;
@@ -108,6 +106,8 @@ export default function EditPage(props: EditPageProps) {
             if (response === true) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
+                setFormData(INIT_POSITION);
+
                 handleCancel();
             }
             dispatch(
@@ -134,9 +134,9 @@ export default function EditPage(props: EditPageProps) {
         if (isView) {
             navigate(`/admin/position/edit/${code}`);
         } else {
-            dispatch(setIsLoading(true));
+            // dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_POSITION);
+            // setFormData(INIT_POSITION);
             refetch();
         }
         setTimeout(() => {
@@ -280,6 +280,18 @@ export default function EditPage(props: EditPageProps) {
                     <CurrencyInput
                         label="Thưởng đạt kpi cơ bản"
                         name="kpi_bonus_base"
+                        handleChange={handleOnchangeCurrency}
+                        values={formData}
+                        errors={errors}
+                        validate={VALIDATE}
+                        required={KEY_REQUIRED}
+                        configUI={{ width: "calc(50% - 12px)" }}
+                        disabled={isView}
+                    />
+                    {/* kpi_bonus_base */}
+                    <CurrencyInput
+                        label="Thưởng hoa hồng nhóm"
+                        name="management_bonus_rate"
                         handleChange={handleOnchangeCurrency}
                         values={formData}
                         errors={errors}

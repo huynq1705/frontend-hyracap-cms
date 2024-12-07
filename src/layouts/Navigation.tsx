@@ -126,6 +126,12 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         // role: ["admin"],
                         children: [
                             {
+                                label: `Quản lý nhóm`,
+                                key: "admin/group",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                            {
                                 label: `QL ${t("employee-manager")}`,
                                 key: "admin/staff",
                                 type: "link",

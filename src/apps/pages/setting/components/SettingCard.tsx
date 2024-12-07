@@ -23,6 +23,7 @@ const months = [
 
 export default function SettingCard(props: SettingCardProps) {
     const { data } = props;
+    console.log("data", data);
     return (
         <Stack
             direction={"row"}
@@ -111,10 +112,11 @@ export default function SettingCard(props: SettingCardProps) {
                     rowSpacing={1}
                     columnSpacing={{ xs: 1, sm: 2, md: 4 }}
                 >
-                    {months.map((month) => (
+                    {months.map((month, index) => (
                         <Grid item xs={4} md={3} key={month.key}>
                             {month.name}:{" "}
-                            {(Number(data[month.key]) * 100).toFixed(2) + " %"}
+                            {Number(data.monthly_rates[index]).toFixed(2) +
+                                " %"}
                         </Grid>
                     ))}
                 </Grid>

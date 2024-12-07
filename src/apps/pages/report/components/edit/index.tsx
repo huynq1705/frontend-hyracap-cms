@@ -18,6 +18,7 @@ import MySelect from "@/components/input-custom-v2/select";
 import UploadImage from "@/apps/pages/blog/components/UploadImg";
 import { Stack } from "@mui/material";
 import { Typography } from "antd";
+import UploadFile from "@/apps/pages/project/components/UploadFile";
 const VALIDATE = {
     name: "Hãy nhập tên sản phẩm",
 };
@@ -239,7 +240,7 @@ export default function EditPage(props: EditPageProps) {
                         File báo cáo
                     </Typography.Title>
                     <Stack className="w-full">
-                        <UploadImage
+                        <UploadFile
                             setImgUrl={handleChangeImage("file")}
                             imageUrl={formData.file}
                             isEditable={true}

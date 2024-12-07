@@ -56,6 +56,7 @@ const getColumns = (props: ColumnProps) => {
                         border: "1px solid",
                         borderColor: "var(--success-color)",
                         backgroundColor: "var(--bg-color-primary)",
+                        padding: "8px !important",
                     }}
                     className={clsx("rounded-lg")}
                 >
@@ -66,7 +67,7 @@ const getColumns = (props: ColumnProps) => {
                             gap: "16px",
                             justifyContent: "flex-start",
                             alignItems: "center",
-                            px: "9px",
+                            p: "9px",
                         }}
                     >
                         {hasPermission.delete && (

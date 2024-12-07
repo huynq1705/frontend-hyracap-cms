@@ -23,8 +23,12 @@ const UploadFile: React.FC<UploadFileProps> = ({
 }) => {
     const BASE_URL = import.meta.env.VITE_APP_BASE_API_URL;
     const BASE_IMG_URL = import.meta.env.VITE_APP_URL_IMG;
-
-    console.log("imageUrl", imageUrl);
+    // Normalize `imageUrl` to always be an array
+    const normalizedImageUrl = useMemo(
+        () => (Array.isArray(imageUrl) ? imageUrl : imageUrl ? [imageUrl] : []),
+        [imageUrl]
+    );
+    console.log("normalizedImageUrl", normalizedImageUrl);
     const propsUpload: UploadProps = useMemo(
         () => ({
             name: "files",
@@ -33,25 +37,13 @@ const UploadFile: React.FC<UploadFileProps> = ({
             disabled: !isEditable,
             action: `${BASE_URL}files/upload_blog`,
             listType: "text",
-            // beforeUpload: (file) => {
-            //     const isImg = file.type.startsWith("image/");
-            //     if (!isImg) {
-            //         message.error(`${file.name} is not an image file`);
-            //     }
-            //     return isImg || Upload.LIST_IGNORE;
-            // },
 
-            defaultFileList:
-                imageUrl.length === 1
-                    ? [
-                          {
-                              uid: imageUrl[0],
-                              name: imageUrl[0],
-                              status: "done",
-                              url: `${imageUrl[0]}`,
-                          },
-                      ]
-                    : [],
+            defaultFileList: normalizedImageUrl.map((url, index) => ({
+                uid: `${index}`,
+                name: url,
+                status: "done",
+                url: url,
+            })),
             onChange(info) {
                 const { status } = info.file;
                 if (status !== "uploading") {

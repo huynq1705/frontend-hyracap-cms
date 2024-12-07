@@ -435,7 +435,7 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo mã nhân viên, tên nhân viên"
+                                placeholder="Tìm theo tên nhóm"
                             />
                         </div>
                     </div>
@@ -450,7 +450,7 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                         <StatusCardV2
                             statusData={{
                                 label: "Tổng nhóm",
-                                value: total.total_user,
+                                value: total.total_user ?? 0,
                                 color: "#217732",
                             }}
                             customCss="min-w-[250px]"
@@ -459,8 +459,7 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                             statusData={{
                                 label: "Tổng kpi",
                                 value: `${
-                                    data &&
-                                    formatCurrencyNoUnit(+total.total_kpi)
+                                    formatCurrencyNoUnit(+total.total_kpi) ?? 0
                                 } vnđ`,
                                 color: "#7A52DE",
                             }}
@@ -470,9 +469,8 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                             statusData={{
                                 label: "Tổng tiền hoa hồng",
                                 value: `${
-                                    data &&
-                                    formatCurrencyNoUnit(+total.total_kpi)
-                                } vnđ`,
+                                    formatCurrencyNoUnit(+total.total_kpi) ?? 0
+                                }  vnđ`,
                                 color: "#7A52DE",
                             }}
                             customCss="min-w-[250px]"
