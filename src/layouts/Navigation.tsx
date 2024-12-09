@@ -125,14 +125,14 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         betaItem: true, // type navbar
                         // role: ["admin"],
                         children: [
+                            // {
+                            //     label: `Quản lý nhóm`,
+                            //     key: "admin/group",
+                            //     type: "link",
+                            //     // role: ["admin"],
+                            // },
                             {
-                                label: `Quản lý nhóm`,
-                                key: "admin/group",
-                                type: "link",
-                                // role: ["admin"],
-                            },
-                            {
-                                label: `QL ${t("employee-manager")}`,
+                                label: `${T("employee-manager")}`,
                                 key: "admin/staff",
                                 type: "link",
                                 // role: ["admin"],

@@ -172,14 +172,14 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </div>
                     </div>
 
-                    {(hasPermission.update || hasPermission.delete) && (
+                    {/* {(hasPermission.update || hasPermission.delete) && (
                         <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                             <span className="font-medium text-gray-9 text-sm">
                                 Thao tác
                             </span>
                             <div className="text-gray-9 text-base py-1">
                                 <div className="flex items-center g-8 justify-start space-x-4">
-                                    {/* {hasPermission.getDetail && (
+                                    {hasPermission.getDetail && (
                                         <ActionButton
                                             type="view"
                                             onClick={() =>
@@ -202,7 +202,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                                 )
                                             }
                                         />
-                                    )} */}
+                                    )}
                                     {hasPermission.delete && (
                                         <ActionButton
                                             type="remove"
@@ -218,7 +218,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 </div>
                             </div>
                         </div>
-                    )}
+                    )} */}
                 </div>
             ))}
         </div>
@@ -389,61 +389,61 @@ const getColumns = (props: ColumnProps) => {
                 </Stack>
             ),
         },
-        {
-            title: "Thao tác",
-            width: 100,
-            dataIndex: "actions",
-            fixed: "right" as const,
-            shadows: " box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.5);",
-            zIndex: 100,
-            render: (_: any, d: any) => (
-                <>
-                    {/* check permission */}
-                    <Stack
-                        direction={"row"}
-                        sx={{
-                            gap: "16px",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            px: "9px",
-                            // position: 'absolute',
-                            // right: 0,
-                            // top: 0,
-                            // bottom: 0
-                        }}
-                    >
-                        {/* {hasPermission.getDetail && (
-                            <ActionButton
-                                type="view"
-                                onClick={() =>
-                                    actions.openEditConfirm(true, "detail", d)
-                                }
-                            />
-                        )}
-                        {hasPermission.update && (
-                            <ActionButton
-                                type="edit"
-                                onClick={() =>
-                                    actions.openEditConfirm(true, "edit", d)
-                                }
-                            />
-                        )} */}
-                        {hasPermission.delete && (
-                            <ActionButton
-                                type="remove"
-                                onClick={() =>
-                                    actions.openRemoveConfirm(
-                                        true,
-                                        d?.id,
-                                        d?.full_name
-                                    )
-                                }
-                            />
-                        )}
-                    </Stack>
-                </>
-            ),
-        },
+        // {
+        //     title: "Thao tác",
+        //     width: 100,
+        //     dataIndex: "actions",
+        //     fixed: "right" as const,
+        //     shadows: " box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.5);",
+        //     zIndex: 100,
+        //     render: (_: any, d: any) => (
+        //         <>
+        //             {/* check permission */}
+        //             <Stack
+        //                 direction={"row"}
+        //                 sx={{
+        //                     gap: "16px",
+        //                     justifyContent: "flex-start",
+        //                     alignItems: "center",
+        //                     px: "9px",
+        //                     // position: 'absolute',
+        //                     // right: 0,
+        //                     // top: 0,
+        //                     // bottom: 0
+        //                 }}
+        //             >
+        //                 {/* {hasPermission.getDetail && (
+        //                     <ActionButton
+        //                         type="view"
+        //                         onClick={() =>
+        //                             actions.openEditConfirm(true, "detail", d)
+        //                         }
+        //                     />
+        //                 )}
+        //                 {hasPermission.update && (
+        //                     <ActionButton
+        //                         type="edit"
+        //                         onClick={() =>
+        //                             actions.openEditConfirm(true, "edit", d)
+        //                         }
+        //                     />
+        //                 )} */}
+        //                 {hasPermission.delete && (
+        //                     <ActionButton
+        //                         type="remove"
+        //                         onClick={() =>
+        //                             actions.openRemoveConfirm(
+        //                                 true,
+        //                                 d?.id,
+        //                                 d?.full_name
+        //                             )
+        //                         }
+        //                     />
+        //                 )}
+        //             </Stack>
+        //         </>
+        //     ),
+        // },
     ];
     return columns;
 };

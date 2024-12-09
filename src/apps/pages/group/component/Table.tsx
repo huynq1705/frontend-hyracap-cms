@@ -16,21 +16,17 @@ import { formatCurrency } from "@/utils";
 import usePermissionCheck from "@/hooks/usePermission";
 import SearchBoxTable from "@/components/search-box-table";
 import ActionButton from "@/components/button/action";
-import ModalEditProduct from "./ModalEdit";
-import apiProductService from "@/api/apiProduct.service";
 import { KeySearchType } from "@/types/types";
-import ModalEdit from "../../productCategory/component/ModalEdit";
 import {
     convertObjToParam,
     handleGetPage,
     parseQueryParams,
 } from "@/utils/filter";
-import CStatus from "@/components/status";
-import apiCommonService from "@/api/apiCommon.service";
 import { useDispatch, useSelector } from "react-redux";
 import { selectPage } from "@/redux/selectors/page.slice";
 import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
+import apiPositionService from "@/api/Position.service";
 
 interface ColumnProps {
     actions: {
@@ -61,7 +57,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Mã sản phẩm
+                            Mã chức vụ
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>{item?.id}</span>
@@ -70,7 +66,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Danh mục sản phẩm
+                            Tên chức vụ
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span
@@ -81,85 +77,40 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             </span>
                         </div>
                     </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Tên sản phẩm
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span
-                                className="font-medium"
-                                style={{ color: "#50945d" }}
-                            >
-                                {item?.category.name ?? "- -"}
-                            </span>
-                        </div>
-                    </div>
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối thiểu
+                            % thưởng trực tiếp
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>
-                                {formatCurrency(Number(item?.min_invest)) ??
-                                    "- -"}
+                                {(+item?.current_position_setting
+                                    .direct_bonus_rate).toFixed(2) + " %"}
                             </span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Hạn mức tối đa
+                            % thưởng kpi cơ bản
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>
-                                {formatCurrency(Number(item?.max_invest)) ??
-                                    "- -"}
+                                {formatCurrency(
+                                    +item?.current_position_setting
+                                        .kpi_bonus_base
+                                )}
                             </span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối thiểu
+                            KPI tối thiểu
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            <span>{item?.min_duration ?? "- -"} Ngày</span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Thời hạn tối đa
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.max_duration ?? "- -"} Ngày</span>
-                        </div>
-                    </div>
-
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Mức lãi suất hiện tại
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {(item?.current_interest_rate * 100).toFixed(
-                                    2
-                                ) + " %"}
-                            </span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Tổng tiền đã gọi vốn
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{formatCurrency(+item?.total_invested)}</span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Mục tiêu
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{formatCurrency(+item?.total_capacity)}</span>
+                            {formatCurrency(
+                                +item?.current_position_setting
+                                    .monthly_average_target
+                            )}
                         </div>
                     </div>
 
@@ -175,7 +126,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="view"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/products/view/${item?.id}`
+                                                    `/admin/position/view/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -186,7 +137,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="edit"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/products/edit/${item?.id}`
+                                                    `/admin/position/edit/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -218,13 +169,13 @@ const getColumns = (props: ColumnProps) => {
     const { T } = useCustomTranslation();
     const { pathname } = useLocation();
     //permissions
-    const { hasPermission } = usePermissionCheck("products");
+    const { hasPermission } = usePermissionCheck("position");
 
     const { actions } = props;
     const columns: any = [
         {
             title: "STT",
-            dataIndex: "products",
+            dataIndex: "position",
 
             render: (_: any, item: any, index: number) => (
                 <Stack direction={"column"} spacing={1}>
@@ -243,8 +194,8 @@ const getColumns = (props: ColumnProps) => {
             width: 50,
         },
         {
-            title: "Mã sản phẩm",
-            dataIndex: "products",
+            title: "Mã chức vụ",
+            dataIndex: "position",
 
             render: (_: any, item: any, index: number) => (
                 <Stack direction={"column"} spacing={1}>
@@ -263,8 +214,9 @@ const getColumns = (props: ColumnProps) => {
             width: 120,
         },
         {
-            title: "Tên sản phẩm",
-            dataIndex: "product",
+            title: "Tên chức vụ",
+            dataIndex: "position",
+            fixed: "left" as const,
             render: (_: any, item: any) => (
                 <Typography
                     style={{
@@ -278,23 +230,8 @@ const getColumns = (props: ColumnProps) => {
             width: 220,
         },
         {
-            title: "Danh mục sản phẩm",
-            dataIndex: "product",
-            render: (_: any, item: any) => (
-                <Typography
-                    style={{
-                        fontSize: "14px",
-                        fontWeight: 500,
-                    }}
-                >
-                    {item?.category.name ?? "- -"}
-                </Typography>
-            ),
-            width: 220,
-        },
-        {
-            title: "Hạn mức tối thiểu",
-            dataIndex: "min_invest",
+            title: "% thưởng trực tiếp",
+            dataIndex: "direct_bonus_rate",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -305,14 +242,15 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {formatCurrency(Number(d?.min_invest))}
+                        {(+d?.current_position_setting
+                            .direct_bonus_rate).toFixed(2) + " %"}
                     </Typography>
                 </Stack>
             ),
         },
         {
-            title: "Hạn mức tối đa",
-            dataIndex: "max_invest",
+            title: "% thưởng kpi cơ bản",
+            dataIndex: "kpi_bonus_base",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -323,14 +261,16 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {formatCurrency(Number(d?.max_invest))}
+                        {formatCurrency(
+                            +d?.current_position_setting.kpi_bonus_base
+                        )}
                     </Typography>
                 </Stack>
             ),
         },
         {
-            title: "Thời hạn tối thiểu",
-            dataIndex: "min_duration",
+            title: "KPI tối thiểu",
+            dataIndex: "monthly_average_target",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -341,79 +281,9 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.min_duration + " Tháng"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Thời hạn tối đa",
-            dataIndex: "max_duration",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {d?.max_duration + " Tháng"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Mức lãi suất hiện tại",
-            dataIndex: "current_interest_rate",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {(d?.current_interest_rate).toFixed(2) + " %"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Tổng tiền đã gọi vốn",
-            dataIndex: "total_invested",
-            width: 200,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {formatCurrency(+d?.total_invested)}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "Mục tiêu",
-            dataIndex: "total_capacity",
-            width: 200,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {formatCurrency(+d?.total_capacity)}
+                        {formatCurrency(
+                            +d?.current_position_setting.monthly_average_target
+                        )}
                     </Typography>
                 </Stack>
             ),
@@ -443,7 +313,7 @@ const getColumns = (props: ColumnProps) => {
                                         type="view"
                                         onClick={() => {
                                             navigate(
-                                                `/admin/products/view/${d?.id}`
+                                                `/admin/position/view/${d?.id}`
                                             );
                                             actions.togglePopup("edit");
                                         }}
@@ -454,7 +324,7 @@ const getColumns = (props: ColumnProps) => {
                                         type="edit"
                                         onClick={() => {
                                             navigate(
-                                                `/admin/products/edit/${d?.id}`
+                                                `/admin/position/edit/${d?.id}`
                                             );
                                             actions.togglePopup("edit");
                                         }}
@@ -480,11 +350,11 @@ const getColumns = (props: ColumnProps) => {
     return columns;
 };
 
-interface CTableProps {
+interface GroupTableProps {
     authorizedPermissions?: any;
 }
 
-const CTable = (props: CTableProps) => {
+const GroupTable = (props: GroupTableProps) => {
     const { code } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -512,18 +382,20 @@ const CTable = (props: CTableProps) => {
     const [popup, setPopup] = useState({
         edit: false,
         remove: false,
+        upload: false,
+        create_category: false,
     });
     // search
     const [keySearch, setKeySearch] = useState<KeySearchType>({});
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const { getProduct } = apiProductService();
+    const { getPosition } = apiPositionService();
     //permissions
-    const { hasPermission } = usePermissionCheck("products");
+    const { hasPermission } = usePermissionCheck("position");
 
     const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ["GET_PRODUCT", param_payload, pathname],
-        queryFn: () => getProduct(param_payload),
+        queryKey: ["GET_POSITION", param_payload, pathname],
+        queryFn: () => getPosition(param_payload),
         keepPreviousData: true,
     });
     console.log("data", data);
@@ -551,14 +423,18 @@ const CTable = (props: CTableProps) => {
     useEffect(() => {
         const new_key_search = parseQueryParams(param_payload);
         setKeySearch(new_key_search);
+        if (pathname.includes("add_category") && !popup.create_category) {
+            togglePopup("create_category");
+            return;
+        }
 
         if (!code && !pathname.includes("create")) return;
         if (pathname.includes("view") && !popup.edit) {
-            navigate(`/admin/products/view/${code}`);
+            navigate(`/admin/position/view/${code}`);
             togglePopup("edit");
         }
         if (pathname.includes("edit") && !popup.edit) {
-            navigate(`/admin/products/edit/${code}`);
+            navigate(`/admin/position/edit/${code}`);
             togglePopup("edit");
         }
         if (pathname.includes("create") && !popup.edit) {
@@ -576,6 +452,7 @@ const CTable = (props: CTableProps) => {
         let url = `${pathname}${filter}`;
         navigate(url);
     };
+    console.log("filter>>>>>>>>>>>", keySearch);
 
     const actions = {
         openRemoveConfirm: (key_popup: string, code_item: string) => {
@@ -588,9 +465,9 @@ const CTable = (props: CTableProps) => {
         () => keySearch?.text?.toString() ?? "",
         [keySearch?.text, pathname]
     );
-    // useEffect(() => {
-    //     refetch();
-    // }, [window.location.href]);
+    useEffect(() => {
+        refetch();
+    }, [window.location.href]);
     return (
         <>
             <Box className="h-full">
@@ -606,7 +483,7 @@ const CTable = (props: CTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo tên sản phẩm"
+                                placeholder="Tìm theo mã chức vụ, tên chức vụ"
                             />
                         </div>
                     </div>
@@ -659,16 +536,16 @@ const CTable = (props: CTableProps) => {
             </Box>
 
             {/*  */}
-            {popup.edit && (
-                <ModalEditProduct
+            {/* {popup.edit && (
+                <ModalEditPosition
                     open={popup.edit}
-                    toggle={() => {
-                        togglePopup("edit");
-                        navigate(`/admin/products`);
+                    toggle={(param) => {
+                        togglePopup(param);
+                        navigate(`/admin/position`);
                     }}
                     refetch={refetch}
                 />
-            )}
+            )} */}
             {/*  */}
             <PopupConfirmRemove
                 listItem={selectedRowKeys}
@@ -679,8 +556,16 @@ const CTable = (props: CTableProps) => {
                 refetch={refetch}
                 name_item={selectedRowLabels}
             />
+            {/*  */}
+            <PopupConfirmImport
+                open={popup.upload}
+                handleClose={() => {
+                    togglePopup("upload");
+                }}
+                refetch={refetch}
+            />
         </>
     );
 };
 
-export default CTable;
+export default GroupTable;

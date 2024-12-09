@@ -23,43 +23,49 @@ const UploadFile: React.FC<UploadFileProps> = ({
 }) => {
     const BASE_URL = import.meta.env.VITE_APP_BASE_API_URL;
     const BASE_IMG_URL = import.meta.env.VITE_APP_URL_IMG;
-    // Normalize `imageUrl` to always be an array
+    const [internalFileList, setInternalFileList] = useState<
+        UploadProps["fileList"]
+    >([]);
+
     const normalizedImageUrl = useMemo(
         () => (Array.isArray(imageUrl) ? imageUrl : imageUrl ? [imageUrl] : []),
         [imageUrl]
     );
-    console.log("normalizedImageUrl", normalizedImageUrl);
+
+    useMemo(() => {
+        setInternalFileList(
+            normalizedImageUrl.map((url, index) => ({
+                uid: `${index}`,
+                name: url.split("/").pop() || `File ${index + 1}`,
+                status: "done",
+                url,
+            }))
+        );
+    }, [normalizedImageUrl]);
+
     const propsUpload: UploadProps = useMemo(
         () => ({
+            height: "200px",
             name: "files",
             multiple: false,
             maxCount: 1,
             disabled: !isEditable,
             action: `${BASE_URL}files/upload_blog`,
             listType: "text",
-
-            defaultFileList: normalizedImageUrl.map((url, index) => ({
-                uid: `${index}`,
-                name: url,
-                status: "done",
-                url: url,
-            })),
+            fileList: internalFileList,
             onChange(info) {
-                const { status } = info.file;
-                if (status !== "uploading") {
-                    console.log(info.file, info.fileList);
-                }
+                const { file, fileList } = info;
+                setInternalFileList([...fileList]);
+
+                const { status } = file;
                 if (status === "done") {
-                    const uploadedUrl = `${BASE_IMG_URL}${info.file.response.data[0].key}`;
-                    console.log("info", info);
+                    const uploadedUrl = `${BASE_IMG_URL}${file.response.data[0].key}`;
                     setImgUrl([uploadedUrl]);
-                    message.success(
-                        `${info.file.name} file uploaded successfully.`
-                    );
+                    message.success(`${file.name} tải lên thành công.`);
                 } else if (status === "error") {
-                    message.error(`${info.file.name} file upload failed.`);
+                    message.error(`${file.name} tải lên thất bại.`);
                 }
-                if (info.file.status === "removed") {
+                if (status === "removed") {
                     setImgUrl([]);
                 }
             },
@@ -72,11 +78,8 @@ const UploadFile: React.FC<UploadFileProps> = ({
                 setIsFirstRemoved(true);
                 setImgUrl([]);
             },
-            onDrop(e) {
-                console.log("Dropped files", e.dataTransfer.files);
-            },
         }),
-        [imageUrl.length, isEditable]
+        [internalFileList, isEditable]
     );
     return (
         <section className={`${hasError ? "hasErrorUpload" : ""}`}>

@@ -25,6 +25,7 @@ import { industryRouter } from "@/apps/pages/projectCategory/config";
 import { projectRouter } from "@/apps/pages/project/config";
 import { reportRouter } from "@/apps/pages/report/config";
 import { groupSaleHistoryRouter } from "@/apps/pages/groupSaleHistory/config";
+import { groupRouter } from "@/apps/pages/group/config";
 
 //collections
 //auth
@@ -91,6 +92,7 @@ const init_routes: RouteExtends[] = [
                     crumb: () => <BreadCrumbLink linkTo={"404"} />,
                 },
             },
+            ...groupRouter,
             ...reportRouter,
             ...projectRouter,
             ...industryRouter,
