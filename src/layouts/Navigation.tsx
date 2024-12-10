@@ -112,7 +112,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         // role: ["admin"],
                     },
                     {
-                        label: `Người dùng`,
+                        label: `Khách hàng`,
                         icon: <CustomerIcon />, // icon - name : tên ảnh svg
                         key: "admin/users",
                         type: "link",

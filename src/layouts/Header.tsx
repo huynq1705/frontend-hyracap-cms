@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import EmptyIcon from "@/components/icons/empty";
 import clsx from "clsx";
+import apiAccountService from "@/api/Account.service";
 interface HeaderProps {
     handleDrawerToggle: () => void;
 }
@@ -17,6 +18,8 @@ interface HeaderProps {
 const Header = (props: HeaderProps): JSX.Element => {
     const { handleDrawerToggle } = props;
     const { T } = useCustomTranslation();
+    const { getAccount } = apiAccountService();
+
     const [keySearch, setKeySearch] = useState("");
     const [openDropdown, setOpenDropdown] = useState(false);
     const [listCustomer, setListCustomer] = useState<any>(null);
@@ -28,12 +31,25 @@ const Header = (props: HeaderProps): JSX.Element => {
             alert("Tính năng đang phát triển");
         }
     };
-
+    const findCustomer = () => {
+        getAccount({ text: keySearch, page: 1, take: 999 })
+            .then((e) => {
+                console.log("jhagdfajdfka", e);
+                setListCustomer(e.data);
+            })
+            .catch((e) => {});
+    };
     useEffect(() => {
         if (isFirstRender) {
             setIsFirstRender(false);
             return;
         }
+
+        const timeout = setTimeout(() => {
+            findCustomer();
+        }, 500);
+
+        return () => clearTimeout(timeout);
     }, [keySearch]);
 
     return (
@@ -92,12 +108,12 @@ const Header = (props: HeaderProps): JSX.Element => {
                                         className="p-2 cursor-pointer hover:bg-[var(--bg-color-primary)]"
                                         onClick={() =>
                                             navigate(
-                                                `/admin/customer/view/${x.id}`
+                                                `/admin/users/view/${x.id}`
                                             )
                                         }
                                     >
                                         <b className="text-[var(--text-color-primary)]">
-                                            {x.full_name}
+                                            {x.firstName} {x.lastName}
                                         </b>
                                         <p>{x.phone_number}</p>
                                     </div>
