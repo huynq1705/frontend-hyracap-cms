@@ -105,9 +105,6 @@ export default function ProjectCreatePage() {
         }));
     };
     const handleChangeImage = (field: string) => (value: any) => {
-        console.log("field", field);
-        console.log("value", value);
-
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
     const getAllIndustry = async () => {
@@ -798,9 +795,9 @@ export default function ProjectCreatePage() {
                         </Stack>
                         <Stack
                             direction={"row"}
-                            className="w-full justify-between"
+                            className="w-full justify-between flex-wrap gap-3"
                         >
-                            <div className="flex flex-col w-[calc(20%-12px)]   ">
+                            <div className="flex flex-col flex-[1_1_20%] min-w-[200px] max-w-[20%] mb-4   ">
                                 <p className={styles.thirdTitle}>
                                     Ảnh bìa bài viết <span>*</span>
                                 </p>
@@ -814,7 +811,7 @@ export default function ProjectCreatePage() {
                                     setIsFirstRemoved={setIsfirstRemoved}
                                 />
                             </div>
-                            <div className="flex flex-col w-[calc(20%-12px)]">
+                            <div className="flex flex-col flex-[1_1_20%] min-w-[200px] max-w-[20%] mb-4">
                                 <p className={styles.thirdTitle}>
                                     Pitchingdeck <span>*</span>
                                 </p>
@@ -829,7 +826,7 @@ export default function ProjectCreatePage() {
                                     setIsFirstRemoved={(e) => {}}
                                 />
                             </div>
-                            <div className="flex flex-col w-[calc(20%-12px)]">
+                            <div className="flex flex-col flex-[1_1_20%] min-w-[200px] max-w-[20%] mb-4">
                                 <p className={styles.thirdTitle}>
                                     Hợp đồng mẫu <span>*</span>
                                 </p>
@@ -844,7 +841,7 @@ export default function ProjectCreatePage() {
                                     setIsFirstRemoved={(e) => {}}
                                 />
                             </div>
-                            <div className="flex flex-col w-[calc(20%-12px)]">
+                            <div className="flex flex-col flex-[1_1_20%] min-w-[200px] max-w-[20%] mb-4">
                                 <p className={styles.thirdTitle}>
                                     Lộ trình tài chính <span>*</span>
                                 </p>
@@ -859,7 +856,7 @@ export default function ProjectCreatePage() {
                                     setIsFirstRemoved={(e) => {}}
                                 />
                             </div>
-                            <div className="flex flex-col w-[calc(20%-12px)]">
+                            <div className="flex flex-col flex-[1_1_20%] min-w-[200px] max-w-[20%] mb-4">
                                 <p className={styles.thirdTitle}>
                                     Kế hoạch kinh doanh <span>*</span>
                                 </p>

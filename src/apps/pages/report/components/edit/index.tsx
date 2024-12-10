@@ -230,25 +230,26 @@ export default function EditPage(props: EditPageProps) {
                         disabled={isView}
                         placeholder="Chọn"
                     />
-                    <Typography.Title
-                        level={4}
-                        style={{
-                            fontSize: "14px",
-                            margin: "0",
-                        }}
-                    >
-                        File báo cáo
-                    </Typography.Title>
-                    <Stack className="w-full">
-                        <UploadFile
-                            setImgUrl={handleChangeImage("file")}
-                            imageUrl={formData.file}
-                            isEditable={true}
-                            hasError={""}
-                            setIsFirstRemoved={(e) => {}}
-                        />
-                    </Stack>
                 </div>
+                <Typography.Title
+                    level={4}
+                    style={{
+                        fontSize: "14px",
+                        margin: "0",
+                        paddingTop: "16px",
+                    }}
+                >
+                    File báo cáo
+                </Typography.Title>
+                <Stack className="w-full">
+                    <UploadFile
+                        setImgUrl={handleChangeImage("file")}
+                        imageUrl={formData.file}
+                        isEditable={true}
+                        hasError={""}
+                        setIsFirstRemoved={(e) => {}}
+                    />
+                </Stack>
             </div>
             <ActionsEditPage actions={actions} isView={isView} />
         </>

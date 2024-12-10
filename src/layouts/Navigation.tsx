@@ -132,7 +132,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                                 // role: ["admin"],
                             },
                             {
-                                label: `QL ${t("employee-manager")}`,
+                                label: `${T("employee-manager")}`,
                                 key: "admin/staff",
                                 type: "link",
                                 // role: ["admin"],

@@ -1,10 +1,10 @@
 export const INIT_REPORT: {
     name: string;
     type: number;
-    file: string;
+    file: string[];
 } = {
     name: "",
     type: 0,
-    file: "",
+    file: [],
 };
 export type InitReportKeys = typeof INIT_REPORT;

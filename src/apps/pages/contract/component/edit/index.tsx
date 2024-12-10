@@ -9,7 +9,7 @@ import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
 import { ResponseProductItem } from "@/types/product";
 import { OptionSelect } from "@/types/types";
 import HeaderModalEdit from "@/components/header-modal-edit";
-import { getKeyPage } from "@/utils";
+import { formatCurrency, getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import dayjs from "dayjs";
 import apiAccountService from "@/api/Account.service";
@@ -20,6 +20,7 @@ import { INIT_CONTRACT } from "@/constants/init-state/contract";
 import apiContractService from "@/api/apiContract.service";
 import CustomAutocomplete from "@/components/input-custom-v2/select/index-autocomplete";
 import ContractForm from "../contractForm";
+import { Stack } from "@mui/material";
 const VALIDATE = {
     capital: "Hãy nhập số vốn đầu tư",
     user_sub: "Hãy chọn tên khách hàng",
@@ -60,6 +61,7 @@ export default function EditPage(props: EditPageProps) {
                         label: it.name,
                     }))
                 );
+                setProductInfo(response.data);
             }
         } catch (e) {
             throw e;
@@ -242,6 +244,7 @@ export default function EditPage(props: EditPageProps) {
     const title_page = T(getKeyPage(pathname, "key"));
     //--state
     const [product, setProduct] = useState<OptionSelect>([]);
+    const [productInfo, setProductInfo] = useState<any>([]);
     const [account, setAccount] = useState<OptionSelect>([]);
     const [accountInfo, setAccountInfo] = useState<any>();
     const [contractInfo, setContractInfo] = useState<any>();
@@ -280,13 +283,12 @@ export default function EditPage(props: EditPageProps) {
                 }
             }
             if (formData.product_id) {
-                const productItem = product?.find(
-                    (prod: any) => prod.value === formData.product_id
+                const productItem = productInfo?.find(
+                    (prod: any) => prod.value === productInfo.id
                 );
                 if (productItem) {
                     updatedContractInfo.product_id = {
-                        id: productItem.value,
-                        name: productItem.label,
+                        ...productItem,
                     };
                 } else {
                     updatedContractInfo.product_id = formData.product_id;
@@ -296,8 +298,7 @@ export default function EditPage(props: EditPageProps) {
             setContractInfo(updatedContractInfo);
         };
         updateContractInfo();
-        console.log("contractInfo", contractInfo);
-        console.log("formData", formData);
+        console.log("productInfo", productInfo);
     }, [formData, accountInfo, product]);
     useEffect(() => {
         code && getDetail();
@@ -347,7 +348,7 @@ export default function EditPage(props: EditPageProps) {
 
                     <CurrencyInput
                         name="capital"
-                        label="Tổng tiền"
+                        label="Tổng tiền đầu tư"
                         handleChange={handleOnchangeCurrency}
                         values={formData}
                         errors={errors}
@@ -376,6 +377,47 @@ export default function EditPage(props: EditPageProps) {
                         disabled={isView}
                     />
                 </div>
+                <Stack direction={"column"} width={"100%"}>
+                    <div> Thông tin sản phẩm: </div>
+                    <ul className="pl-8">
+                        <li>
+                            Hạn mức đầu tư tối thiểu:{" "}
+                            <strong>
+                                {formatCurrency(
+                                    +contractInfo?.product_id?.min_invest
+                                )}
+                            </strong>
+                        </li>
+                        <li>
+                            Hạn mức đầu tư tối đa:{" "}
+                            <strong>
+                                {formatCurrency(
+                                    +contractInfo?.product_id?.max_invest
+                                )}
+                            </strong>
+                        </li>
+                        <li>
+                            Thời hạn tối thiểu:{" "}
+                            <strong>
+                                {contractInfo?.product_id?.min_duration} tháng
+                            </strong>
+                        </li>
+                        <li>
+                            Thời hạn tối thiểu:{" "}
+                            <strong>
+                                {contractInfo?.product_id?.max_duration} tháng
+                            </strong>
+                        </li>
+                        <li>
+                            Lãi suất:{" "}
+                            <strong>
+                                {(+contractInfo?.product_id
+                                    ?.current_interest_rate).toFixed(2)}
+                                %
+                            </strong>
+                        </li>
+                    </ul>
+                </Stack>
             </div>
             <ContractForm data={contractInfo} />
             <ActionsEditPage actions={actions} isView={isView} />

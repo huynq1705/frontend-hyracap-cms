@@ -37,31 +37,49 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                 <h3>A. TÊN KHÁCH HÀNG/NHÀ ĐẦU TƯ</h3>
                 <div>
                     <p>
-                        Họ và Tên khách hàng(Ông/Bà): .. {data?.user?.firstName}{" "}
-                        {data?.user?.lastName}...
+                        Họ và Tên khách hàng(Ông/Bà): ..{" "}
+                        <strong>{data?.user?.firstName}</strong>{" "}
+                        <strong>{data?.user?.lastName}</strong>...
                     </p>
                     <p>
-                        Số CMND: ...{data?.user?.idInformation?.idNumber}
+                        Số CMND: ...
+                        <strong>{data?.user?.idInformation?.idNumber}</strong>
                         ........ Cấp ngày:....
-                        {data?.user?.idInformation?.date_of_issue}....
+                        <strong>
+                            {data?.user?.idInformation?.date_of_issue}
+                        </strong>
+                        ....
                     </p>
                     <p>
-                        Tại: .......{data?.user?.idInformation?.place_of_issue}
+                        Tại: .......
+                        <strong>
+                            {data?.user?.idInformation?.place_of_issue}
+                        </strong>
                         ...........
                     </p>
                     <p>
-                        Địa chỉ thường trú: ....{data?.user?.idInformation}
+                        Địa chỉ thường trú: ....
+                        <strong>{data?.user?.idInformation}</strong>
                         ........
                     </p>
                     <p>
-                        Điện thoại: ...........{data?.phone}
+                        Điện thoại: ...........<strong>{data?.phone}</strong>
                         .......................... Email: ................
-                        {data?.email}.................................
+                        <strong>{data?.email}</strong>
+                        .................................
                     </p>
                     <p>Số tài khoản giao dịch : ....................</p>
-                    <p>Tên gói: ...{data?.product_id?.name}....</p>
-                    <p>Số tiền đầu tư: ...{data?.capital}....</p>
-                    <p>Kỳ hạn: ............{data?.duration} tháng</p>
+                    <p>
+                        Tên gói: ...<strong>{data?.product_id?.name}</strong>
+                        ....
+                    </p>
+                    <p>
+                        Số tiền đầu tư: ...<strong>{data?.capital}</strong>....
+                    </p>
+                    <p>
+                        Kỳ hạn: ............<strong>{data?.duration}</strong>{" "}
+                        tháng
+                    </p>
                 </div>
 
                 <h3>B. CÔNG TY CỔ PHẦN ĐẦU TƯ HYRACAP</h3>
