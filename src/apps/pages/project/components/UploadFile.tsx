@@ -2,11 +2,11 @@ import React, { useMemo, useState } from "react";
 import type { UploadProps } from "antd";
 import { message, Upload } from "antd";
 import UploadImgIcon from "@/components/icons/upload_img_icon";
-import ImgCrop from "antd-img-crop";
 const { Dragger } = Upload;
+
 type UploadFileProps = {
     isEditable?: boolean;
-    imageUrl: string[] | string;
+    imageUrl: string[];
     setImgUrl: (value: string[]) => void;
     hasError?: string;
     isFirstRemoved?: boolean;
@@ -27,10 +27,7 @@ const UploadFile: React.FC<UploadFileProps> = ({
         UploadProps["fileList"]
     >([]);
 
-    const normalizedImageUrl = useMemo(
-        () => (Array.isArray(imageUrl) ? imageUrl : imageUrl ? [imageUrl] : []),
-        [imageUrl]
-    );
+    const normalizedImageUrl = useMemo(() => imageUrl || [], [imageUrl]);
 
     useMemo(() => {
         setInternalFileList(
@@ -47,28 +44,41 @@ const UploadFile: React.FC<UploadFileProps> = ({
         () => ({
             height: "200px",
             name: "files",
-            multiple: false,
-            maxCount: 1,
-            disabled: !isEditable,
+            multiple: true,
             action: `${BASE_URL}files/upload_blog`,
             listType: "text",
             fileList: internalFileList,
+            disabled: !isEditable,
             onChange(info) {
                 const { file, fileList } = info;
                 setInternalFileList([...fileList]);
 
                 const { status } = file;
                 if (status === "done") {
-                    const uploadedUrl = `${BASE_IMG_URL}${file.response.data[0].key}`;
-                    setImgUrl([uploadedUrl]);
+                    const newUploadedUrls = fileList
+                        .filter((f) => f.status === "done" && f.response)
+                        .map((f) => `${BASE_IMG_URL}${f.response.data[0].key}`);
+
+                    const uniqueUrls = Array.from(
+                        new Set([...imageUrl, ...newUploadedUrls])
+                    );
+                    setImgUrl(uniqueUrls);
                     message.success(`${file.name} tải lên thành công.`);
                 } else if (status === "error") {
                     message.error(`${file.name} tải lên thất bại.`);
                 }
                 if (status === "removed") {
-                    setImgUrl([]);
+                    const remainingUrls = fileList
+                        .filter((f) => f.status !== "removed")
+                        .map((f) =>
+                            f.url
+                                ? f.url
+                                : `${BASE_IMG_URL}${f.response.data[0].key}`
+                        );
+                    setImgUrl(remainingUrls);
                 }
             },
+
             showUploadList: {
                 showPreviewIcon: false,
                 showDownloadIcon: false,
@@ -76,11 +86,13 @@ const UploadFile: React.FC<UploadFileProps> = ({
             },
             onRemove() {
                 setIsFirstRemoved(true);
-                setImgUrl([]);
             },
         }),
         [internalFileList, isEditable]
     );
+    console.log("internalFileList", internalFileList);
+    console.log("imageUrl", imageUrl);
+
     return (
         <section className={`${hasError ? "hasErrorUpload" : ""}`}>
             <Dragger {...propsUpload}>

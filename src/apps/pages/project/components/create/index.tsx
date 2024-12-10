@@ -105,9 +105,6 @@ export default function ProjectCreatePage() {
         }));
     };
     const handleChangeImage = (field: string) => (value: any) => {
-        console.log("field", field);
-        console.log("value", value);
-
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
     const getAllIndustry = async () => {

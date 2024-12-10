@@ -27,6 +27,7 @@ import { selectPage } from "@/redux/selectors/page.slice";
 import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
 import apiPositionService from "@/api/Position.service";
+import apiGroupService from "@/api/Group.service";
 
 interface ColumnProps {
     actions: {
@@ -389,13 +390,13 @@ const GroupTable = (props: GroupTableProps) => {
     const [keySearch, setKeySearch] = useState<KeySearchType>({});
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const { getPosition } = apiPositionService();
+    const { getGroup } = apiGroupService();
     //permissions
-    const { hasPermission } = usePermissionCheck("position");
+    const { hasPermission } = usePermissionCheck("group");
 
     const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ["GET_POSITION", param_payload, pathname],
-        queryFn: () => getPosition(param_payload),
+        queryKey: ["GET_GROUP", param_payload, pathname],
+        queryFn: () => getGroup(param_payload),
         keepPreviousData: true,
     });
     console.log("data", data);
@@ -409,7 +410,6 @@ const GroupTable = (props: GroupTableProps) => {
             return data_res.map((item) => ({ ...item, key: item?.id }));
         return [];
     }, [data]);
-    console.log("dataConvert", dataConvert);
 
     const selectedRowLabels = useMemo(() => {
         return dataConvert

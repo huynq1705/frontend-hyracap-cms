@@ -36,7 +36,7 @@ export default function apiReportService(): ReportService {
         const convert_payload: PayloadReport = {
             name: payload.name,
             type: +payload.type,
-            file: payload.file[0],
+            file: payload.file,
         };
         const result = validateRequiredKeys(convert_payload, requiredKeys);
 
@@ -63,7 +63,7 @@ export default function apiReportService(): ReportService {
         const convert_payload: PayloadReport = {
             name: payload.name,
             type: +payload.type,
-            file: payload.file.length === 1 ? payload.file[0] : payload.file,
+            file: payload.file,
         };
         console.log("convert_payload", convert_payload);
 
