@@ -140,7 +140,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>
-                                {(item?.current_interest_rate * 100).toFixed(
+                                {(+item?.current_interest_rate * 100).toFixed(
                                     2
                                 ) + " %"}
                             </span>
@@ -377,7 +377,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {(d?.current_interest_rate).toFixed(2) + " %"}
+                        {(+d?.current_interest_rate).toFixed(2) + " %"}
                     </Typography>
                 </Stack>
             ),

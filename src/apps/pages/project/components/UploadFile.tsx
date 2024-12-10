@@ -30,10 +30,14 @@ const UploadFile: React.FC<UploadFileProps> = ({
     const normalizedImageUrl = useMemo(() => imageUrl || [], [imageUrl]);
 
     useMemo(() => {
+        const flattenedUrls = Array.isArray(normalizedImageUrl[0])
+            ? normalizedImageUrl.flat() // Flatten the nested array
+            : normalizedImageUrl;
+
         setInternalFileList(
-            normalizedImageUrl.map((url, index) => ({
+            flattenedUrls.map((url, index) => ({
                 uid: `${index}`,
-                name: url.split("/").pop() || `File ${index + 1}`,
+                name: url,
                 status: "done",
                 url,
             }))
