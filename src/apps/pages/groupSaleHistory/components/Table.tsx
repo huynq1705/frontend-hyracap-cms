@@ -34,6 +34,7 @@ interface ColumnProps {
     actions: {
         [key: string]: (...args: any) => void;
     };
+    indexItem: number;
 }
 const CustomCardList = ({ dataConvert, actions }: any) => {
     const { hasPermission } = usePermissionCheck("customer");
@@ -66,7 +67,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 className="font-medium"
                                 style={{ color: "#50945d" }}
                             >
-                                {item?.group.name}
+                                {item?.group?.name}
                             </span>
                         </div>
                     </div>
@@ -142,7 +143,7 @@ const getColumns = (props: ColumnProps) => {
     //permissions
     const { hasPermission } = usePermissionCheck("group_sale_history");
 
-    const { actions } = props;
+    const { actions, indexItem } = props;
     const columns: any = [
         {
             title: "STT",
@@ -158,7 +159,7 @@ const getColumns = (props: ColumnProps) => {
                             textAlign: "center",
                         }}
                     >
-                        {index + 1}
+                        {index + 1 + indexItem}
                     </Typography>
                 </Stack>
             ),
@@ -175,7 +176,7 @@ const getColumns = (props: ColumnProps) => {
                         fontWeight: 500,
                     }}
                 >
-                    {item?.group.name}
+                    {item?.group?.name}
                 </Typography>
             ),
             width: 220,
@@ -497,6 +498,7 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                         dataSource={dataConvert}
                         columns={getColumns({
                             actions,
+                            indexItem: pageSize * (currentPage - 1),
                         })}
                         pagination={false}
                         scroll={{ x: "100%" }}

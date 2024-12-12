@@ -26,6 +26,10 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ButtonCore from "@/components/button/core";
 import BLogIcon from "@/components/icons/blog_icon";
+import RevenueIcon from "@/components/icons/revenue";
+import ProjectIcon from "@/components/icons/project";
+import BlogIcon from "@/components/icons/blog";
+import BlogV2Icon from "@/components/icons/blog";
 const getRoutePath = (location: Location, params: Params): string => {
     const { pathname } = location;
 
@@ -106,7 +110,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                     },
                     {
                         label: `Giao dịch`,
-                        icon: <EvaluationsIcon />, // icon - name : tên ảnh svg
+                        icon: <RevenueIcon />, // icon - name : tên ảnh svg
                         key: "admin/transaction",
                         type: "link",
                         // role: ["admin"],
@@ -141,7 +145,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                     },
                     {
                         label: `Hoa hồng`, //
-                        icon: <ReportIcon />, // icon - name : tên ảnh svg
+                        icon: <EvaluationsIcon />, // icon - name : tên ảnh svg
                         key: "admin/reported", // check width pathname => activate navbar
                         betaItem: true, // type navbar
                         // role: ["admin"],
@@ -162,14 +166,14 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                     },
                     {
                         label: `Báo cáo`,
-                        icon: <BLogIcon />, // icon - name : tên ảnh svg
+                        icon: <ReportIcon />, // icon - name : tên ảnh svg
                         key: "admin/report",
                         type: "link",
                         // role: ["admin"],
                     },
                     {
                         label: `Quản lý dự án`, //
-                        icon: <ReportIcon />, // icon - name : tên ảnh svg
+                        icon: <ProjectIcon />, // icon - name : tên ảnh svg
                         key: "admin/manage_project", // check width pathname => activate navbar
                         betaItem: true, // type navbar
                         // role: ["admin"],
@@ -190,7 +194,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                     },
                     {
                         label: `${T("manage")} Blog`, //
-                        icon: <BLogIcon />, // icon - name : tên ảnh svg
+                        icon: <BlogV2Icon />, // icon - name : tên ảnh svg
                         key: "admin/blog_manage", // check width pathname => activate navbar
                         betaItem: true, // type navbar
                         // role: ["admin"],

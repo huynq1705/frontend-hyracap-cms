@@ -43,6 +43,7 @@ export default function EditPage(props: EditPageProps) {
     //--state
     const [typeOption, setTypeOption] = useState<OptionSelect>(type);
     const [errors, setErrors] = useState<string[]>([]);
+    const [checkFile, setCheckFile] = useState(false);
     const [formData, setFormData] = useState(INIT_REPORT);
     const [popup, setPopup] = useState({
         remove: false,
@@ -94,6 +95,8 @@ export default function EditPage(props: EditPageProps) {
             if (response === true) {
                 message = `Tạo ${title_page} thành công`;
                 type = "success";
+                setCheckFile(false);
+
                 handleCancel();
             }
             dispatch(
@@ -103,10 +106,12 @@ export default function EditPage(props: EditPageProps) {
                 })
             );
         } catch (error) {
+            setCheckFile(true);
+
             dispatch(
                 setGlobalNoti({
                     type: "error",
-                    message: "createError",
+                    message: "Tạo thất bại",
                 })
             );
         }
@@ -120,9 +125,9 @@ export default function EditPage(props: EditPageProps) {
         if (isView) {
             navigate(`/admin/report/edit/${code}`);
         } else {
-            dispatch(setIsLoading(true));
+            // dispatch(setIsLoading(true));
             await (code ? handleUpdate() : handleCreate());
-            setFormData(INIT_REPORT);
+            // setFormData(INIT_REPORT);
             refetch();
         }
         setTimeout(() => {
@@ -144,6 +149,7 @@ export default function EditPage(props: EditPageProps) {
             if (response === true) {
                 message = `Cập nhật ${title_page} thành công`;
                 type = "success";
+                setCheckFile(false);
             }
             dispatch(
                 setGlobalNoti({
@@ -155,6 +161,7 @@ export default function EditPage(props: EditPageProps) {
                 handleCancel();
             }
         } catch (error) {
+            setCheckFile(true);
             dispatch(
                 setGlobalNoti({
                     type: "error",
@@ -236,10 +243,10 @@ export default function EditPage(props: EditPageProps) {
                     style={{
                         fontSize: "14px",
                         margin: "0",
-                        paddingTop: "16px",
+                        paddingTop: "24px",
                     }}
                 >
-                    File báo cáo
+                    File báo cáo <span className="text-[#ff0000]">(*)</span>
                 </Typography.Title>
                 <Stack className="w-full">
                     <UploadFile
@@ -250,6 +257,19 @@ export default function EditPage(props: EditPageProps) {
                         setIsFirstRemoved={(e) => {}}
                     />
                 </Stack>
+                {checkFile && (
+                    <Typography.Title
+                        level={4}
+                        style={{
+                            fontSize: "10px",
+                            margin: "0",
+                            paddingTop: "6px",
+                            color: "#ff0000",
+                        }}
+                    >
+                        Vui lòng upload file.
+                    </Typography.Title>
+                )}
             </div>
             <ActionsEditPage actions={actions} isView={isView} />
         </>

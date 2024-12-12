@@ -6,7 +6,7 @@ import axios from "axios";
 import AppConfig from "@/common/AppConfig";
 
 type CommonService = {
-    deleteCommon: (payload: string[], url: string) => Promise<boolean>;
+    deleteCommon: (payload: string[], url: string) => Promise<any>;
     detailCommon: <T>(payload: string, url: string) => Promise<T | null>;
     getStatistics: (url: string) => Promise<any>;
     uploads: (files: File[]) => Promise<any>;
@@ -58,11 +58,11 @@ export default function apiCommonService(): CommonService {
     const httpClient = useHttpClient();
     const dispatch = useDispatch();
 
-    const deleteCommon = (payload: string[], url: string): Promise<boolean> => {
+    const deleteCommon = (payload: string[], url: string): Promise<any> => {
         return httpClient
             .delete<ResponseFromServerV2<any>>(url, payload)
             .then((res: ResponseFromServerV2<any>) => {
-                return res.statusCode === 200;
+                return res;
             })
             .catch((err) => {
                 dispatch(

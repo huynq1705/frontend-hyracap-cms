@@ -29,13 +29,13 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchBoxTable from "@/components/search-box-table";
 import EmptyIcon from "@/components/icons/empty";
 import apiStaffService from "@/api/apiStaff.service";
-import { INIT_STAFF } from "@/constants/init-state/staff";
 import ModalEditStaff from "./ModalEdit";
 import { selectPage } from "@/redux/selectors/page.slice";
 interface ColumnProps {
     actions: {
         [key: string]: (...args: any) => void;
     };
+    indexItem: number;
 }
 
 const VALIDATE = {
@@ -181,7 +181,7 @@ const getColumns = (props: ColumnProps) => {
     const navigate = useNavigate();
     const { T } = useCustomTranslation();
     const { hasPermission } = usePermissionCheck("product");
-    const { actions } = props;
+    const { actions, indexItem } = props;
     const columns = [
         {
             title: "STT",
@@ -194,7 +194,7 @@ const getColumns = (props: ColumnProps) => {
                         lineHeight: "22px",
                     }}
                 >
-                    {index + 1}
+                    {index + 1 + indexItem}
                 </Typography>
             ),
             width: 46,
@@ -514,6 +514,7 @@ const StaffTable = (props: ListStaffProps) => {
                         dataSource={dataConvert}
                         columns={getColumns({
                             actions,
+                            indexItem: pageSize * (currentPage - 1),
                         })}
                         pagination={false}
                         scroll={{ x: "100%" }}

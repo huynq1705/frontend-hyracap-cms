@@ -32,6 +32,7 @@ interface ColumnProps {
     actions: {
         [key: string]: (...args: any) => void;
     };
+    indexItem: number;
 }
 const CustomCardList = ({ dataConvert, actions }: any) => {
     const { hasPermission } = usePermissionCheck("service");
@@ -149,7 +150,7 @@ const getColumns = (props: ColumnProps) => {
     const [searchParams] = useSearchParams();
     //permissions
     const { hasPermission } = usePermissionCheck("product_category");
-    const { actions } = props;
+    const { actions, indexItem } = props;
     const columns: any = [
         {
             title: "STT",
@@ -165,7 +166,7 @@ const getColumns = (props: ColumnProps) => {
                             textAlign: "center",
                         }}
                     >
-                        {index + 1}
+                        {index + 1 + indexItem}
                     </Typography>
                 </Stack>
             ),
@@ -488,6 +489,7 @@ const ListBlogCategory = (props: ListBlogCategoryProps) => {
                         dataSource={dataConvert}
                         columns={getColumns({
                             actions,
+                            indexItem: pageSize * (currentPage - 1),
                         })}
                         pagination={false}
                         scroll={{ x: "100%" }}
