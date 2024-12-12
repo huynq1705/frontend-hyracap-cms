@@ -26,8 +26,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectPage } from "@/redux/selectors/page.slice";
 import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
-import apiPositionService from "@/api/Position.service";
 import apiGroupService from "@/api/Group.service";
+import ModalEditgroup from "./ModalEdit";
 
 interface ColumnProps {
     actions: {
@@ -58,7 +58,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Mã chức vụ
+                            Mã nhóm
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>{item?.id}</span>
@@ -67,7 +67,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Tên chức vụ
+                            Tên nhóm
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span
@@ -81,37 +81,14 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            % thưởng trực tiếp
+                            Số lượng thành viên
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>
-                                {(+item?.current_position_setting
-                                    .direct_bonus_rate).toFixed(2) + " %"}
+                                {item?.members
+                                    ? item?.members.length
+                                    : 0 + " thành viên"}
                             </span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            % thưởng kpi cơ bản
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>
-                                {formatCurrency(
-                                    +item?.current_position_setting
-                                        .kpi_bonus_base
-                                )}
-                            </span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            KPI tối thiểu
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            {formatCurrency(
-                                +item?.current_position_setting
-                                    .monthly_average_target
-                            )}
                         </div>
                     </div>
 
@@ -127,7 +104,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="view"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/position/view/${item?.id}`
+                                                    `/admin/group/view/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -138,7 +115,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="edit"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/position/edit/${item?.id}`
+                                                    `/admin/group/edit/${item?.id}`
                                                 );
                                                 actions.togglePopup("edit");
                                             }}
@@ -170,13 +147,13 @@ const getColumns = (props: ColumnProps) => {
     const { T } = useCustomTranslation();
     const { pathname } = useLocation();
     //permissions
-    const { hasPermission } = usePermissionCheck("position");
+    const { hasPermission } = usePermissionCheck("group");
 
     const { actions } = props;
     const columns: any = [
         {
             title: "STT",
-            dataIndex: "position",
+            dataIndex: "group",
 
             render: (_: any, item: any, index: number) => (
                 <Stack direction={"column"} spacing={1}>
@@ -195,8 +172,8 @@ const getColumns = (props: ColumnProps) => {
             width: 50,
         },
         {
-            title: "Mã chức vụ",
-            dataIndex: "position",
+            title: "Mã nhóm",
+            dataIndex: "group",
 
             render: (_: any, item: any, index: number) => (
                 <Stack direction={"column"} spacing={1}>
@@ -215,8 +192,8 @@ const getColumns = (props: ColumnProps) => {
             width: 120,
         },
         {
-            title: "Tên chức vụ",
-            dataIndex: "position",
+            title: "Tên nhóm",
+            dataIndex: "group",
             fixed: "left" as const,
             render: (_: any, item: any) => (
                 <Typography
@@ -231,8 +208,8 @@ const getColumns = (props: ColumnProps) => {
             width: 220,
         },
         {
-            title: "% thưởng trực tiếp",
-            dataIndex: "direct_bonus_rate",
+            title: "Số lượng thành viên",
+            dataIndex: "members",
             width: 120,
             render: (_: any, d: any) => (
                 <Stack direction={"column"} spacing={1}>
@@ -243,48 +220,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {(+d?.current_position_setting
-                            .direct_bonus_rate).toFixed(2) + " %"}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "% thưởng kpi cơ bản",
-            dataIndex: "kpi_bonus_base",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {formatCurrency(
-                            +d?.current_position_setting.kpi_bonus_base
-                        )}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: "KPI tối thiểu",
-            dataIndex: "monthly_average_target",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {formatCurrency(
-                            +d?.current_position_setting.monthly_average_target
-                        )}
+                        {d?.members ? d?.members.length : 0 + " thành viên"}
                     </Typography>
                 </Stack>
             ),
@@ -314,7 +250,7 @@ const getColumns = (props: ColumnProps) => {
                                         type="view"
                                         onClick={() => {
                                             navigate(
-                                                `/admin/position/view/${d?.id}`
+                                                `/admin/group/view/${d?.id}`
                                             );
                                             actions.togglePopup("edit");
                                         }}
@@ -325,7 +261,7 @@ const getColumns = (props: ColumnProps) => {
                                         type="edit"
                                         onClick={() => {
                                             navigate(
-                                                `/admin/position/edit/${d?.id}`
+                                                `/admin/group/edit/${d?.id}`
                                             );
                                             actions.togglePopup("edit");
                                         }}
@@ -430,11 +366,11 @@ const GroupTable = (props: GroupTableProps) => {
 
         if (!code && !pathname.includes("create")) return;
         if (pathname.includes("view") && !popup.edit) {
-            navigate(`/admin/position/view/${code}`);
+            navigate(`/admin/group/view/${code}`);
             togglePopup("edit");
         }
         if (pathname.includes("edit") && !popup.edit) {
-            navigate(`/admin/position/edit/${code}`);
+            navigate(`/admin/group/edit/${code}`);
             togglePopup("edit");
         }
         if (pathname.includes("create") && !popup.edit) {
@@ -483,7 +419,7 @@ const GroupTable = (props: GroupTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo mã chức vụ, tên chức vụ"
+                                placeholder="Tìm theo tên nhóm"
                             />
                         </div>
                     </div>
@@ -536,16 +472,16 @@ const GroupTable = (props: GroupTableProps) => {
             </Box>
 
             {/*  */}
-            {/* {popup.edit && (
-                <ModalEditPosition
+            {popup.edit && (
+                <ModalEditgroup
                     open={popup.edit}
-                    toggle={(param) => {
-                        togglePopup(param);
-                        navigate(`/admin/position`);
+                    toggle={() => {
+                        togglePopup("edit");
+                        navigate(`/admin/group`);
                     }}
                     refetch={refetch}
                 />
-            )} */}
+            )}
             {/*  */}
             <PopupConfirmRemove
                 listItem={selectedRowKeys}

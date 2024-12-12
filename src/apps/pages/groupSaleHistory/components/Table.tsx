@@ -66,7 +66,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 className="font-medium"
                                 style={{ color: "#50945d" }}
                             >
-                                {item?.group.name}
+                                {item?.group?.name}
                             </span>
                         </div>
                     </div>
@@ -175,7 +175,7 @@ const getColumns = (props: ColumnProps) => {
                         fontWeight: 500,
                     }}
                 >
-                    {item?.group.name}
+                    {item?.group?.name}
                 </Typography>
             ),
             width: 220,

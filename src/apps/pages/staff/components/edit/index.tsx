@@ -33,8 +33,8 @@ import { Password } from "@mui/icons-material";
 const VALIDATE = {
     first_name: "Hãy nhập họ",
     last_name: "Hãy nhập tên ",
-    email: "Hãy nhập tên sản phẩm",
-    phone: "Hãy nhập số điện thoại",
+    email: "Email chưa đúng định dạng",
+    phone: "Số điện thoại chưa đúng định dạng",
     current_staff_position: "Hãy chọn chức vụ",
     password: "Hãy nhập mật khẩu",
 };

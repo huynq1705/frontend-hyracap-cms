@@ -31,6 +31,7 @@ import { useDispatch } from "react-redux";
 import SearchBoxTable from "@/components/search-box-table";
 import EmptyIcon from "@/components/icons/empty";
 import { INIT_EMPLOYEE } from "@/constants/init-state/employee";
+import ModalEditUser from "./ModalEdit";
 interface ColumnProps {
     hasPermissionConfirmed: boolean;
     hasPermissionView: boolean;
@@ -172,7 +173,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </div>
                     </div>
 
-                    {/* {(hasPermission.update || hasPermission.delete) && (
+                    {(hasPermission.update || hasPermission.delete) && (
                         <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                             <span className="font-medium text-gray-9 text-sm">
                                 Thao tác
@@ -182,16 +183,15 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                     {hasPermission.getDetail && (
                                         <ActionButton
                                             type="view"
-                                            onClick={() =>
-                                                actions.openEditConfirm(
-                                                    true,
-                                                    "detail",
-                                                    item
-                                                )
-                                            }
+                                            onClick={() => {
+                                                navigate(
+                                                    `/admin/users/edit/${item?.sub}`
+                                                );
+                                                actions.togglePopup("edit");
+                                            }}
                                         />
                                     )}
-                                    {hasPermission.update && (
+                                    {/* {hasPermission.update && (
                                         <ActionButton
                                             type="edit"
                                             onClick={() =>
@@ -214,11 +214,11 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                                 )
                                             }
                                         />
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
                         </div>
-                    )} */}
+                    )}
                 </div>
             ))}
         </div>
@@ -389,61 +389,62 @@ const getColumns = (props: ColumnProps) => {
                 </Stack>
             ),
         },
-        // {
-        //     title: "Thao tác",
-        //     width: 100,
-        //     dataIndex: "actions",
-        //     fixed: "right" as const,
-        //     shadows: " box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.5);",
-        //     zIndex: 100,
-        //     render: (_: any, d: any) => (
-        //         <>
-        //             {/* check permission */}
-        //             <Stack
-        //                 direction={"row"}
-        //                 sx={{
-        //                     gap: "16px",
-        //                     justifyContent: "flex-start",
-        //                     alignItems: "center",
-        //                     px: "9px",
-        //                     // position: 'absolute',
-        //                     // right: 0,
-        //                     // top: 0,
-        //                     // bottom: 0
-        //                 }}
-        //             >
-        //                 {/* {hasPermission.getDetail && (
-        //                     <ActionButton
-        //                         type="view"
-        //                         onClick={() =>
-        //                             actions.openEditConfirm(true, "detail", d)
-        //                         }
-        //                     />
-        //                 )}
-        //                 {hasPermission.update && (
-        //                     <ActionButton
-        //                         type="edit"
-        //                         onClick={() =>
-        //                             actions.openEditConfirm(true, "edit", d)
-        //                         }
-        //                     />
-        //                 )} */}
-        //                 {hasPermission.delete && (
-        //                     <ActionButton
-        //                         type="remove"
-        //                         onClick={() =>
-        //                             actions.openRemoveConfirm(
-        //                                 true,
-        //                                 d?.id,
-        //                                 d?.full_name
-        //                             )
-        //                         }
-        //                     />
-        //                 )}
-        //             </Stack>
-        //         </>
-        //     ),
-        // },
+        {
+            title: "Thao tác",
+            width: 100,
+            dataIndex: "actions",
+            fixed: "right" as const,
+            shadows: " box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.5);",
+            zIndex: 100,
+            render: (_: any, d: any) => (
+                <>
+                    {/* check permission */}
+                    <Stack
+                        direction={"row"}
+                        sx={{
+                            gap: "16px",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                            px: "9px",
+                            // position: 'absolute',
+                            // right: 0,
+                            // top: 0,
+                            // bottom: 0
+                        }}
+                    >
+                        {hasPermission.getDetail && (
+                            <ActionButton
+                                type="view"
+                                onClick={() => {
+                                    navigate(`/admin/users/edit/${d?.sub}`);
+                                    actions.togglePopup("edit");
+                                }}
+                            />
+                        )}
+                        {/* {hasPermission.update && (
+                            <ActionButton
+                                type="edit"
+                                onClick={() =>
+                                    actions.openEditConfirm(true, "edit", d)
+                                }
+                            />
+                        )}
+                        {hasPermission.delete && (
+                            <ActionButton
+                                type="remove"
+                                onClick={() =>
+                                    actions.openRemoveConfirm(
+                                        true,
+                                        d?.id,
+                                        d?.full_name
+                                    )
+                                }
+                            />
+                        )} */}
+                    </Stack>
+                </>
+            ),
+        },
     ];
     return columns;
 };
@@ -466,6 +467,7 @@ const ListUser = (props: ListRequestDepositProps) => {
         { label: "Admin", value: "Admin" },
     ]);
     const [popup, setPopup] = useState({
+        edit: false,
         remove: false,
         data: INIT_EMPLOYEE,
         status: "create",
@@ -499,41 +501,14 @@ const ListUser = (props: ListRequestDepositProps) => {
         return [];
     }, [data]);
 
-    const togglePopup = (
-        params: boolean,
-        status: string,
-        data: typeof INIT_EMPLOYEE
-    ) => {
-        setPopup((prev) => ({
-            ...prev,
-            remove: params,
-            data: data,
-            status: status,
-        }));
+    const togglePopup = (params: keyof typeof popup, value?: boolean) => {
+        setPopup((prev) => ({ ...prev, [params]: value ?? !prev[params] }));
     };
     const actions = {
-        openEditConfirm: (
-            key_popup: boolean,
-            status: string,
-            code_item: typeof INIT_EMPLOYEE
-        ) => {
-            togglePopup(key_popup, status, code_item);
+        openRemoveConfirm: (key_popup: string, code_item: string) => {
+            togglePopup(key_popup as keyof typeof popup);
         },
-        openRemoveConfirm: (
-            key_popup: boolean,
-            code_item: string,
-            name: string
-        ) => {
-            togglePopupRemove(key_popup, code_item, name);
-        },
-    };
-    const togglePopupRemove = (params: boolean, code: string, name: string) => {
-        setPopupRemove((prev) => ({
-            ...prev,
-            remove: params,
-            code: code,
-            name: name,
-        }));
+        togglePopup,
     };
     /////search
     const handleSearch = () => {
@@ -545,27 +520,12 @@ const ListUser = (props: ListRequestDepositProps) => {
         let url = `${pathname}${filter}`;
         navigate(url);
     };
-
-    const reset = () => {
-        setKeySearchText("");
-
-        setKeySearch({
-            ...keySearch,
-            status__eq: "",
-            position__like: "",
-        });
-        // setPopup((prev) => ({ ...prev, remove: false }));
-
-        navigate("/admin/users");
-        // refetch();
-    };
     useEffect(() => {
-        setPopup({
-            remove: pathname.includes("create"),
-            data: INIT_EMPLOYEE,
-            status: "create",
-        });
-    }, [pathname]);
+        if (pathname.includes("view")) {
+            togglePopup("edit");
+            return;
+        }
+    }, [window.location.href]);
     return (
         <>
             <Box width="100%" className="custom-table-wrapper">
@@ -624,26 +584,17 @@ const ListUser = (props: ListRequestDepositProps) => {
                     // style={{ height: "calc(100vh - 333px)" }}
                 />
             </Box>
-            {/* {popup.remove && (
-                <PopupCreateAdmin
-                    status={popup.status}
-                    handleClose={() =>
-                        popup.status === "create"
-                            ? navigate(`/admin/users?${searchParams}`)
-                            : setPopup((prev) => ({ ...prev, remove: false }))
-                    }
-                    refetch={() => {
-                        if (pathname.includes("create")) {
-                            reset();
-                        } else {
-                            setPopup((prev) => ({ ...prev, remove: false }));
-                            refetch();
-                        }
-                    }}
-                    data={popup.data}
-                />
-            )} */}
 
+            {popup.edit && (
+                <ModalEditUser
+                    open={popup.edit}
+                    toggle={() => {
+                        togglePopup("edit");
+                        navigate(`/admin/users`);
+                    }}
+                    refetch={refetch}
+                />
+            )}
             <PopupConfirmRemove
                 listItem={[popupRemove.code]}
                 open={popupRemove.remove}

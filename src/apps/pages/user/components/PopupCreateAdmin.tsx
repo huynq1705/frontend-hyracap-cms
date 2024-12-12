@@ -1,249 +1,292 @@
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Slide,
-    Stack,
-    TextField,
-} from "@mui/material";
-import { TransitionProps } from "@mui/material/transitions";
-import * as React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import useCustomTranslation from "@/hooks/useCustomTranslation";
-import ButtonCore from "@/components/button/core";
-import { setGlobalNoti } from "@/redux/slices/app.slice";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import apiCommonService from "@/api/apiCommon.service";
+import ActionsEditPage from "@/components/actions-edit-page";
+import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
 import MyTextField from "@/components/input-custom-v2/text-field";
-import CSwitch from "@/components/custom/CSwitch";
-import MySelect from "@/components/input-custom-v2/select";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import palette from "@/theme/palette-common";
-import apiAccountService from "@/api/Account.service";
 import { OptionSelect } from "@/types/types";
-import MyTextFieldPassword from "@/components/input-custom-v2/password";
-import AvatarImage from "@/components/avatar";
-import { UploadFile } from "antd";
-import { CREATE_ACCOUNT, INIT_EMPLOYEE } from "@/constants/init-state/employee";
-import useSignUp from "@/api/useSignUp";
-import OTPPopup from "./PopupConfirmOtp";
-
-const KEY_REQUIRED = ["full_name", "phone_number", "email", "username"];
-const KEY_REQUIRED_V2 = ["old_password", "new_password"];
+import HeaderModalEdit from "@/components/header-modal-edit";
+import { getKeyPage } from "@/utils";
+import useCustomTranslation from "@/hooks/useCustomTranslation";
+import { INIT_USER } from "@/constants/init-state/user";
+import { Box } from "@mui/material";
+import ButtonCore from "@/components/button/core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 const VALIDATE = {
-    phone_number: "Số điện thoại không đúng định dạng.",
-    email: "Email không đúng định dạng.",
-    full_name: "Thông tin bắt buộc, vui lòng điền đầy đủ.",
-    username: "Thông tin bắt buộc, vui lòng điền đầy đủ.",
-    password: "Thông tin bắt buộc, vui lòng điền đầy đủ.",
-    password_config: "Thông tin bắt buộc, vui lòng điền đầy đủ.",
+    password: "Hãy Chưa update mật khẩu",
 };
-const VALIDATE_V2 = {
-    old_password: "Thông tin bắt buộc, vui lòng điền đầy đủ.",
-    new_password: "Thông tin bắt buộc, vui lòng điền đầy đủ.",
-};
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement<any, any>;
-    },
-    ref: React.Ref<unknown>
-) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
-export interface PopupConfirmRemoveProps {
+const KEY_REQUIRED = ["password"];
+interface EditPageProps {
+    open: boolean;
+    onClose: () => void;
     refetch: () => void;
-    handleClose: () => void;
-    // open: boolean;
-    data: typeof INIT_EMPLOYEE;
-    status: string | "create";
 }
-
-function PopupCreateAdmin(props: PopupConfirmRemoveProps) {
-    const { handleClose, refetch, data, status } = props;
-
-    const { postAccount, putAccount } = apiAccountService();
+type History = {
+    interest_rate: string;
+    effective_from: string;
+};
+export default function EditPage(props: EditPageProps) {
+    //--init
+    const { onClose, refetch, open } = props;
+    //--const
+    const { code } = useParams();
+    const { pathname } = useLocation();
+    //--state
+    const [position, setPosition] = useState<OptionSelect>([]);
+    const [errors, setErrors] = useState<string[]>([]);
+    const [formData, setFormData] = useState(INIT_USER);
+    const [popup, setPopup] = useState({
+        edit: false,
+        remove: false,
+        loading: true,
+    });
+    //--fn
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { T, t } = useCustomTranslation();
-    const [statusPage, setStatusPage] = React.useState(status);
-    const [formData, setFormData] = React.useState(CREATE_ACCOUNT);
-    const [errors, setErrors] = React.useState<string[]>([]);
-    const [listRole] = React.useState<OptionSelect>([
-        { label: "Admin", value: "Admin" },
-        { label: "Quản lý", value: "Quản lý" },
-    ]);
-    const [editPassword, setEditPassword] = React.useState(true);
-    const [fileList, setFileList] = React.useState<UploadFile[]>([]);
-    const [loading, setLoading] = React.useState(false);
-    const { signUp, isLoading } = useSignUp();
+    const { detailCommon } = apiCommonService();
+    const title_page = T(getKeyPage(pathname, "key"));
 
-    const [isOTPOpen, setIsOTPOpen] = React.useState(false);
-
-    const handleCloseOTP = () => {
-        setIsOTPOpen(false);
+    const getDetail = async () => {
+        if (!code) return;
+        try {
+            const response = await detailCommon<any>(code, "/users");
+            if (response) {
+                const convert_data = {
+                    id: response[0].id,
+                    firstName: response[0].firstName,
+                    lastName: response[0].lastName,
+                    email: response[0].email,
+                    phone: response[0].phone,
+                    sub: response[0].sub,
+                };
+                setFormData(convert_data);
+                console.log("formData: ", response);
+            }
+        } catch (error) {
+            dispatch(
+                setGlobalNoti({
+                    type: "error",
+                    message: "Failed to fetch product details",
+                })
+            );
+        }
     };
-    //sign up
+
+    const handleCreate = async () => {
+        // console.log("formData", formData);
+        // try {
+        //     const response = await postStaff(formData, KEY_REQUIRED);
+        //     let message = `Tạo ${title_page} thất bại`;
+        //     let type = "error";
+        //     if (typeof response === "object" && response?.missingKeys) {
+        //         setErrors(response.missingKeys);
+        //         return;
+        //     }
+        //     if (response === true) {
+        //         message = `Tạo ${title_page} thành công`;
+        //         type = "success";
+        //         handleCancel();
+        //     }
+        //     dispatch(
+        //         setGlobalNoti({
+        //             type,
+        //             message,
+        //         })
+        //     );
+        // } catch (error) {
+        //     dispatch(
+        //         setGlobalNoti({
+        //             type: "error",
+        //             message: "createError",
+        //         })
+        //     );
+        // }
+    };
+    const handleCancel = () => {
+        setFormData(INIT_USER);
+        navigate("/admin/staff");
+        onClose();
+    };
+    const handelSave = async () => {
+        if (isView) {
+            navigate(`/admin/staff/edit/${code}`);
+        } else {
+            // dispatch(setIsLoading(true));
+            await (code ? handleUpdate() : handleCreate());
+            // setFormData(INIT_STAFF);
+            refetch();
+        }
+        setTimeout(() => {
+            dispatch(setIsLoading(false));
+        }, 200);
+    };
+    const handleUpdate = async () => {
+        // console.log("formData", formData);
+        // if (!code) return;
+        // try {
+        //     const response = await putStaff(formData, code, KEY_REQUIRED);
+        //     let message = `Cập nhật ${title_page} thất bại`;
+        //     let type = "error";
+        //     if (typeof response === "object" && response?.missingKeys) {
+        //         setErrors(response.missingKeys);
+        //         return;
+        //     }
+        //     if (response === true) {
+        //         message = `Cập nhật ${title_page} thành công`;
+        //         type = "success";
+        //     }
+        //     dispatch(
+        //         setGlobalNoti({
+        //             type,
+        //             message,
+        //         })
+        //     );
+        //     if (response === true) {
+        //         handleCancel();
+        //     }
+        // } catch (error) {
+        //     dispatch(
+        //         setGlobalNoti({
+        //             type: "error",
+        //             message: "updateError",
+        //         })
+        //     );
+        //     console.error(error);
+        // }
+    };
+    const handleRemove = useCallback(() => {
+        togglePopup("remove");
+    }, []);
     const handleOnchange = (e: any) => {
         const { name, value } = e.target;
-
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
     };
-    const handleSubmitCreate = async () => {
-        setLoading(true);
-        try {
-            const registerPayload = {
-                account: formData.account,
-                password: formData.password,
-            };
+    const togglePopup = useCallback((params: keyof typeof popup) => {
+        setPopup((prev) => ({ ...prev, [params]: !prev[params] }));
+    }, []);
 
-            await signUp(registerPayload);
-            setLoading(false);
-            setIsOTPOpen(true);
-        } catch (e) {
-            setLoading(false);
+    const isView = useMemo(() => {
+        return pathname.includes("view");
+    }, [pathname]);
+    const actions = useMemo(
+        () => ({ handelSave, handleRemove, handleCancel }),
+        [formData]
+    );
+    //--effect
+    useEffect(() => {
+        code && getDetail();
+        if (open) {
         }
-    };
-    const handleSubmitUpdate = async () => {};
-
-    const handleSubmit = () => {
-        if (editPassword) {
-            statusPage === "create"
-                ? handleSubmitCreate()
-                : handleSubmitUpdate();
-        } else {
-        }
-    };
-
+    }, [code, open]);
     return (
         <>
-            <Dialog
-                open={true}
-                TransitionComponent={Transition}
-                onClose={handleClose}
-                fullWidth={true}
-                maxWidth={"sm"}
-                // hidden
-                // scroll="paper"
-                aria-describedby="alert-dialog-slide-description"
-                PaperProps={{ sx: { borderRadius: 2.5 } }}
-                sx={{ zIndex: 1000 }}
+            <Box
+                className="flex px-4 py-3 justify-between items-center sticky top-0 left-0 w-[101%] !bg-white z-[4]"
+                sx={{
+                    border: "1px solid var(--border-color-primary)",
+                }}
             >
-                <Box>
-                    <DialogActions
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%",
-                            alignItems: "center",
-                            p: 2,
-                            borderBottom: "0.5px solid #D0D5DD",
-                        }}
-                    >
-                        <h2
-                            style={{
-                                fontSize: 20,
-                                color: palette.textQuaternary,
-                            }}
-                        >
-                            {T(statusPage) + " admin"}
-                        </h2>
-                        <button
-                            onClick={handleClose}
-                            style={{
-                                border: "none",
-                                backgroundColor: "white",
-                                cursor: "pointer",
-                            }}
-                        >
-                            <FontAwesomeIcon
-                                icon={faClose}
-                                style={{ width: 28, height: 28 }}
-                            />
-                        </button>
-                    </DialogActions>
-                    <Stack
-                        spacing={3}
-                        sx={{
-                            overflowY: "auto",
-                            scrollbarWidth: "thin",
-                            maxHeight: "64vh",
-                            p: 3,
-                            width: "100%",
-                        }}
-                    >
-                        <div className="wrapper-from">
-                            <MyTextField
-                                label="Email hoặc Số điện thoại"
-                                errors={errors}
-                                required={KEY_REQUIRED}
-                                configUI={{
-                                    width: "100%",
-                                }}
-                                name="account"
-                                placeholder="mituabc@gmail.com"
-                                handleChange={handleOnchange}
-                                values={formData}
-                                validate={VALIDATE}
-                                disabled={statusPage === "detail"}
-                            />
-                            <MyTextFieldPassword
-                                label={T("password")}
-                                errors={errors}
-                                required={KEY_REQUIRED}
-                                configUI={{
-                                    width: "100%",
-                                }}
-                                name="password"
-                                placeholder={T("password")}
-                                handleChange={handleOnchange}
-                                values={formData}
-                                validate={VALIDATE}
-                                type="password"
-                            />
-                            <MyTextField
-                                label={T("confirmPassword")}
-                                errors={errors}
-                                required={KEY_REQUIRED}
-                                configUI={{
-                                    width: "100%",
-                                }}
-                                name="password_config"
-                                placeholder={T("confirmPassword")}
-                                handleChange={handleOnchange}
-                                values={formData}
-                                validate={VALIDATE}
-                                type="password"
-                            />
-                        </div>
-                    </Stack>
-                    <Stack
-                        direction={"row"}
-                        justifyContent={"flex-end"}
-                        alignItems={"center"}
-                        width={"100%"}
-                        p={3}
-                        pt={1.5}
-                        spacing={2}
-                        style={{ borderTop: "0.5px solid #D0D5DD" }}
-                    >
-                        <ButtonCore
-                            title={T("cancel")}
-                            type="bgWhite"
-                            onClick={handleClose}
+                <h3>Thông tin người dùng</h3>
+                <ButtonCore
+                    type="secondary"
+                    title=""
+                    icon={
+                        <FontAwesomeIcon
+                            icon={faXmark}
+                            width={"16px"}
+                            height={16}
+                            color="#000"
                         />
-                        <ButtonCore
-                            title={"Hoàn tất"}
-                            onClick={handleSubmit}
-                            loading={isLoading}
-                        />
-                    </Stack>
-                </Box>
-            </Dialog>
-            <OTPPopup open={isOTPOpen} handleClose={handleCloseOTP} />
+                    }
+                    onClick={handleCancel}
+                />
+            </Box>
+            <div className="wrapper-edit-page">
+                <div className="wrapper-from items-end">
+                    {/* name */}
+                    <MyTextField
+                        label="Mã nhân viên"
+                        errors={errors}
+                        required={KEY_REQUIRED}
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        name="sub"
+                        placeholder="Chưa update"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        validate={VALIDATE}
+                        disabled={true}
+                    />
+                    {/* name */}
+                    <MyTextField
+                        label="Họ"
+                        errors={errors}
+                        required={KEY_REQUIRED}
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        name="firstName"
+                        placeholder="Chưa update"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        validate={VALIDATE}
+                        disabled={true}
+                    />
+                    {/* name */}
+                    <MyTextField
+                        label="Tên"
+                        errors={errors}
+                        required={KEY_REQUIRED}
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        name="lastName"
+                        placeholder="Chưa update"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        validate={VALIDATE}
+                        disabled={true}
+                    />
+                    {/* email */}
+                    <MyTextField
+                        label="Email"
+                        errors={errors}
+                        required={KEY_REQUIRED}
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        name="email"
+                        placeholder="Chưa update"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        validate={VALIDATE}
+                        disabled={true}
+                    />
+                    {/* sđt */}
+                    <MyTextField
+                        label="Số điện thoại"
+                        errors={errors}
+                        required={KEY_REQUIRED}
+                        configUI={{
+                            width: "calc(50% - 12px)",
+                        }}
+                        name="phone"
+                        placeholder="Chưa update"
+                        handleChange={handleOnchange}
+                        values={formData}
+                        validate={VALIDATE}
+                        disabled={true}
+                    />
+                </div>
+            </div>
+            <ActionsEditPage actions={actions} isView={isView} />
         </>
     );
 }
-export default React.memo(PopupCreateAdmin);

@@ -27,11 +27,14 @@ const UploadFile: React.FC<UploadFileProps> = ({
         UploadProps["fileList"]
     >([]);
 
-    const normalizedImageUrl = useMemo(() => imageUrl || [], [imageUrl]);
-
+    const normalizedImageUrl = useMemo(() => {
+        return Array.isArray(imageUrl) ? imageUrl : [imageUrl];
+    }, [imageUrl]);
+    console.log("imageUrl", imageUrl);
+    console.log("normalizedImageUrl", normalizedImageUrl);
     useMemo(() => {
         const flattenedUrls = Array.isArray(normalizedImageUrl[0])
-            ? normalizedImageUrl.flat() // Flatten the nested array
+            ? normalizedImageUrl.flat()
             : normalizedImageUrl;
 
         setInternalFileList(

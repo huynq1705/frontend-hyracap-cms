@@ -9,5 +9,5 @@ export interface ResponseReportItem extends BaseItemResponse {
 export interface PayloadReport {
     name: string;
     type: number;
-    file: string[];
+    file: string;
 }

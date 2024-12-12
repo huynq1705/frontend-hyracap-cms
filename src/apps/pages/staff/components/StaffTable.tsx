@@ -29,7 +29,6 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchBoxTable from "@/components/search-box-table";
 import EmptyIcon from "@/components/icons/empty";
 import apiStaffService from "@/api/apiStaff.service";
-import { INIT_STAFF } from "@/constants/init-state/staff";
 import ModalEditStaff from "./ModalEdit";
 import { selectPage } from "@/redux/selectors/page.slice";
 interface ColumnProps {

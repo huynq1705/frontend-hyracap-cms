@@ -67,7 +67,7 @@ const MySelect: React.FC<MySelectProps> = (props: MySelectProps) => {
     };
 
     const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+        (option.label || "").toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const displayedOptions = filteredOptions.slice(
@@ -75,15 +75,17 @@ const MySelect: React.FC<MySelectProps> = (props: MySelectProps) => {
         page * itemsPerPage
     );
     let content = (function () {
-        if (type === "select-one")
+        const value = values[name] || []; // Default to an empty array if values[name] is undefined
+        if (type === "select-one") {
             return (
-                options.find((option: any) => option.value == values[name])
-                    ?.label ?? placeholder
+                options.find((option: any) => option.value == value)?.label ??
+                placeholder
             );
-        if (values[name].length === options.length) return "Tất cả";
-        if (!values[name].length) return placeholder;
+        }
+        if (value.length === options.length) return "Tất cả";
+        if (!value.length) return placeholder;
 
-        const array_values = values[name]
+        const array_values = value
             .filter((x: any) => !!x)
             .map(
                 (it: any) =>
@@ -128,10 +130,8 @@ const MySelect: React.FC<MySelectProps> = (props: MySelectProps) => {
                     multiple={type === "select-multi"}
                     value={
                         type === "select-multi"
-                            ? values[name] || ""
-                            : values[name]
-                            ? values[name][0]
-                            : "" || ""
+                            ? values[name] || []
+                            : values[name] || ""
                     }
                     onChange={handleChange}
                     renderValue={() => (

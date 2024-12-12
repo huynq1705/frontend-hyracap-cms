@@ -38,28 +38,102 @@ function PopupConfirmRemove(props: PopupConfirmRemoveProps) {
     const { pathname } = useLocation();
     const urlPayload = getKeyPage(end_point ?? pathname, "key");
     console.log("urlPayload", urlPayload);
+    // const handleRemove = async () => {
+    //     const payload = listItem.map((item) => item.toString());
+    //     try {
+    //         const response = await deleteCommon(payload, urlPayload);
+    //         if (!response)
+    //             return dispatch(
+    //                 setGlobalNoti({
+    //                     type: "error",
+    //                     message: `Xóa ${T(urlPayload)} thất bại`,
+    //                 })
+    //             );
+    //         // ---- success
+    //         refetch ? refetch() : "";
+    //         handleClose();
+    //         navigate(pathname);
+    //         dispatch(
+    //             setGlobalNoti({
+    //                 type: "success",
+    //                 message: `Xóa ${T(urlPayload)} thành công`,
+    //             })
+    //         );
+    //     } catch (e) {
+    //         throw e;
+    //     }
+    // };
     const handleRemove = async () => {
         const payload = listItem.map((item) => item.toString());
         try {
             const response = await deleteCommon(payload, urlPayload);
-            if (!response)
-                return dispatch(
+
+            if (response.data) {
+                if (!response || !response.data) {
+                    return dispatch(
+                        setGlobalNoti({
+                            type: "error",
+                            message: `Xóa ${T(urlPayload)} thất bại`,
+                        })
+                    );
+                }
+                const { succeeded, failed } = response.data;
+                if (failed.length > 0) {
+                    const failedMessages = failed
+                        .map((item: any) => item.desc || "Có lỗi khi xóa")
+                        .join(", ");
+                    return dispatch(
+                        setGlobalNoti({
+                            type: "error",
+                            message: `Xóa không thành công: ${failedMessages}`,
+                        })
+                    );
+                }
+                if (succeeded.length > 0) {
+                    refetch ? refetch() : "";
+                    handleClose();
+                    navigate(pathname);
+                    dispatch(
+                        setGlobalNoti({
+                            type: "success",
+                            message: `Xóa ${T(urlPayload)} thành công`,
+                        })
+                    );
+                } else {
+                    dispatch(
+                        setGlobalNoti({
+                            type: "error",
+                            message: `Không có mục nào được xóa.`,
+                        })
+                    );
+                }
+            } else {
+                if (!response)
+                    return dispatch(
+                        setGlobalNoti({
+                            type: "error",
+                            message: `Xóa ${T(urlPayload)} thất bại`,
+                        })
+                    );
+                // ---- success
+                refetch ? refetch() : "";
+                handleClose();
+                navigate(pathname);
+                dispatch(
                     setGlobalNoti({
-                        type: "error",
-                        message: `Xóa ${T(urlPayload)} thất bại`,
+                        type: "success",
+                        message: `Xóa ${T(urlPayload)} thành công`,
                     })
                 );
-            // ---- success
-            refetch ? refetch() : "";
-            handleClose();
-            navigate(pathname);
+            }
+        } catch (e) {
+            // In case of error with the request itself
             dispatch(
                 setGlobalNoti({
-                    type: "success",
-                    message: `Xóa ${T(urlPayload)} thành công`,
+                    type: "error",
+                    message: `Có lỗi xảy ra khi xóa ${T(urlPayload)}`,
                 })
             );
-        } catch (e) {
             throw e;
         }
     };

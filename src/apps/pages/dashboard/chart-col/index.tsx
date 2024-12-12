@@ -1,87 +1,152 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as echarts from "echarts";
 import { Box } from "@mui/material";
+import StatusCardV2 from "@/components/status-card/index-v2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import apiDashboardService from "@/api/apiDashboard.service";
+import ChartDashboardRevenue from "./chart-revenue";
 interface ChartDashboardProps {
-  color?: string;
+    color?: string;
 }
+
+function getTotalPaymentMoneyArray(data: any) {
+    const totalPayments = new Array(12).fill(0);
+
+    data.forEach((item: any) => {
+        const monthIndex = parseInt(item.month.split("-")[0]) - 1;
+        totalPayments[monthIndex] = item.sum_capital;
+    });
+
+    return totalPayments;
+}
+const calculateSums = (data: any) => {
+    const currentMonth = new Date().getMonth() + 1; // Lấy tháng hiện tại (1-12)
+
+    let totalYear = 0;
+    let totalCurrentMonth = 0;
+
+    data.forEach((item: any) => {
+        const month = parseInt(item.month.split("-")[0]);
+        totalYear += item.sum_capital;
+        if (month === currentMonth) {
+            totalCurrentMonth = item.sum_capital;
+        }
+    });
+
+    return {
+        totalYear,
+        totalCurrentMonth,
+    };
+};
 const ChartDashboard: React.FC<ChartDashboardProps> = (props) => {
-  const { color = "#009E73" } = props;
-  const chartRef = useRef<HTMLDivElement | null>(null);
+    const { color = "#009E73" } = props;
+    const chartRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (chartRef.current) {
-      const chartInstance = echarts.init(chartRef.current);
+    const today = new Date();
+    const year = today.getFullYear();
 
-      const option = {
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "shadow",
-          },
+    const { getStatisticCapital } = apiDashboardService();
+
+    const [formData, setFormData] = useState({
+        currentYearRevenue: year,
+    });
+    const [chartYear, setChartYear] = useState<any>([]);
+    const [dashboardRevenue, setDashboardRevenue] = useState<any>();
+    const [dashboardResult, setDashboardResult] = useState<any>();
+
+    const fetchDashboardRevenue = async () => {
+        const payload = {
+            year: formData.currentYearRevenue.toString(),
+        };
+        getStatisticCapital(payload)
+            .then((res) => {
+                if (res.data) {
+                    setDashboardRevenue(res.data);
+                    const totalPaymentMoneyArray = getTotalPaymentMoneyArray(
+                        res?.data?.data
+                    );
+                    const result = calculateSums(res?.data?.data);
+                    setDashboardResult(result);
+                    setChartYear(totalPaymentMoneyArray);
+                }
+            })
+            .catch((e) => {});
+    };
+    useEffect(() => {
+        fetchDashboardRevenue();
+    }, [formData.currentYearRevenue]);
+
+    const LIST_CARD_1 = [
+        {
+            key: "year",
+            label: "Cả năm",
+            value: `${dashboardResult ? dashboardResult.totalYear : 0} vnđ`,
         },
-
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true,
+        {
+            key: "month",
+            label: "Tháng này",
+            value: `${
+                dashboardResult ? dashboardResult.totalCurrentMonth : 0
+            } vnđ`,
         },
-        xAxis: [
-          {
-            type: "category",
-            data: [
-              "T1",
-              "T2",
-              "T3",
-              "T4",
-              "T5",
-              "T6",
-              "T7",
-              "T8",
-              "T9",
-              "T10",
-              "T11",
-              "T12",
-            ],
-            axisTick: {
-              alignWithLabel: true,
-            },
-          },
-        ],
-        yAxis: [
-          {
-            type: "value",
-          },
-        ],
-        series: [
-          {
-            name: "Direct",
-            type: "line",
-            barWidth: "60%",
-            data: [10, 52, 200, 334, 390, 330, 220, 100, 2, 20, 29, 18, 800],
-            itemStyle: {
-              color, // Change this to the desired color
-            },
-          },
-        ],
-      };
+    ];
 
-      chartInstance.setOption(option);
+    type FormDataKeys = "currentYearRevenue";
+    const changeYear = (
+        direction: "increase" | "decrease",
+        name: FormDataKeys
+    ) => {
+        setFormData((prev) => ({
+            ...prev,
+            [name]: direction === "increase" ? prev[name] + 1 : prev[name] - 1,
+        }));
+    };
 
-      const handleResize = () => {
-        chartInstance.resize();
-      };
-
-      window.addEventListener("resize", handleResize);
-
-      return () => {
-        window.removeEventListener("resize", handleResize);
-        chartInstance.dispose();
-      };
-    }
-  }, []);
-
-  return <Box ref={chartRef} className="w-full min-h-[400px] h-fit"></Box>;
+    return (
+        <>
+            <div className="flex justify-between items-center">
+                <h3 className="text-lg">Doanh thu</h3>
+                {/* <MyDatePicker date={date} setDate={setDate} /> */}
+                <div className="flex gap-1">
+                    <div
+                        className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px] hover:bg-lime-100 cursor-pointer"
+                        onClick={() => {
+                            changeYear("decrease", "currentYearRevenue");
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faAngleLeft} />
+                    </div>
+                    <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px] font-semibold">
+                        {formData.currentYearRevenue}
+                    </div>
+                    <div
+                        className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px] hover:bg-lime-100 cursor-pointer"
+                        onClick={() => {
+                            changeYear("increase", "currentYearRevenue");
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faAngleRight} />
+                    </div>
+                </div>
+            </div>
+            {/* list card */}
+            <div className="flex flex-wrap items-center gap-4 mt-[10px] w-full">
+                {LIST_CARD_1.map((item) => (
+                    <StatusCardV2
+                        key={item.key}
+                        statusData={{
+                            label: item.label,
+                            value: item.value,
+                            color: "#217732",
+                        }}
+                        customCss="w-[calc(33% - 11px]"
+                    />
+                ))}
+            </div>
+            <ChartDashboardRevenue data={chartYear} />
+        </>
+    );
 };
 
 export default ChartDashboard;

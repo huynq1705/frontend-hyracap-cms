@@ -31,22 +31,10 @@ export default function apiGroupService(): GroupService {
             });
     };
     const postGroup = async (payload: any, requiredKeys: string[]) => {
-        const validate_payload = {
-            name: "Group 001",
-            members: [],
-        };
-        const result = validateRequiredKeys(validate_payload, requiredKeys);
-
-        console.log(result);
-        if (!result.isValid) return result;
-        const convert_payload = {
-            name: "Group 001",
-            members: [],
-        };
         return httpClient
             .post<ResponseFromServerV2<any>>(
-                AppConfig.POSITION.END_POINT,
-                convert_payload,
+                AppConfig.GROUP.END_POINT,
+                payload,
                 {}
             )
             .then((res: ResponseFromServerV2<any>) => {
@@ -68,6 +56,12 @@ export default function apiGroupService(): GroupService {
         if (!result.isValid) return result;
         const convert_payload = {
             name: payload.name,
+            members: payload.members.map((memberId: any, index: number) => {
+                return {
+                    staff_id: parseInt(memberId),
+                    role: index === 0 ? 0 : 1,
+                };
+            }),
         };
         console.log("convert_payload", convert_payload);
 

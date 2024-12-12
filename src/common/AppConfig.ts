@@ -70,6 +70,16 @@ export default class AppConfig {
         GET_INDUSTRY: (params: string) => `/industry${params}&`,
         END_POINT: `/industry`,
     };
+    static DASHBOARD = {
+        GET_DASHBOARD: (params: string) => `/statistic${params}&`,
+        GET_DASHBOARD_CAPITAL: (params: string) =>
+            `/statistic/monthly-capital${params}&`,
+        GET_DASHBOARD_GROUP: (params: string) =>
+            `/statistic/groups-of-month${params}&`,
+        GET_DASHBOARD_STAFF: (params: string) =>
+            `/statistic/staffs-of-month${params}&`,
+        END_POINT: `/industry`,
+    };
     static PROJECT = {
         GET_PROJECT: (params: string) => `/project${params}&`,
         END_POINT: `/project`,

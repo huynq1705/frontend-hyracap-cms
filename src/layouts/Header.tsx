@@ -108,7 +108,7 @@ const Header = (props: HeaderProps): JSX.Element => {
                                         className="p-2 cursor-pointer hover:bg-[var(--bg-color-primary)]"
                                         onClick={() =>
                                             navigate(
-                                                `/admin/users/view/${x.id}`
+                                                `/admin/users/view/${x.sub}`
                                             )
                                         }
                                     >

@@ -6,6 +6,8 @@ import { Box } from "@mui/material";
 import ChartDashboardV2 from "./chart-col/index-v2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import DashboardGroupStatistic from "./groupStatistic";
+import DashboardStaffStatistic from "./staffStatistic";
 export interface HomePageProps {}
 const LIST_CARD_1 = [
     {
@@ -73,18 +75,6 @@ const LIST_CARD_3 = [
         value: "2",
         color: "#DE8208",
     },
-    {
-        key: "day",
-        label: "Đã hoàn thành",
-        value: "2",
-        color: "#50945D",
-    },
-    {
-        key: "day",
-        label: "Đã hủy",
-        value: "2",
-        color: "#D83D32",
-    },
 ];
 export default function HomePage(props: HomePageProps) {
     const { end, start } = getCurrentMonthStartAndEnd();
@@ -103,87 +93,15 @@ export default function HomePage(props: HomePageProps) {
             <div className="w-full flex gap-5 mt-6">
                 <div className="flex flex-col gap-4 rounded-xl flex-grow">
                     <div className="rounded-xl bg-white flex-grow p-4 shadow">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg">Doanh thu</h3>
-                            {/* <MyDatePicker date={date} setDate={setDate} /> */}
-                            <div className="flex gap-1">
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px]">
-                                    <FontAwesomeIcon icon={faAngleLeft} />
-                                </div>
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px] font-semibold">
-                                    2024
-                                </div>
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px]">
-                                    <FontAwesomeIcon icon={faAngleRight} />
-                                </div>
-                            </div>
-                        </div>
-                        {/* list card */}
-                        <div className="flex flex-wrap items-center gap-4 mt-[10px] w-full">
-                            {LIST_CARD_1.map((item) => (
-                                <StatusCardV2
-                                    key={item.key}
-                                    statusData={{
-                                        label: item.label,
-                                        value: item.value,
-                                        color: "#217732",
-                                    }}
-                                    // width="calc(33% - 11px)"
-                                    customCss="w-[calc(33% - 11px]"
-                                />
-                            ))}
-                        </div>
-                        {/* chart col year */}
                         <ChartDashboard />
                     </div>
                 </div>
                 <div className="w-1/4 flex flex-col gap-4 !min-w-[320px]">
                     {/*  */}
-                    <div className="rounded-xl bg-white p-4 shadow">
-                        <div className="flex flex-col">
-                            <h3 className="text-lg">Thống kê</h3>
-                            <div className="flex gap-1 my-2.5 w-full">
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px]">
-                                    <FontAwesomeIcon icon={faAngleLeft} />
-                                </div>
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px] font-semibold">
-                                    Hôm nay, 19/07/2024
-                                </div>
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px]">
-                                    <FontAwesomeIcon icon={faAngleRight} />
-                                </div>
-                            </div>
-                        </div>
-                        {/* <div className="flex flex-wrap items-center gap-4 mt-[10px] w-full">
-                            {LIST_CARD_3.map((item) => (
-                                <StatusCardV2
-                                    key={item.key}
-                                    statusData={item}
-                                    hightLine="label"
-                                    customCss="w-full"
-                                />
-                            ))}
-                        </div> */}
-                    </div>
+                    <DashboardGroupStatistic />
                     {/*  */}
                     <div className="rounded-xl bg-white  p-4  shadow">
-                        <div className="flex flex-col">
-                            <h3 className="text-lg">Thống kê nguồn tiền</h3>
-                            <div className="flex gap-1 my-2.5 w-full">
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px]">
-                                    <FontAwesomeIcon icon={faAngleLeft} />
-                                </div>
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px] font-semibold">
-                                    Hôm nay, 19/07/2024
-                                </div>
-                                <div className="rounded-lg bg-[#F6FAF7] text-[var(--text-color-primary)] px-2 py-[6px]">
-                                    <FontAwesomeIcon icon={faAngleRight} />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* chart col year */}
-                        <ChartDashboard />
+                        <DashboardStaffStatistic />
                     </div>
                 </div>
             </div>

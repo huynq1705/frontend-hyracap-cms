@@ -29,7 +29,7 @@ export const adminRouter = [
         },
     },
     {
-        path: "/users/view:code",
+        path: "/users/view/:code",
         canGuard: true,
         element: <AdminPage />,
         handle: {
@@ -40,7 +40,7 @@ export const adminRouter = [
         },
     },
     {
-        path: "/users/edit:code",
+        path: "/users/edit/:code",
         canGuard: true,
         element: <AdminPage />,
         handle: {
