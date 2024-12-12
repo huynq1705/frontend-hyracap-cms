@@ -33,6 +33,7 @@ interface ColumnProps {
     actions: {
         [key: string]: (...args: any) => void;
     };
+    indexItem: number;
 }
 const CustomCardList = ({ dataConvert, actions }: any) => {
     const { hasPermission } = usePermissionCheck("customer");
@@ -196,7 +197,7 @@ const getColumns = (props: ColumnProps) => {
     //permissions
     const { hasPermission } = usePermissionCheck("project");
 
-    const { actions } = props;
+    const { actions, indexItem } = props;
     const columns: any = [
         {
             title: "STT",
@@ -212,7 +213,7 @@ const getColumns = (props: ColumnProps) => {
                             textAlign: "center",
                         }}
                     >
-                        {index + 1}
+                        {index + 1 + indexItem}
                     </Typography>
                 </Stack>
             ),
@@ -543,6 +544,7 @@ const ProjectTable = (props: ProjectTableProps) => {
                         dataSource={dataConvert}
                         columns={getColumns({
                             actions,
+                            indexItem: pageSize * (currentPage - 1),
                         })}
                         pagination={false}
                         scroll={{ x: "100%" }}

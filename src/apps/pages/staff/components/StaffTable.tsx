@@ -35,6 +35,7 @@ interface ColumnProps {
     actions: {
         [key: string]: (...args: any) => void;
     };
+    indexItem: number;
 }
 
 const VALIDATE = {
@@ -180,7 +181,7 @@ const getColumns = (props: ColumnProps) => {
     const navigate = useNavigate();
     const { T } = useCustomTranslation();
     const { hasPermission } = usePermissionCheck("product");
-    const { actions } = props;
+    const { actions, indexItem } = props;
     const columns = [
         {
             title: "STT",
@@ -193,7 +194,7 @@ const getColumns = (props: ColumnProps) => {
                         lineHeight: "22px",
                     }}
                 >
-                    {index + 1}
+                    {index + 1 + indexItem}
                 </Typography>
             ),
             width: 46,
@@ -513,6 +514,7 @@ const StaffTable = (props: ListStaffProps) => {
                         dataSource={dataConvert}
                         columns={getColumns({
                             actions,
+                            indexItem: pageSize * (currentPage - 1),
                         })}
                         pagination={false}
                         scroll={{ x: "100%" }}
