@@ -7,6 +7,7 @@ type GroupService = {
     getGroup: (param?: any) => Promise<ResponseFromServerV1<any>>;
     postGroup: (payload: any, requiredKeys: string[]) => any;
     putGroup: (payload: any, code: string, requiredKeys: string[]) => any;
+    deleteGroupMember: (payload: any) => any;
     postGroupMember: (
         payload: any,
         code: string,
@@ -52,16 +53,8 @@ export default function apiGroupService(): GroupService {
         const validate_payload = {
             name: payload.name,
         };
-        const result = validateRequiredKeys(validate_payload, requiredKeys);
-        if (!result.isValid) return result;
         const convert_payload = {
             name: payload.name,
-            members: payload.members.map((memberId: any, index: number) => {
-                return {
-                    staff_id: parseInt(memberId),
-                    role: index === 0 ? 0 : 1,
-                };
-            }),
         };
         console.log("convert_payload", convert_payload);
 
@@ -83,34 +76,24 @@ export default function apiGroupService(): GroupService {
         code: string,
         requiredKeys: string[]
     ) => {
-        const validate_payload = {
-            name: payload.name,
-            effective_from: new Date().toISOString().split("T")[0],
-        };
-        const result = validateRequiredKeys(validate_payload, requiredKeys);
-        if (!result.isValid) return result;
-        const convert_payload = {
-            name: payload.name,
-            setting: {
-                effective_from: new Date().toISOString().split("T")[0],
-                direct_bonus_rate: (+payload.direct_bonus_rate)
-                    .toFixed(4)
-                    .toString(),
-                management_bonus_rate: (+payload.management_bonus_rate)
-                    .toFixed(4)
-                    .toString(),
-                kpi_bonus_base: (+payload.kpi_bonus_base).toFixed(4).toString(),
-                monthly_average_target: (+payload.monthly_average_target)
-                    .toFixed(4)
-                    .toString(),
-            },
-        };
-        console.log("convert_payload", convert_payload);
-
         return httpClient
             .put<ResponseFromServerV2<any>>(
-                AppConfig.GROUP.END_POINT + "/" + code,
-                convert_payload,
+                AppConfig.GROUP_MEMBER.END_POINT,
+                payload,
+                {}
+            )
+            .then((res: ResponseFromServerV2<any>) => {
+                return res.statusCode === 200;
+            })
+            .catch((err) => {
+                throw err;
+            });
+    };
+    const deleteGroupMember = async (payload: any) => {
+        return httpClient
+            .put<ResponseFromServerV2<any>>(
+                AppConfig.GROUP.END_POINT + "/members",
+                payload,
                 {}
             )
             .then((res: ResponseFromServerV2<any>) => {
@@ -126,5 +109,6 @@ export default function apiGroupService(): GroupService {
         postGroup,
         putGroup,
         postGroupMember,
+        deleteGroupMember,
     };
 }

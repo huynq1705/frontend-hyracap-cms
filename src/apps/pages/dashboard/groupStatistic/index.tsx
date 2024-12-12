@@ -37,8 +37,7 @@ export default function DashboardGroupStatistic(props: HomePageProps) {
                 key: "year",
                 label: `Top 1: ${
                     dashboardStatistic?.[0]
-                        ? dashboardStatistic[0]?.staff?.first_name +
-                          dashboardStatistic[0]?.staff?.last_name
+                        ? dashboardStatistic[0]?.group?.name
                         : "Chưa xác định"
                 }`,
                 value: `${
@@ -54,8 +53,7 @@ export default function DashboardGroupStatistic(props: HomePageProps) {
                 key: "month",
                 label: `Top 2: ${
                     dashboardStatistic?.[1]
-                        ? dashboardStatistic[1]?.staff?.first_name +
-                          dashboardStatistic[1]?.staff?.last_name
+                        ? dashboardStatistic[1]?.group?.name
                         : "Chưa xác định"
                 }`,
                 value: `${
@@ -71,8 +69,7 @@ export default function DashboardGroupStatistic(props: HomePageProps) {
                 key: "daonliney",
                 label: `Top 3: ${
                     dashboardStatistic?.[2]
-                        ? dashboardStatistic[2]?.staff?.first_name +
-                          dashboardStatistic[2]?.staff?.last_name
+                        ? dashboardStatistic[2]?.group?.name
                         : "Chưa xác định"
                 }`,
                 value: `${
@@ -88,8 +85,7 @@ export default function DashboardGroupStatistic(props: HomePageProps) {
                 key: "chuaden",
                 label: `Top 4: ${
                     dashboardStatistic?.[3]
-                        ? dashboardStatistic[3]?.staff?.first_name +
-                          dashboardStatistic[3]?.staff?.last_name
+                        ? dashboardStatistic[3]?.group?.name
                         : "Chưa xác định"
                 }`,
                 value: `${
@@ -105,8 +101,7 @@ export default function DashboardGroupStatistic(props: HomePageProps) {
                 key: "daden",
                 label: `Top 5: ${
                     dashboardStatistic?.[4]
-                        ? dashboardStatistic[4]?.staff?.first_name +
-                          dashboardStatistic[4]?.staff?.last_name
+                        ? dashboardStatistic[4]?.staff?.group?.name
                         : "Chưa xác định"
                 }`,
                 value: `${

@@ -1,9 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import apigroupervice from "@/api/apiProduct.service";
 import apiCommonService from "@/api/apiCommon.service";
-import ActionsViewPage from "@/components/actions-edit-page";
+import ActionsEditPage from "@/components/actions-edit-page";
 import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
 import { ResponseProductItem } from "@/types/product";
 import MyTextField from "@/components/input-custom-v2/text-field";
@@ -33,25 +39,28 @@ import { INIT_UPDATE_PRODUCT } from "@/constants/init-state/group";
 import apiGroupService from "@/api/Group.service";
 import apiStaffService from "@/api/apiStaff.service";
 import MemberCard from "../MemberCard";
+import FormHelperTextCustom from "@/components/form-helper-text";
 const VALIDATE = {
     name: "Hãy nhập tên sản phẩm",
 };
 const KEY_REQUIRED = ["name"];
-interface ViewPageProps {
+interface EditPageProps {
     open: boolean;
     onClose: () => void;
     refetch: () => void;
 }
-export default function ViewPage(props: ViewPageProps) {
+export default function EditPage(props: EditPageProps) {
     //--init
     const { onClose, refetch, open } = props;
     //--fn
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { detailCommon } = apiCommonService();
+    const leadRef = useRef<string | null>(null);
 
     const { T, t } = useCustomTranslation();
-    const { postGroup, putGroup } = apiGroupService();
+    const { postGroup, putGroup, postGroupMember, deleteGroupMember } =
+        apiGroupService();
     const { getStaff } = apiStaffService();
 
     const [isShow, setIsShow] = useState(false);
@@ -85,23 +94,22 @@ export default function ViewPage(props: ViewPageProps) {
                 const convert_data = {
                     id: response.id,
                     name: response.name,
-                    members: response.members.map((member: any) => ({
-                        members_id: member.id.toString(),
-                        members_staff_id: member.staff_id.toString(),
-                        members_first_name: member.staff.first_name,
-                        members_last_name: member.staff.last_name,
-                        members_email: member.staff.email,
-                        members_phone: member.staff.phone,
-                        members_role_id: member.staff.role_id
-                            ? member.staff.role_id.toString()
-                            : null,
-                        effective_from: member.effective_from,
-                        leave_from: member.leave_from,
-                        role: member.role.toString(),
-                    })),
+                    members: response.members.map((member: any) =>
+                        member.staff_id.toString()
+                    ),
                 };
+                const selectedCheckbox = response.members
+                    .filter((member: any) => member.role === 0)
+                    .map((member: any) => +member.staff_id);
                 setFormData(convert_data);
-                console.log("convert_data", convert_data);
+                setOldGroupNumber(
+                    response.members.map((member: any) =>
+                        member.staff_id.toString()
+                    )
+                );
+                setOldGroup(response.name);
+                setSelectedCheckbox(selectedCheckbox[0].toString());
+                leadRef.current = selectedCheckbox[0];
             }
         } catch (error) {
             dispatch(
@@ -129,13 +137,141 @@ export default function ViewPage(props: ViewPageProps) {
             dispatch(setIsLoading(false));
         }, 200);
     };
-    const handleUpdate = async () => {};
+    const handleUpdate = async () => {
+        if (!code) return;
+
+        const newMembers = formData.members || [];
+        const oldMembers = oldGroupMember || [];
+        const newItems = newMembers.filter(
+            (member) => !oldMembers.includes(member)
+        );
+        const removedItems = oldMembers.filter(
+            (member) => !newMembers.includes(member)
+        );
+
+        if (formData.name != oldGroup) {
+            try {
+                const response = await putGroup(formData, code, KEY_REQUIRED);
+                let message = `Cập nhật ${title_page} thất bại`;
+                let type = "error";
+                if (typeof response === "object" && response?.missingKeys) {
+                    setErrors(response.missingKeys);
+                    return;
+                }
+                if (response === true) {
+                    message = `Cập nhật ${title_page} thành công`;
+                    type = "success";
+                }
+                dispatch(
+                    setGlobalNoti({
+                        type,
+                        message,
+                    })
+                );
+                if (response === true) {
+                    handleCancel();
+                }
+            } catch (error) {
+                dispatch(
+                    setGlobalNoti({
+                        type: "error",
+                        message: "Cập nhật thất bại",
+                    })
+                );
+                console.error(error);
+            }
+        }
+        if (newItems.length > 0) {
+            const payloadUpdate = newItems.map((item, index) => ({
+                group_id: formData.id,
+                staff_id: item,
+                role:
+                    leadRef.current === null || leadRef.current !== item
+                        ? 1
+                        : 0,
+            }));
+            try {
+                const response = await postGroupMember(
+                    payloadUpdate,
+                    code,
+                    KEY_REQUIRED
+                );
+                let message = `Cập nhật ${title_page} thất bại`;
+                let type = "error";
+                if (typeof response === "object" && response?.missingKeys) {
+                    setErrors(response.missingKeys);
+                    return;
+                }
+                if (response === true) {
+                    message = `Cập nhật ${title_page} thành công`;
+                    type = "success";
+                }
+                dispatch(
+                    setGlobalNoti({
+                        type,
+                        message,
+                    })
+                );
+                if (response === true) {
+                    handleCancel();
+                }
+            } catch (error) {
+                dispatch(
+                    setGlobalNoti({
+                        type: "error",
+                        message: "Cập nhật thất bại",
+                    })
+                );
+                console.error(error);
+            }
+        }
+        if (removedItems.length > 0) {
+            const payloadUpdate = {
+                group_id: 36,
+                member_ids: removedItems.map(Number),
+            };
+            try {
+                const response = await deleteGroupMember(payloadUpdate);
+                let message = `Cập nhật ${title_page} thất bại`;
+                let type = "error";
+                if (typeof response === "object" && response?.missingKeys) {
+                    setErrors(response.missingKeys);
+                    return;
+                }
+                if (response === true) {
+                    message = `Cập nhật ${title_page} thành công`;
+                    type = "success";
+                }
+                dispatch(
+                    setGlobalNoti({
+                        type,
+                        message,
+                    })
+                );
+                if (response === true) {
+                    handleCancel();
+                }
+            } catch (error) {
+                dispatch(
+                    setGlobalNoti({
+                        type: "error",
+                        message: "Cập nhật thất bại",
+                    })
+                );
+                console.error(error);
+            }
+        }
+    };
     const handleRemove = useCallback(() => {
         togglePopup("remove");
     }, []);
     const handleOnchange = (e: any) => {
         const { name, value } = e.target;
         setFormData((prev: any) => ({ ...prev, [name]: value }));
+    };
+    const handleCheckboxChange = (value: string) => {
+        setSelectedCheckbox(value);
+        leadRef.current = value;
     };
     const togglePopup = useCallback((params: keyof typeof popup) => {
         setPopup((prev) => ({ ...prev, [params]: !prev[params] }));
@@ -148,6 +284,12 @@ export default function ViewPage(props: ViewPageProps) {
     const [staff, setStaff] = useState<OptionSelect>([]);
     const [errors, setErrors] = useState<string[]>([]);
     const [formData, setFormData] = useState(INIT_UPDATE_PRODUCT);
+    const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(
+        null
+    );
+    const [oldGroup, setOldGroup] = useState();
+    const [oldGroupMember, setOldGroupNumber] = useState<string[]>([]);
+
     const [popup, setPopup] = useState({
         remove: false,
         loading: true,
@@ -159,6 +301,10 @@ export default function ViewPage(props: ViewPageProps) {
         () => ({ handelSave, handleRemove, handleCancel }),
         [formData]
     );
+    const filteredStaff = staff.filter((item) =>
+        formData.members.includes(item.value)
+    );
+    console.log("filteredStaff", filteredStaff);
     //--effect
     useEffect(() => {
         getDetail();
@@ -227,7 +373,7 @@ export default function ViewPage(props: ViewPageProps) {
                                     ? "100%"
                                     : "calc(50% - 12px)",
                         }}
-                        label="Thêm thành viên"
+                        label="Thành viên"
                         name="members"
                         placeholder="Chọn thành viên nhóm"
                         handleChange={handleOnchange}
@@ -237,25 +383,47 @@ export default function ViewPage(props: ViewPageProps) {
                         validate={VALIDATE}
                         required={KEY_REQUIRED}
                         itemsPerPage={5}
-                        disabled={isView} // Adjust items per page as needed
+                        type="select-multi"
+                        disabled={isView}
                     />
-                    <Stack direction={"column"} width={"100%"}>
-                        <div className="pb-6"> Thông tin thành viên: </div>
-                        <Grid container spacing={2}>
-                            {formData.members.map(
-                                (member: any, index: number) => (
-                                    <Grid item xs={4} key={index}>
-                                        {" "}
-                                        {/* xs=4 tương ứng với 1/3 chiều rộng của container */}
-                                        <MemberCard data={member} />
-                                    </Grid>
-                                )
-                            )}
-                        </Grid>
-                    </Stack>
                 </div>
+                <Stack direction={"column"}>
+                    <label className="label mt-6">Chọn trưởng nhóm</label>
+                    {filteredStaff.map((item) => (
+                        <div
+                            key={item.value}
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                                margin: "8px 0",
+                            }}
+                        >
+                            <input
+                                type="checkbox"
+                                id={`checkbox-${item.value}`}
+                                checked={selectedCheckbox === item.value}
+                                value={item.value}
+                                onChange={() =>
+                                    handleCheckboxChange(item.value)
+                                }
+                                className="custom-checkbox"
+                            />
+                            <label
+                                htmlFor={`checkbox-${item.value}`}
+                                style={{ marginLeft: "8px" }}
+                            >
+                                {item.label}
+                            </label>
+                        </div>
+                    ))}
+                    {selectedCheckbox === null && (
+                        <FormHelperTextCustom
+                            text={"Vui lòng chọn trưởng nhóm"}
+                        />
+                    )}
+                </Stack>
             </div>
-            <ActionsViewPage actions={actions} isView={isView} />
+            <ActionsEditPage actions={actions} isView={isView} />
         </>
     );
 }

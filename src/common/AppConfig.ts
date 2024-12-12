@@ -52,6 +52,7 @@ export default class AppConfig {
     };
     static GROUP = {
         GET_GROUP: (params: string) => `/group${params}&`,
+        DELETE_GROUP_MEMBER: (params: string) => `/group/members${params}&`,
         END_POINT: `/group`,
     };
     static GROUP_MEMBER = {

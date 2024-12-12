@@ -3,7 +3,8 @@ import Transition from "@/components/transition-dialog";
 import { Box, Dialog } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import CreatePage from "./create";
-import ViewPage from "./edit";
+import ViewPage from "./view";
+import EditPage from "./edit";
 
 export interface ModalEditProps {
     open: boolean;
@@ -39,7 +40,7 @@ export default function ModalEditgroup(props: ModalEditProps) {
                 ) : pathname.includes("view") ? (
                     <ViewPage onClose={toggle} refetch={refetch} open={open} />
                 ) : (
-                    <ViewPage onClose={toggle} refetch={refetch} open={open} />
+                    <EditPage onClose={toggle} refetch={refetch} open={open} />
                 )}
             </Box>
         </Dialog>
