@@ -56,8 +56,8 @@ export default class AppConfig {
         END_POINT: `/group`,
     };
     static GROUP_MEMBER = {
-        GET_GROUP_MEMBER: (params: string) => `/group_member${params}&`,
-        END_POINT: `/group_member`,
+        GET_GROUP_MEMBER: (params: string) => `/group-member${params}&`,
+        END_POINT: `/group-member`,
     };
     static BLOG_CATEGORY = {
         GET_BLOG_CATEGORY: (params: string) => `/blog_category${params}&`,

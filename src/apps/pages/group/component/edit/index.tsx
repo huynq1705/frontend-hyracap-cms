@@ -40,10 +40,12 @@ import apiGroupService from "@/api/Group.service";
 import apiStaffService from "@/api/apiStaff.service";
 import MemberCard from "../MemberCard";
 import FormHelperTextCustom from "@/components/form-helper-text";
+import Grid2 from "@mui/material/Unstable_Grid2";
 const VALIDATE = {
     name: "Hãy nhập tên sản phẩm",
+    members: "Hãy chọn nhân viên",
 };
-const KEY_REQUIRED = ["name"];
+const KEY_REQUIRED = ["name", "members"];
 interface EditPageProps {
     open: boolean;
     onClose: () => void;
@@ -110,6 +112,7 @@ export default function EditPage(props: EditPageProps) {
                 setOldGroup(response.name);
                 setSelectedCheckbox(selectedCheckbox[0].toString());
                 leadRef.current = selectedCheckbox[0];
+                setCurentLead(selectedCheckbox[0]);
             }
         } catch (error) {
             dispatch(
@@ -139,8 +142,26 @@ export default function EditPage(props: EditPageProps) {
     };
     const handleUpdate = async () => {
         if (!code) return;
-
+        if (formData.name === "") {
+            VALIDATE.name = "Vui lòng nhập tên nhóm";
+            setErrors(["name"]);
+            return;
+        }
+        if (formData.members.length === 0) {
+            VALIDATE.members = "Chọn ít nhất 1 nhân viên";
+            setErrors(["members"]);
+            return;
+        }
         const newMembers = formData.members || [];
+        console.log("newMembers", newMembers);
+        console.log("leadRef", leadRef);
+        if (
+            leadRef.current &&
+            !newMembers.includes(leadRef.current.toString())
+        ) {
+            setIsShow(true);
+            return;
+        }
         const oldMembers = oldGroupMember || [];
         const newItems = newMembers.filter(
             (member) => !oldMembers.includes(member)
@@ -149,117 +170,87 @@ export default function EditPage(props: EditPageProps) {
             (member) => !newMembers.includes(member)
         );
 
-        if (formData.name != oldGroup) {
+        // Update group name if changed
+        if (formData.name !== oldGroup) {
             try {
                 const response = await putGroup(formData, code, KEY_REQUIRED);
-                let message = `Cập nhật ${title_page} thất bại`;
-                let type = "error";
-                if (typeof response === "object" && response?.missingKeys) {
-                    setErrors(response.missingKeys);
-                    return;
-                }
-                if (response === true) {
-                    message = `Cập nhật ${title_page} thành công`;
-                    type = "success";
-                }
-                dispatch(
-                    setGlobalNoti({
-                        type,
-                        message,
-                    })
-                );
-                if (response === true) {
-                    handleCancel();
-                }
+                handleResponse(response, "Cập nhật tên nhóm");
             } catch (error) {
-                dispatch(
-                    setGlobalNoti({
-                        type: "error",
-                        message: "Cập nhật thất bại",
-                    })
-                );
-                console.error(error);
+                console.error("Xảy ra lỗi khi cập nhật tên nhóm:", error);
+                return;
             }
         }
+
+        // Add new group members
         if (newItems.length > 0) {
-            const payloadUpdate = newItems.map((item, index) => ({
+            const payloadUpdate = newItems.map((item) => ({
                 group_id: formData.id,
-                staff_id: item,
-                role:
-                    leadRef.current === null || leadRef.current !== item
-                        ? 1
-                        : 0,
+                staff_id: +item,
+                role: leadRef.current === item ? 0 : 1,
             }));
+
             try {
                 const response = await postGroupMember(
                     payloadUpdate,
                     code,
                     KEY_REQUIRED
                 );
-                let message = `Cập nhật ${title_page} thất bại`;
-                let type = "error";
-                if (typeof response === "object" && response?.missingKeys) {
-                    setErrors(response.missingKeys);
-                    return;
-                }
-                if (response === true) {
-                    message = `Cập nhật ${title_page} thành công`;
-                    type = "success";
-                }
-                dispatch(
-                    setGlobalNoti({
-                        type,
-                        message,
-                    })
-                );
-                if (response === true) {
-                    handleCancel();
-                }
+                handleResponse(response, "Thêm thành viên mới");
             } catch (error) {
-                dispatch(
-                    setGlobalNoti({
-                        type: "error",
-                        message: "Cập nhật thất bại",
-                    })
-                );
-                console.error(error);
+                console.error("Xảy ra lỗi khi thêm:", error);
+                return;
             }
         }
+        // Remove old members
         if (removedItems.length > 0) {
             const payloadUpdate = {
-                group_id: 36,
+                group_id: formData.id,
                 member_ids: removedItems.map(Number),
             };
+
             try {
                 const response = await deleteGroupMember(payloadUpdate);
-                let message = `Cập nhật ${title_page} thất bại`;
-                let type = "error";
-                if (typeof response === "object" && response?.missingKeys) {
-                    setErrors(response.missingKeys);
-                    return;
-                }
-                if (response === true) {
-                    message = `Cập nhật ${title_page} thành công`;
-                    type = "success";
-                }
-                dispatch(
-                    setGlobalNoti({
-                        type,
-                        message,
-                    })
-                );
-                if (response === true) {
-                    handleCancel();
-                }
+                handleResponse(response, "Xóa thành viên");
             } catch (error) {
-                dispatch(
-                    setGlobalNoti({
-                        type: "error",
-                        message: "Cập nhật thất bại",
-                    })
-                );
-                console.error(error);
+                console.error("Xảy ra lỗi khi xóa:", error);
+                return;
             }
+        }
+
+        if (leadRef.current && oldMembers.find((x) => x == leadRef.current)) {
+            const payloadUpdate = {
+                group_id: formData.id,
+                staff_id: +leadRef?.current,
+                role: 0,
+            };
+
+            try {
+                const response = await postGroupMember(
+                    payloadUpdate,
+                    code,
+                    KEY_REQUIRED
+                );
+                handleResponse(response, "Thêm thành viên mới");
+            } catch (error) {
+                console.error("Xảy ra lỗi khi thêm:", error);
+                return;
+            }
+        }
+    };
+    const handleResponse = (response: any, action: any) => {
+        if (typeof response === "object" && response?.missingKeys) {
+            setErrors(response.missingKeys);
+            return;
+        }
+
+        const message =
+            response === true ? `${action} thành công` : `${action} thất bại`;
+        const type = response === true ? "success" : "error";
+
+        dispatch(setGlobalNoti({ type, message }));
+
+        if (response === true) {
+            handleCancel();
         }
     };
     const handleRemove = useCallback(() => {
@@ -287,6 +278,7 @@ export default function EditPage(props: EditPageProps) {
     const [selectedCheckbox, setSelectedCheckbox] = useState<string | null>(
         null
     );
+    const [currentLead, setCurentLead] = useState();
     const [oldGroup, setOldGroup] = useState();
     const [oldGroupMember, setOldGroupNumber] = useState<string[]>([]);
 
@@ -368,10 +360,7 @@ export default function EditPage(props: EditPageProps) {
                     />
                     <MySelect
                         configUI={{
-                            width:
-                                window.innerWidth < 601
-                                    ? "100%"
-                                    : "calc(50% - 12px)",
+                            width: "100%",
                         }}
                         label="Thành viên"
                         name="members"
@@ -388,35 +377,58 @@ export default function EditPage(props: EditPageProps) {
                     />
                 </div>
                 <Stack direction={"column"}>
-                    <label className="label mt-6">Chọn trưởng nhóm</label>
-                    {filteredStaff.map((item) => (
-                        <div
-                            key={item.value}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                margin: "8px 0",
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                id={`checkbox-${item.value}`}
-                                checked={selectedCheckbox === item.value}
-                                value={item.value}
-                                onChange={() =>
-                                    handleCheckboxChange(item.value)
-                                }
-                                className="custom-checkbox"
-                            />
-                            <label
-                                htmlFor={`checkbox-${item.value}`}
-                                style={{ marginLeft: "8px" }}
+                    <label className="label mt-6">
+                        Danh sách nhân viên (Chọn trưởng nhóm)
+                    </label>
+                    <Grid2 container spacing={2}>
+                        {filteredStaff.map((item) => (
+                            <Grid
+                                item
+                                xs={12} // 1 cột khi `sm`
+                                sm={6} // 2 cột khi `md`
+                                lg={4} // 3 cột khi `lg`
+                                key={item.value}
                             >
-                                {item.label}
-                            </label>
-                        </div>
-                    ))}
-                    {selectedCheckbox === null && (
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        margin: "8px 0",
+                                    }}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        id={`checkbox-${item.value}`}
+                                        checked={
+                                            selectedCheckbox === item.value
+                                        }
+                                        value={item.value}
+                                        onChange={() =>
+                                            handleCheckboxChange(item.value)
+                                        }
+                                        className="custom-checkbox"
+                                    />
+                                    <label
+                                        htmlFor={`checkbox-${item.value}`}
+                                        style={{ marginLeft: "8px" }}
+                                    >
+                                        {item.label}
+                                    </label>
+                                    {selectedCheckbox === item.value && (
+                                        <span
+                                            style={{
+                                                marginLeft: "8px",
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            (Trưởng nhóm)
+                                        </span>
+                                    )}
+                                </div>
+                            </Grid>
+                        ))}
+                    </Grid2>
+                    {isShow && (
                         <FormHelperTextCustom
                             text={"Vui lòng chọn trưởng nhóm"}
                         />
