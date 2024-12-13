@@ -77,7 +77,7 @@ export default function apiGroupService(): GroupService {
         requiredKeys: string[]
     ) => {
         return httpClient
-            .put<ResponseFromServerV2<any>>(
+            .post<ResponseFromServerV2<any>>(
                 AppConfig.GROUP_MEMBER.END_POINT,
                 payload,
                 {}
@@ -91,7 +91,7 @@ export default function apiGroupService(): GroupService {
     };
     const deleteGroupMember = async (payload: any) => {
         return httpClient
-            .put<ResponseFromServerV2<any>>(
+            .delete<ResponseFromServerV2<any>>(
                 AppConfig.GROUP.END_POINT + "/members",
                 payload,
                 {}

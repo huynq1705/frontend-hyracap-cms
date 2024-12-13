@@ -30,7 +30,7 @@ import apiHistoryService from "@/api/apiHistory.service";
 import { formatDate } from "@/utils/date-time";
 import dayjs from "dayjs";
 import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
-import { Box, Stack } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import ButtonCore from "@/components/button/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -91,7 +91,6 @@ export default function CreatePage(props: CreatePageProps) {
             setErrors(["members"]);
             return;
         }
-        if (lead) return;
 
         try {
             console.log("leadRef", leadRef);
@@ -263,33 +262,54 @@ export default function CreatePage(props: CreatePageProps) {
                 </div>
                 <Stack direction={"column"}>
                     <label className="label mt-6">Chọn trưởng nhóm</label>
-                    {filteredStaff.map((item) => (
-                        <div
-                            key={item.value}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                margin: "8px 0",
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                id={`checkbox-${item.value}`}
-                                checked={selectedCheckbox === item.value}
-                                value={item.value}
-                                onChange={() =>
-                                    handleCheckboxChange(item.value)
-                                }
-                                className="custom-checkbox"
-                            />
-                            <label
-                                htmlFor={`checkbox-${item.value}`}
-                                style={{ marginLeft: "8px" }}
+                    <Grid container spacing={2}>
+                        {filteredStaff.map((item) => (
+                            <Grid
+                                item
+                                xs={12} // 1 cột khi `sm`
+                                sm={6} // 2 cột khi `md`
+                                lg={4} // 3 cột khi `lg`
+                                key={item.value}
                             >
-                                {item.label}
-                            </label>
-                        </div>
-                    ))}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        margin: "8px 0",
+                                    }}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        id={`checkbox-${item.value}`}
+                                        checked={
+                                            selectedCheckbox === item.value
+                                        }
+                                        value={item.value}
+                                        onChange={() =>
+                                            handleCheckboxChange(item.value)
+                                        }
+                                        className="custom-checkbox"
+                                    />
+                                    <label
+                                        htmlFor={`checkbox-${item.value}`}
+                                        style={{ marginLeft: "8px" }}
+                                    >
+                                        {item.label}
+                                    </label>
+                                    {selectedCheckbox === item.value && (
+                                        <span
+                                            style={{
+                                                marginLeft: "8px",
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            (Trưởng nhóm)
+                                        </span>
+                                    )}
+                                </div>
+                            </Grid>
+                        ))}
+                    </Grid>
                     {selectedCheckbox === null && (
                         <FormHelperTextCustom
                             text={"Vui lòng chọn trưởng nhóm"}

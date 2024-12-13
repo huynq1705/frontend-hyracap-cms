@@ -403,7 +403,7 @@ export default function EditPage(props: EditPageProps) {
                             </strong>
                         </li>
                         <li>
-                            Thời hạn tối thiểu:{" "}
+                            Thời hạn tối đa:{" "}
                             <strong>
                                 {contractInfo?.product_id?.max_duration} tháng
                             </strong>

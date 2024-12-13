@@ -17,7 +17,7 @@ export default function ActionsEditPage(props: ActionsEditPageProps) {
     const { actions, isView, isBigBtn = false } = props;
     const { T } = useCustomTranslation();
     const { pathname } = useLocation();
-    const blockBtn = ["contract", "users", "group/view"];
+    const blockBtn = ["contract/view", "users", "group/view"];
     return (
         <Stack
             className="sticky bottom-0 left-0 right-0"
