@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { selectLang } from "./redux/selectors/app.selector";
 import i18n from "./i18n/i18n";
 import setCSSVariables from "./themeVariables";
+import { requestPermission, onMessageListener } from "./utils/firebase";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -30,6 +32,13 @@ const App = (): JSX.Element => {
   const AppContainer = withTranslation()(AppRouter);
   useEffect(() => {
     setCSSVariables(theme);
+    requestPermission().then((token) => {
+      console.log(token);
+    });
+    // getMessagingToken();
+    onMessageListener().then((payload) => {
+      console.log("payload", payload);
+    });
   }, []);
   return (
     <QueryClientProvider client={queryClient}>
