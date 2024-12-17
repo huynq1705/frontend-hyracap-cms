@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Box, styled, useTheme } from "@mui/system";
 import { Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import "/src/assets/styles/login.scss";
@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import { setGlobalNoti } from "@/redux/slices/app.slice";
 import { v4 as uuidv4 } from "uuid";
 import LogoIcon from "@/components/icons/logo";
+import { requestPermission } from "@/utils/firebase";
 const FlexBox = styled(Box)(() => ({ display: "flex", alignItems: "center" }));
 
 // inital login credentials
@@ -47,10 +48,16 @@ const Login = () => {
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const onLogin = (username: string, password: string) => {
+    const [token, setToken] = useState<string | null>(null);
+    const onLogin = (username: string, password: string, token: string) => {
+        if (!token) {
+            console.error("Token is not available yet");
+            return;
+        }
         signIn({
             email: username,
             password: password,
+            token: token,
         });
     };
     const { T, t } = useCustomTranslation();
@@ -58,13 +65,27 @@ const Login = () => {
     const handleFormSubmit = async (values: any) => {
         setLoading(true);
         try {
-            await onLogin(values.username, values.password);
-            setLoading(false);
+            if (token) {
+                await onLogin(values.username, values.password, token);
+            } else {
+                console.error("Token is not available yet");
+            }
         } catch (e) {
+            console.error("Error during login:", e);
+        } finally {
             setLoading(false);
         }
     };
-
+    useEffect(() => {
+        requestPermission()
+            .then((newToken) => {
+                console.log("Received Token:", newToken);
+                setToken(newToken); // Save the token to state
+            })
+            .catch((err) => {
+                console.error("Error fetching token:", err);
+            });
+    }, []);
     return (
         <div className="page-login max-sm:!p-0">
             <Grid

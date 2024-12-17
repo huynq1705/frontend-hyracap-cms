@@ -245,43 +245,52 @@ export default function CreatePage(props: CreatePageProps) {
                 </div>
                 <Stack direction={"column"}>
                     <label className="label mt-6">Chọn trưởng nhóm</label>
-                    {filteredStaff.map((item) => (
-                        <div
-                            key={item.value}
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                margin: "8px 0",
-                            }}
-                        >
-                            <input
-                                type="checkbox"
-                                id={`checkbox-${item.value}`}
-                                checked={selectedCheckbox === item.value}
-                                value={item.value}
-                                onChange={() =>
-                                    handleCheckboxChange(item.value)
-                                }
-                                className="custom-checkbox"
-                            />
-                            <label
-                                htmlFor={`checkbox-${item.value}`}
-                                style={{ marginLeft: "8px" }}
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                                "repeat(auto-fit, minmax(250px, 1fr))",
+                            gap: "8px",
+                            margin: "8px 0",
+                        }}
+                    >
+                        {filteredStaff.map((item) => (
+                            <div
+                                key={item.value}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
                             >
-                                {item.label}
-                            </label>
-                            {selectedCheckbox === item.value && (
-                                <span
-                                    style={{
-                                        marginLeft: "8px",
-                                        fontWeight: "bold",
-                                    }}
+                                <input
+                                    type="checkbox"
+                                    id={`checkbox-${item.value}`}
+                                    checked={selectedCheckbox === item.value}
+                                    value={item.value}
+                                    onChange={() =>
+                                        handleCheckboxChange(item.value)
+                                    }
+                                    className="custom-checkbox"
+                                />
+                                <label
+                                    htmlFor={`checkbox-${item.value}`}
+                                    style={{ marginLeft: "8px" }}
                                 >
-                                    (Trưởng nhóm)
-                                </span>
-                            )}
-                        </div>
-                    ))}
+                                    {item.label}
+                                </label>
+                                {selectedCheckbox === item.value && (
+                                    <span
+                                        style={{
+                                            marginLeft: "8px",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        (Trưởng nhóm)
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                     {selectedCheckbox === null && (
                         <FormHelperTextCustom
                             text={"Vui lòng chọn trưởng nhóm"}

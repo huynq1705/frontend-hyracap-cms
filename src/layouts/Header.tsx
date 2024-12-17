@@ -4,13 +4,28 @@ import UserSection from "@/components/UserSection";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, IconButton, Stack } from "@mui/material";
+import {
+    Box,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    Popover,
+    Stack,
+    Typography,
+} from "@mui/material";
 import { memo, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import EmptyIcon from "@/components/icons/empty";
 import clsx from "clsx";
 import apiAccountService from "@/api/Account.service";
+import apiNotificationService from "@/api/notification.service";
+import { formatDate, formatTime } from "@/utils/date-time";
+import { onMessageListener } from "@/utils/firebase";
+import { setGlobalNoti } from "@/redux/slices/app.slice";
+import { useDispatch } from "react-redux";
 interface HeaderProps {
     handleDrawerToggle: () => void;
 }
@@ -19,12 +34,29 @@ const Header = (props: HeaderProps): JSX.Element => {
     const { handleDrawerToggle } = props;
     const { T } = useCustomTranslation();
     const { getAccount } = apiAccountService();
+    const { getNotification } = apiNotificationService();
 
     const [keySearch, setKeySearch] = useState("");
     const [openDropdown, setOpenDropdown] = useState(false);
     const [listCustomer, setListCustomer] = useState<any>(null);
+    const [listNotification, setListNotification] = useState<any>(null);
     const [isFirstRender, setIsFirstRender] = useState(true);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? "notification-popover" : undefined;
+
     const handleKeyDown = (event: any) => {
         if (event.key === "Enter") {
             // Call the onSearch callback with the current search term
@@ -39,6 +71,46 @@ const Header = (props: HeaderProps): JSX.Element => {
             })
             .catch((e) => {});
     };
+    const getNoti = () => {
+        getNotification({ page: 1, take: 999 })
+            .then((response) => {
+                const rawData = response.data;
+                const formattedNotifications = rawData.map((item: any) => ({
+                    id: item.id,
+                    title: item.notification?.title || "No Title",
+                    body: item.notification?.body || "No Body",
+                    time: item.created_at
+                        ? formatDate(item.created_at, "HHMMvsDDMMYYYY")
+                        : "Now",
+                }));
+                setListNotification(formattedNotifications);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    };
+    useEffect(() => {
+        getNoti();
+        onMessageListener().then((payload: any) => {
+            console.log("payload", payload);
+
+            dispatch(
+                setGlobalNoti({
+                    type: "success",
+                    message: `${payload.notification?.title}: ${payload.notification?.body}`,
+                })
+            );
+            setListNotification((prevNotifications: any) => {
+                const newNotification = {
+                    id: prevNotifications.length ?? 0,
+                    title: payload.notification?.title || "No Title",
+                    body: payload.notification?.body || "No Body",
+                    time: "Now",
+                };
+                return [newNotification, ...prevNotifications];
+            });
+        });
+    }, []);
     useEffect(() => {
         if (isFirstRender) {
             setIsFirstRender(false);
@@ -169,7 +241,7 @@ const Header = (props: HeaderProps): JSX.Element => {
                         }}
                     /> */}
                 </Box>
-                <Stack
+                {/* <Stack
                     className="h-9 w-9 flex items-center justify-center relative bg-[#F9FAFB]"
                     sx={{
                         borderRadius: "8px",
@@ -180,7 +252,105 @@ const Header = (props: HeaderProps): JSX.Element => {
                     <Box className="absolute top-1 right-1 text-xs p-1 bg-red-600 w-4 h-4 rounded-full flex items-center justify-center text-white">
                         9
                     </Box>
+                </Stack> */}
+                <Stack
+                    className="h-9 w-9 flex items-center justify-center relative bg-[#F9FAFB] cursor-pointer"
+                    sx={{
+                        borderRadius: "8px",
+                        border: "1px solid var(--border-color-primary)",
+                    }}
+                    onClick={handleOpen}
+                >
+                    <FontAwesomeIcon icon={faBell} />
+                    <Box className="absolute top-1 right-1 text-xs p-1 bg-red-600 w-4 h-4 rounded-full flex items-center justify-center text-white">
+                        {(listNotification && listNotification.length) ?? 0}
+                    </Box>
                 </Stack>
+
+                {/* Popover */}
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                    }}
+                    transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                    }}
+                    PaperProps={{
+                        sx: { width: 300, maxHeight: 400, overflow: "hidden" },
+                    }}
+                >
+                    {/* Tiêu đề cố định */}
+                    <Box
+                        sx={{
+                            position: "sticky",
+                            top: 0,
+                            backgroundColor: "white",
+                            zIndex: 1,
+                        }}
+                    >
+                        <Typography variant="h6" sx={{ p: 2 }}>
+                            Thông báo
+                        </Typography>
+                        <Divider />
+                    </Box>
+
+                    {/* Danh sách cuộn */}
+                    <Box sx={{ maxHeight: 350, overflow: "auto" }}>
+                        <List>
+                            {listNotification?.length > 0 ? (
+                                listNotification.map((noti: any) => (
+                                    <ListItem
+                                        key={noti.id}
+                                        button
+                                        sx={{
+                                            "&:hover": {
+                                                backgroundColor: "#f6faf7",
+                                            },
+                                        }}
+                                    >
+                                        <ListItemText
+                                            primary={noti.title}
+                                            secondary={
+                                                <>
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="textSecondary"
+                                                    >
+                                                        {noti.body}
+                                                    </Typography>
+                                                    <Typography
+                                                        variant="caption"
+                                                        color="textSecondary"
+                                                    >
+                                                        {noti.time ?? "--"}
+                                                    </Typography>
+                                                </>
+                                            }
+                                            primaryTypographyProps={{
+                                                fontSize: "14px",
+                                                fontWeight: "700",
+                                            }}
+                                            secondaryTypographyProps={{
+                                                fontSize: "12px",
+                                            }}
+                                        />
+                                    </ListItem>
+                                ))
+                            ) : (
+                                <Typography sx={{ p: 2, textAlign: "center" }}>
+                                    Không có thông báo!
+                                </Typography>
+                            )}
+                        </List>
+                    </Box>
+                </Popover>
+
                 {/* <LangSection /> */}
                 <UserSection />
             </div>
