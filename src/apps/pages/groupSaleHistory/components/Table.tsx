@@ -29,6 +29,7 @@ import { setTotalItems } from "@/redux/slices/page.slice";
 import StatusCardV2 from "@/components/status-card/index-v2";
 import apiGroupSaleHistoryService from "@/api/apiGroupSaleHistory.service";
 import { formatDate } from "@/utils/date-time";
+import ModalEditGroupSaleHistory from "./ModalEdit";
 
 interface ColumnProps {
     actions: {
@@ -518,7 +519,16 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                     )}
                 </Box>
             </Box>
-
+            {popup.edit && (
+                <ModalEditGroupSaleHistory
+                    open={popup.edit}
+                    toggle={() => {
+                        togglePopup("edit");
+                        navigate(`/admin/group_sale_history`);
+                    }}
+                    refetch={refetch}
+                />
+            )}
             {/*  */}
             <PopupConfirmRemove
                 listItem={selectedRowKeys}
@@ -528,14 +538,6 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                 }}
                 refetch={refetch}
                 name_item={selectedRowLabels}
-            />
-            {/*  */}
-            <PopupConfirmImport
-                open={popup.upload}
-                handleClose={() => {
-                    togglePopup("upload");
-                }}
-                refetch={refetch}
             />
         </>
     );

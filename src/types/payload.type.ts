@@ -4,6 +4,7 @@ import { DateRangeValue } from "./types";
 export type SignInPayload = {
     email: string;
     password: string;
+    token: string;
     otp?: string;
 };
 

@@ -7,34 +7,17 @@ import React, {
 } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import apiProductService from "@/api/apiProduct.service";
-import apiCommonService from "@/api/apiCommon.service";
 import ActionsCreatePage from "@/components/actions-edit-page";
 import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
-import { ResponseProductItem } from "@/types/product";
 import MyTextField from "@/components/input-custom-v2/text-field";
-import MyTextareaAutosize from "@/components/input-custom-v2/textarea-autosize";
 import MySelect from "@/components/input-custom-v2/select";
-import CurrencyInput from "@/components/input-custom-v2/currency";
 import { OptionSelect } from "@/types/types";
-import MySwitch from "@/components/input-custom-v2/switch";
-import HeaderModalEdit from "@/components/header-modal-edit";
 import { getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
-import ListImage from "@/components/list-image";
-import { Timeline, UploadFile } from "antd";
-import { v4 as uuidv4 } from "uuid";
-import CustomCurrencyInput from "@/components/input-custom-v2/currency";
-import X2ChevronDown from "@/components/icons/x2-chevron-down";
-import apiHistoryService from "@/api/apiHistory.service";
-import { formatDate } from "@/utils/date-time";
-import dayjs from "dayjs";
-import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import ButtonCore from "@/components/button/core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import MultipleSelect from "@/components/input-custom-v2/select/multi-select-mui";
 import { INIT_CREATE_PRODUCT } from "@/constants/init-state/group";
 import apiGroupService from "@/api/Group.service";
 import apiStaffService from "@/api/apiStaff.service";
@@ -262,54 +245,52 @@ export default function CreatePage(props: CreatePageProps) {
                 </div>
                 <Stack direction={"column"}>
                     <label className="label mt-6">Chọn trưởng nhóm</label>
-                    <Grid container spacing={2}>
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                                "repeat(auto-fit, minmax(250px, 1fr))",
+                            gap: "8px",
+                            margin: "8px 0",
+                        }}
+                    >
                         {filteredStaff.map((item) => (
-                            <Grid
-                                item
-                                xs={12} // 1 cột khi `sm`
-                                sm={6} // 2 cột khi `md`
-                                lg={4} // 3 cột khi `lg`
+                            <div
                                 key={item.value}
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                }}
                             >
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        margin: "8px 0",
-                                    }}
+                                <input
+                                    type="checkbox"
+                                    id={`checkbox-${item.value}`}
+                                    checked={selectedCheckbox === item.value}
+                                    value={item.value}
+                                    onChange={() =>
+                                        handleCheckboxChange(item.value)
+                                    }
+                                    className="custom-checkbox"
+                                />
+                                <label
+                                    htmlFor={`checkbox-${item.value}`}
+                                    style={{ marginLeft: "8px" }}
                                 >
-                                    <input
-                                        type="checkbox"
-                                        id={`checkbox-${item.value}`}
-                                        checked={
-                                            selectedCheckbox === item.value
-                                        }
-                                        value={item.value}
-                                        onChange={() =>
-                                            handleCheckboxChange(item.value)
-                                        }
-                                        className="custom-checkbox"
-                                    />
-                                    <label
-                                        htmlFor={`checkbox-${item.value}`}
-                                        style={{ marginLeft: "8px" }}
+                                    {item.label}
+                                </label>
+                                {selectedCheckbox === item.value && (
+                                    <span
+                                        style={{
+                                            marginLeft: "8px",
+                                            fontWeight: "bold",
+                                        }}
                                     >
-                                        {item.label}
-                                    </label>
-                                    {selectedCheckbox === item.value && (
-                                        <span
-                                            style={{
-                                                marginLeft: "8px",
-                                                fontWeight: "bold",
-                                            }}
-                                        >
-                                            (Trưởng nhóm)
-                                        </span>
-                                    )}
-                                </div>
-                            </Grid>
+                                        (Trưởng nhóm)
+                                    </span>
+                                )}
+                            </div>
                         ))}
-                    </Grid>
+                    </div>
                     {selectedCheckbox === null && (
                         <FormHelperTextCustom
                             text={"Vui lòng chọn trưởng nhóm"}

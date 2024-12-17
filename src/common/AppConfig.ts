@@ -67,6 +67,11 @@ export default class AppConfig {
         GET_BLOG: (params: string) => `/blog${params}&`,
         END_POINT: `/blog`,
     };
+    static NOTIFICATION = {
+        GET_NOTIFICATION: (params: string) =>
+            `/notification/getStaff${params}&`,
+        END_POINT: `/notification/getStaff`,
+    };
     static INDUSTRY = {
         GET_INDUSTRY: (params: string) => `/industry${params}&`,
         END_POINT: `/industry`,

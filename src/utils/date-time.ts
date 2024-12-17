@@ -37,6 +37,7 @@ type DateFormat =
     | "DDMMYY"
     | "YYYYMMDD"
     | "DDMMYYYYvsHHMM"
+    | "HHMMvsDDMMYYYY"
     | "DDMMYYYY";
 
 export function formatDate(date: string | Date, format: DateFormat): string {
@@ -59,6 +60,8 @@ export function formatDate(date: string | Date, format: DateFormat): string {
             return `${year}-${month}-${day}`;
         case "DDMMYYYYvsHHMM":
             return `${day}/${month}/${year}, ${hours}:${minutes}`;
+        case "HHMMvsDDMMYYYY":
+            return ` ${hours}:${minutes}, ${day}/${month}/${year}`;
         case "DDMMYYYY":
             return `${day}/${month}/${year}`;
         case "DDMMYY":
