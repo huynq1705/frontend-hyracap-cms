@@ -50,10 +50,6 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [token, setToken] = useState<string | null>(null);
     const onLogin = (username: string, password: string, token: string) => {
-        if (!token) {
-            console.error("Token is not available yet");
-            return;
-        }
         signIn({
             email: username,
             password: password,
@@ -65,11 +61,7 @@ const Login = () => {
     const handleFormSubmit = async (values: any) => {
         setLoading(true);
         try {
-            if (token) {
-                await onLogin(values.username, values.password, token);
-            } else {
-                console.error("Token is not available yet");
-            }
+            await onLogin(values.username, values.password, token ?? "");
         } catch (e) {
             console.error("Error during login:", e);
         } finally {
@@ -80,7 +72,7 @@ const Login = () => {
         requestPermission()
             .then((newToken) => {
                 console.log("Received Token:", newToken);
-                setToken(newToken);
+                setToken(newToken); // Save the token to state
             })
             .catch((err) => {
                 console.error("Error fetching token:", err);

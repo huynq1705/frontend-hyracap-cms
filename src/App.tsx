@@ -17,44 +17,41 @@ import setCSSVariables from "./themeVariables";
 import { requestPermission, onMessageListener } from "./utils/firebase";
 
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            refetchOnMount: false,
-            refetchOnReconnect: false,
-            refetchOnWindowFocus: false,
-            retry: 1,
-            retryDelay: 3000,
-        },
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      retry: 1,
+      retryDelay: 3000,
     },
+  },
 });
 const App = (): JSX.Element => {
-    const lang = useSelector(selectLang);
-    const AppContainer = withTranslation()(AppRouter);
-    useEffect(() => {
-        setCSSVariables(theme);
-        requestPermission().then((token) => {
-            console.log(token);
-        });
-        onMessageListener().then((payload: any) => {
-            // console.log("payload", payload);
-        });
-    }, []);
-    return (
-        <QueryClientProvider client={queryClient}>
-            <LocalizationProvider
-                dateAdapter={AdapterDayjs}
-                adapterLocale={lang}
-            >
-                <I18nextProvider i18n={i18n}>
-                    <ThemeProvider theme={theme}>
-                        <CssBaseline />
-                        <GlobalNoti />
-                        <AppContainer />
-                    </ThemeProvider>
-                </I18nextProvider>
-            </LocalizationProvider>
-        </QueryClientProvider>
-    );
+  const lang = useSelector(selectLang);
+  const AppContainer = withTranslation()(AppRouter);
+  useEffect(() => {
+    setCSSVariables(theme);
+    requestPermission().then((token) => {
+      console.log(token);
+    });
+    onMessageListener().then((payload: any) => {
+      console.log("payload", payload);
+    });
+  }, []);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={lang}>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <GlobalNoti />
+            <AppContainer />
+          </ThemeProvider>
+        </I18nextProvider>
+      </LocalizationProvider>
+    </QueryClientProvider>
+  );
 };
 
 export default memo(App);

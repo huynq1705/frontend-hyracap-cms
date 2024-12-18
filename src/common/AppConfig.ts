@@ -5,6 +5,7 @@ export default class AppConfig {
     static DEVICE_TYPE = "web-sdk";
     static PROJECT_NAME_TOKEN = "project_name";
     static API_URL = import.meta.env.VITE_APP_BASE_API_URL;
+    static WS_URL = import.meta.env.VITE_APP_BASE_WS_URL;
 
     static HISTORY = {
         GET_HISTORY: (params: string) => `/interestRateHistory${params}&`,
