@@ -30,8 +30,6 @@ const UploadFile: React.FC<UploadFileProps> = ({
     const normalizedImageUrl = useMemo(() => {
         return Array.isArray(imageUrl) ? imageUrl : [imageUrl];
     }, [imageUrl]);
-    console.log("imageUrl", imageUrl);
-    console.log("normalizedImageUrl", normalizedImageUrl);
     useMemo(() => {
         const flattenedUrls = Array.isArray(normalizedImageUrl[0])
             ? normalizedImageUrl.flat()
@@ -97,8 +95,6 @@ const UploadFile: React.FC<UploadFileProps> = ({
         }),
         [internalFileList, isEditable]
     );
-    console.log("internalFileList", internalFileList);
-    console.log("imageUrl", imageUrl);
 
     return (
         <section className={`${hasError ? "hasErrorUpload" : ""}`}>
