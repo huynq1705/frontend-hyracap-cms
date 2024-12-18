@@ -92,7 +92,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
                         <span className="font-medium text-gray-9 text-sm">
-                            Lãi xuất tối thiếu
+                            Lãi suất tối thiếu
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span className="font-medium">
@@ -226,7 +226,7 @@ const getColumns = (props: ColumnProps) => {
             ),
         },
         {
-            title: "Lãi xuất tối thiếu",
+            title: "Lãi suất tối thiếu",
             dataIndex: "min_interest_rate",
             width: 120,
             render: (_: any, d: any) => (

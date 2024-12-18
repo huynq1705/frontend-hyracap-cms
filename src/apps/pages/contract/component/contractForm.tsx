@@ -1,3 +1,4 @@
+import { formatDate } from "@/utils/date-time";
 import { Stack, Typography } from "@mui/material";
 
 type ContractFormProps = {
@@ -12,85 +13,101 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
             gap={2}
             sx={{
                 backgroundColor: "rgba(255, 255, 255, 1)",
-                padding: "12px 16px",
+                padding: "12px 48px",
                 width: "100%",
             }}
         >
             <div>
-                <h3 className=" p-2 text-center">
-                    CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
-                </h3>
-                <h3 className="p-2 text-center">Độc lập - Tự do - Hạnh phúc</h3>
-                <h2 className="p-2 text-center">HỢP ĐỒNG GIAO DỊCH SẢN PHẨM</h2>
-                <p className="p-2 text-center">Số: ........../HDKQ/HYRACAP</p>
-                <ul className="p-2 items-center">
-                    <li>
-                        Căn cứ bộ luật Dân sự ban hành ngày 24 tháng 11 năm
-                        2015;
-                    </li>
-                    <li>
-                        Căn cứ Luật chứng khoán 2019 và các thông tư hướng dẫn
-                        thi hành;
-                    </li>
-                    <li>Căn cứ các văn bản pháp luật hiện hành.</li>
-                </ul>
-                <h3>A. TÊN KHÁCH HÀNG/NHÀ ĐẦU TƯ</h3>
                 <div>
-                    <p>
-                        Họ và Tên khách hàng(Ông/Bà): ..{" "}
-                        <strong>{data?.user?.firstName || "..."}</strong>{" "}
-                        <strong>{data?.user?.lastName || "..."}</strong>...
+                    <h3 className=" p-2 text-center">
+                        CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM
+                    </h3>
+                    <h3 className="p-2 text-center">
+                        Độc lập - Tự do - Hạnh phúc
+                    </h3>
+                    <h2 className="p-2 text-center">
+                        HỢP ĐỒNG GIAO DỊCH SẢN PHẨM
+                    </h2>
+                    <p className="p-2 text-center">
+                        Số: ........../HDKQ/HYRACAP
                     </p>
-                    <p>
-                        Số CMND: ...
-                        <strong>
-                            {data?.user?.idInformation?.idNumber || "..."}
-                        </strong>
-                        ........ Cấp ngày:....
-                        <strong>
-                            {data?.user?.idInformation?.date_of_issue || "..."}
-                        </strong>
-                        ....
-                    </p>
-                    <p>
-                        Tại: .......
-                        <strong>
-                            {data?.user?.idInformation
-                                ? data?.user?.idInformation.place_of_issue
-                                : "..."}
-                        </strong>
-                        ...........
-                    </p>
-                    <p>
-                        Địa chỉ thường trú: ....
-                        <strong>
-                            {data?.user?.idInformation?.address || "..."}
-                        </strong>
-                        ........
-                    </p>
-                    <p>
-                        Điện thoại: ...........<strong>{data?.phone}</strong>
-                        .......................... Email: ................
-                        <strong>{data?.email || "..."}</strong>
-                        .................................
-                    </p>
-                    <p>Số tài khoản giao dịch : ....................</p>
-                    <p>
-                        Tên gói: ...
-                        <strong>{data?.product_id?.name || "..."}</strong>
-                        ....
-                    </p>
-                    <p>
-                        Số tiền đầu tư: ...
-                        <strong>{data?.capital || "..."}</strong>....
-                    </p>
-                    <p>
-                        Kỳ hạn: ............
-                        <strong>{data?.duration || "..."}</strong> tháng
-                    </p>
+                    <div className="pl-4">
+                        <ul className="p-2 items-center italic">
+                            <li>
+                                Căn cứ bộ luật Dân sự ban hành ngày 24 tháng 11
+                                năm 2015;
+                            </li>
+                            <li>
+                                Căn cứ Luật chứng khoán 2019 và các thông tư
+                                hướng dẫn thi hành;
+                            </li>
+                            <li>Căn cứ các văn bản pháp luật hiện hành.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="py-4">
+                    <h3>A. TÊN KHÁCH HÀNG/NHÀ ĐẦU TƯ</h3>
+                    <div>
+                        <p>
+                            Họ và Tên khách hàng(Ông/Bà): ..{" "}
+                            <strong>{data?.user?.firstName || "..."}</strong>{" "}
+                            <strong>{data?.user?.lastName || "..."}</strong>...
+                        </p>
+                        <p>
+                            Số CMND: ...
+                            <strong>
+                                {data?.user?.idInformation?.idNumber || "..."}
+                            </strong>
+                            ........ Cấp ngày:....
+                            <strong>
+                                {formatDate(
+                                    data?.user?.idInformation?.date_of_issue,
+                                    "DDMMYYYY"
+                                ) || "..."}
+                            </strong>
+                            ....
+                        </p>
+                        <p>
+                            Tại: .......
+                            <strong>
+                                {data?.user?.idInformation
+                                    ? data?.user?.idInformation.place_of_issue
+                                    : "..."}
+                            </strong>
+                            ...........
+                        </p>
+                        <p>
+                            Địa chỉ thường trú: ....
+                            <strong>
+                                {data?.user?.idInformation?.address || "..."}
+                            </strong>
+                            ........
+                        </p>
+                        <p>
+                            Điện thoại: ...........
+                            <strong>{data?.phone}</strong>
+                            .......................... Email: ................
+                            <strong>{data?.email || "..."}</strong>
+                            .................................
+                        </p>
+                        <p>Số tài khoản giao dịch : ....................</p>
+                        <p>
+                            Tên gói: ...
+                            <strong>{data?.product_id?.name || "..."}</strong>
+                            ....
+                        </p>
+                        <p>
+                            Số tiền đầu tư: ...
+                            <strong>{data?.capital || "..."}</strong>....
+                        </p>
+                        <p>
+                            Kỳ hạn: ............
+                            <strong>{data?.duration || "..."}</strong> tháng
+                        </p>
+                    </div>
                 </div>
 
-                <h3>B. CÔNG TY CỔ PHẦN ĐẦU TƯ HYRACAP</h3>
+                <h3 className="py-4">B. CÔNG TY CỔ PHẦN ĐẦU TƯ HYRACAP</h3>
                 <div>
                     <p>
                         Giấy ĐKKD số: 37/QĐ – UBCK do Ủy ban Chứng khoán Nhà
@@ -116,7 +133,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         Trong Hợp đồng này, các từ hoặc cụm từ dưới đây sẽ được
                         hiểu theo một nghĩa thống nhất như sau:
                     </p>
-                    <ul>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             <b>“Tài khoản giao dịch ký quỹ - TKKQ”</b> là tài
                             khoản do HYRACAP mở cho Khách hàng trên cơ sở Hợp
@@ -158,7 +175,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             hoặc bán bớt chứng khoán để đảm bảo tỷ lệ ký quỹ ban
                             đầu hay duy trì tối thiểu.
                         </li>
-                    </ul>
+                    </ol>
 
                     <h3>Điều 2: Giao dịch ký quỹ</h3>
                     <p>
@@ -200,7 +217,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                     </p>
                     <h4>3.2 Quản lý tài khoản</h4>
                     <p>Bằng hợp đồng này Khách hàng ủy quyền cho HYRACAP:</p>
-                    <ul>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             Ủy quyền này không được hủy ngang cho đến khi Khách
                             hàng hoàn thành nghĩa vụ cho HYRACAP và chính thức
@@ -225,14 +242,14 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             quy định của pháp luật, giữ lại chứng khoán/tiền của
                             Khách hàng để thực hiện nộp thuế;
                         </li>
-                    </ul>
+                    </ol>
 
                     <h3>Điều 4: Điều kiện được phép vay giao dịch ký quỹ</h3>
                     <p>
                         Khách hàng được phép giao dịch ký quỹ sau khi đã ký hợp
                         đồng này với HYRACAP và đáp ứng các điều kiện sau đây:
                     </p>
-                    <ul>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             Khách hàng đáp ứng các điều kiện theo quy định của
                             về chứng khoán và thị trường chứng khoán.
@@ -250,11 +267,11 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             HYRACAP cho phép giao dịch ký quỹ.
                         </li>
                         <li>Các điều kiện và thông báo khác của HYRACAP.</li>
-                    </ul>
+                    </ol>
 
                     <h3>Điều 5: Cho vay</h3>
                     <h4>5.1 Nguyên tắc cho vay:</h4>
-                    <ul>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             Khách hàng có thể được cho vay trong hạn mức tài trợ
                             (HMTT) một hoặc nhiều lần để thực hiện các giao dịch
@@ -290,13 +307,13 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                                 </li>
                             </ul>
                         </li>
-                    </ul>
+                    </ol>
                 </div>
 
-                <h1>Điều khoản và Quy định của HYRACAP</h1>
+                <h3>ĐIỀU KHOẢN VÀ QUY ĐỊNH CỦA HYRACAP</h3>
 
-                <section>
-                    <h2>Điều 5: Giải ngân</h2>
+                <div>
+                    <h4>Điều 5: Giải ngân</h4>
                     <p>
                         Đồng thời khách hàng theo đây ủy quyền cho HYRACAP thực
                         hiện việc giải ngân từ Tài khoản của HYRACAP vào Tài
@@ -305,7 +322,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         thanh toán cho các giao dịch và xác nhận HYRACAP đã giải
                         ngân để thanh toán theo yêu cầu của khách hàng.
                     </p>
-                    <ul>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             Khách hàng đương nhiên nhận nợ vay và có nghĩa vụ
                             thanh toán toàn bộ số tiền HYRACAP đã giải ngân.
@@ -318,12 +335,12 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             Khách hàng ủy quyền cho HYRACAP lập văn bản xác nhận
                             khoản nợ vay và lưu trong hồ sơ khách hàng.
                         </li>
-                    </ul>
-                </section>
+                    </ol>
+                </div>
 
                 <section>
-                    <h2>Điều 5.2: Phương thức giải ngân</h2>
-                    <ul>
+                    <h4>Điều 5.2: Phương thức giải ngân</h4>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             Khi lệnh mua đầu tư được khớp, khách hàng ủy quyền
                             cho HYRACAP giải ngân số tiền vay tự động.
@@ -332,13 +349,13 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             Khách hàng cam kết không khiếu nại, tranh chấp về
                             phương thức, thủ tục giải ngân.
                         </li>
-                    </ul>
+                    </ol>
                 </section>
 
                 <section>
-                    <h2>Điều 6: Trả nợ gốc, lãi vay</h2>
-                    <h3>6.1. Trả nợ gốc</h3>
-                    <ul>
+                    <h3>Điều 6: Trả nợ gốc, lãi vay</h3>
+                    <h4>6.1. Trả nợ gốc</h4>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             Khách hàng có thể bán đầu tư hoặc nộp thêm tiền vào
                             tài khoản để trả nợ.
@@ -347,15 +364,15 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             HYRACAP tự động tính toán, xác định lãi và trích
                             tiền từ tài khoản của Khách hàng để thu nợ.
                         </li>
-                    </ul>
-                    <h3>6.2. Hết hạn hiệu lực</h3>
+                    </ol>
+                    <h4>6.2. Hết hạn hiệu lực</h4>
                     <p>
                         HYRACAP và Khách hàng thỏa thuận cấp hạn mức tài trợ
                         mới. Khách hàng phải thanh toán toàn bộ dư nợ trước khi
                         cấp hạn mức mới.
                     </p>
-                    <h3>6.3. Chuyển nợ quá hạn</h3>
-                    <ul>
+                    <h4>6.3. Chuyển nợ quá hạn</h4>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             HYRACAP chuyển nợ gốc không thanh toán đúng hạn sang
                             nợ quá hạn.
@@ -364,11 +381,11 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             Lãi suất quá hạn áp dụng từ ngày liền sau thời điểm
                             chuyển quá hạn.
                         </li>
-                    </ul>
+                    </ol>
                 </section>
 
                 <section>
-                    <h2>Điều 7: Thế chấp đầu tư</h2>
+                    <h3>Điều 7: Thế chấp đầu tư</h3>
                     <p>
                         Khách hàng thế chấp đầu tư và đồng ý cầm cố toàn bộ số
                         đầu tư có trong tài khoản để đảm bảo thanh toán các
@@ -377,16 +394,16 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                 </section>
 
                 <section>
-                    <h2>Điều 8: Quyền và nghĩa vụ của các bên</h2>
-                    <h3>8.1. Quyền và nghĩa vụ của Khách hàng</h3>
+                    <h3>Điều 8: Quyền và nghĩa vụ của các bên</h3>
+                    <h4>8.1. Quyền và nghĩa vụ của Khách hàng</h4>
                     <p>
                         Khách hàng chịu trách nhiệm thực hiện các nghĩa vụ liên
                         quan đến hợp đồng với HYRACAP.
                     </p>
                 </section>
 
-                <h1>8.1.1 Quyền của Khách hàng</h1>
-                <ul>
+                <h5>8.1.1 Quyền của Khách hàng</h5>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         Yêu cầu HYRACAP thực hiện cấp HMTT theo đúng các nội
                         dung quy định trong hợp đồng này.
@@ -395,10 +412,10 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         Chấm dứt hợp đồng trước thời hạn với điều kiện đã thanh
                         toán mọi khoản nợ với HYRACAP.
                     </li>
-                </ul>
+                </ol>
 
-                <h1>8.1.2 Nghĩa vụ của Khách hàng</h1>
-                <ul>
+                <h5>8.1.2 Nghĩa vụ của Khách hàng</h5>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         Cung cấp đầy đủ, trung thực các thông tin, tài liệu liên
                         quan đến việc vay vốn và chịu trách nhiệm về tính chính
@@ -484,9 +501,9 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         Tự chịu trách nhiệm về các khoản thuế và nghĩa vụ tài
                         chính khác theo quy định của pháp luật.
                     </li>
-                </ul>
-                <h1>8.1.3 Cam kết của Khách hàng</h1>
-                <ul>
+                </ol>
+                <h5>8.1.3 Cam kết của Khách hàng</h5>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         - Thực hiện các quyền và nghĩa vụ theo hợp đồng này, các
                         văn bản, cam kết vay vốn liên quan theo quy định của
@@ -515,11 +532,11 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         nhận ủy quyền sẽ liên đới chịu các tổn phí của HYRACAP
                         để tham gia.
                     </li>
-                </ul>
+                </ol>
 
-                <h2>8.2. Quyền và nghĩa vụ của HYRACAP</h2>
-                <h3>8.2.1. Quyền của HYRACAP</h3>
-                <ul>
+                <h4>8.2. Quyền và nghĩa vụ của HYRACAP</h4>
+                <h5>8.2.1. Quyền của HYRACAP</h5>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         - Từ chối giải ngân nếu Khách hàng không đáp ứng đủ các
                         điều kiện giải ngân, điều kiện về TSĐB, các tỷ lệ ký quỹ
@@ -588,9 +605,9 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         quy định trong bản hợp đồng này và các hợp đồng, phụ
                         lục.
                     </li>
-                </ul>
-                <h2>Điều 8.2.1: Quyền của HYRACAP</h2>
-                <ul>
+                </ol>
+                <h5>Điều 8.2.1: Quyền của HYRACAP</h5>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         HYRACAP có quyền đòi các khoản nợ gốc, thụ hưởng tiền
                         lãi phát sinh, nợ quá hạn, nợ lãi quá hạn và các chi phí
@@ -614,10 +631,10 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         TKKQ cho chính chủ tài khoản và/hoặc người nhận ủy quyền
                         giao dịch.
                     </li>
-                </ul>
+                </ol>
 
-                <h2>Điều 8.2.2: Nghĩa vụ của HYRACAP</h2>
-                <ul>
+                <h5>Điều 8.2.2: Nghĩa vụ của HYRACAP</h5>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         Giải ngân cho Khách hàng các khoản nằm trong HMTT theo
                         đúng quy định của Hợp đồng này.
@@ -627,8 +644,8 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         Hợp đồng, văn bản thỏa thuận về việc sửa đổi, bổ sung
                         Hợp đồng và tài liệu kèm theo (nếu có).
                     </li>
-                </ul>
-                <h2>Điều 9: Vi phạm Hợp đồng</h2>
+                </ol>
+                <h4>Điều 9: Vi phạm Hợp đồng</h4>
                 <p>
                     Trường hợp Khách hàng vi phạm bất kỳ điều khoản và điều kiện
                     nào của Hợp đồng này, HYRACAP có quyền chấm dứt ngay lập tức
@@ -639,8 +656,8 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                     hạn tùy vào quyết định của HYRACAP.
                 </p>
 
-                <h2>Điều 10: Hiệu lực của Hợp đồng</h2>
-                <ul>
+                <h4>Điều 10: Hiệu lực của Hợp đồng</h4>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         Thời hạn có hiệu lực của Hợp đồng là kể từ ngày đại diện
                         hợp pháp của hai Bên ký vào Hợp đồng này.
@@ -695,8 +712,8 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         như hoàn thành khi Khách hàng thực hiện tất cả các nghĩa
                         vụ đó với HYRACAP.
                     </li>
-                </ul>
-                <h1>Điều 10: Thanh lý Hợp đồng</h1>
+                </ol>
+                <h4>Điều 10: Thanh lý Hợp đồng</h4>
                 <p>
                     Trường hợp Hợp đồng bị chấm dứt vì bất kỳ lý do gì, các bên
                     có nghĩa vụ thanh lý Hợp đồng để ghi nhận quyền và nghĩa vụ
@@ -705,8 +722,8 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                     báo.
                 </p>
 
-                <h1>Điều 11: Thông báo</h1>
-                <ul>
+                <h4>Điều 11: Thông báo</h4>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         Trong quá trình thực hiện Hợp đồng, các thông báo được
                         xem là hợp lệ nếu đã được gửi cho phía bên kia bằng:
@@ -738,19 +755,19 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         tới thông báo bị thất lạc thì lỗi hoàn toàn thuộc về bên
                         nhận thông báo.
                     </li>
-                </ul>
+                </ol>
 
-                <h2>
+                <h3>
                     Thông tin liên lạc của Bên nhận Thông báo (Chủ tài
                     khoản/Người nhận ủy quyền):
-                </h2>
+                </h3>
                 <p>
                     <strong>Tên cá nhân/Tên tổ chức nhận:</strong>{" "}
                     ……………………………………………………….…………….
                 </p>
 
-                <h1>Điều 12: Thực hiện Hợp đồng và Giải quyết tranh chấp</h1>
-                <ul>
+                <h3>Điều 12: Thực hiện Hợp đồng và Giải quyết tranh chấp</h3>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         Hai Bên cam kết cùng thực hiện nghiêm túc các thỏa thuận
                         và điều khoản của Hợp đồng này. Trong quá trình thực
@@ -769,9 +786,9 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         bản, HYRACAP giữ 01 (một) bản để làm bằng chứng và cùng
                         thực hiện.
                     </li>
-                </ul>
+                </ol>
 
-                <h1>Xác nhận</h1>
+                <h3>Xác nhận</h3>
                 <p>
                     <strong>ĐẠI DIỆN KHÁCH HÀNG</strong>Đã đọc và đồng ý với các
                     nội dung của Hợp đồng
@@ -780,7 +797,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                     <strong>ĐẠI DIỆN HYRACAP</strong>BÊN NHẬN ỦY QUYỀN GIAO DỊCH
                     (nếu có)Đã đọc và đồng ý với các nội dung của Hợp đồng
                 </p>
-                <h1>PHỤ LỤC HỢP ĐỒNG</h1>
+                <h3>PHỤ LỤC HỢP ĐỒNG</h3>
                 <p>Cách tính lãi - Tỷ lệ duy trì - Đảm bảo khoản vay</p>
                 <p>
                     (Kèm theo Hợp đồng Tài trợ Giao dịch kí quỹ đầu tư ký ngày
@@ -793,9 +810,9 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                     quy định tại Hợp đồng.
                 </p>
 
-                <h2>1. Cách tính lãi, hạn mức tài trợ, lãi suất:</h2>
+                <h3>1. Cách tính lãi, hạn mức tài trợ, lãi suất:</h3>
                 <div>
-                    <h3>1.1. Tiền lãi</h3>
+                    <h4>1.1. Tiền lãi</h4>
                     <p>
                         Tiền lãi sẽ được tính trên cơ sở dư nợ thực tế/lũy kế
                         (Dn) và thời gian vay thực tế (Tv). Tiền vay được tính
@@ -811,7 +828,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                 </div>
 
                 <div>
-                    <h3>1.2. Tiền lãi vay đến hạn</h3>
+                    <h4>1.2. Tiền lãi vay đến hạn</h4>
                     <p>
                         Tiền lãi vay đến hạn phải trả chưa thanh toán sẽ được
                         cộng dồn vào thành khoản dư nợ lũy kế của Khách hàng và
@@ -820,7 +837,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                 </div>
 
                 <div>
-                    <h3>1.3. Lãi suất cho vay quá hạn</h3>
+                    <h4>1.3. Lãi suất cho vay quá hạn</h4>
                     <p>
                         Mỗi khoản vay sẽ được áp dụng lãi suất cho vay thông
                         thường trong khoảng thời gian vay T (ngày) do HYRACAP
@@ -837,7 +854,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                 </div>
 
                 <div>
-                    <h3>1.4. Thay đổi HMTT</h3>
+                    <h4>1.4. Thay đổi HMTT</h4>
                     <p>
                         HYRACAP được quyền thay đổi HMTT theo từng thời điểm và
                         thông báo cho khách hàng trước 3 ngày.
@@ -845,18 +862,18 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                 </div>
 
                 <div>
-                    <h3>1.5. Quy định của HYRACAP</h3>
+                    <h4>1.5. Quy định của HYRACAP</h4>
                     <p>
                         Cách tính lãi trên đây hoàn toàn do HYRACAP quy định mà
                         không cần phải có nghĩa vụ thông báo với Khách hàng.
                     </p>
                 </div>
 
-                <h2>2. Nguyên tắc tính toán và các tỷ lệ</h2>
+                <h3>2. Nguyên tắc tính toán và các tỷ lệ</h3>
                 <div>
-                    <h3>
+                    <h4>
                         2.1. Nguyên tắc tính toán khi thực hiện giao dịch ký quỹ
-                    </h3>
+                    </h4>
                     <h4>2.1.1 Tài sản hiện hành (TSHH)</h4>
                     <p>
                         Là giá trị tiền và đầu tư hiện hành trên tài khoản giao
@@ -870,7 +887,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         </strong>
                     </p>
                     <p>Trong đó:</p>
-                    <ul>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             <strong>Số lượng đầu tư (SLCK)</strong>: Bao gồm đầu
                             tư hiện có và đầu tư mua chờ về.
@@ -890,7 +907,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             định, tỷ lệ này có thể được thay đổi bất kỳ lúc nào
                             mà không cần báo trước.
                         </li>
-                    </ul>
+                    </ol>
 
                     <h4>2.1.2 Tài sản thực có (TSC)</h4>
                     <p>
@@ -914,8 +931,8 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         phần tiếp theo)
                     </p>
                 </div>
-                <h2>2.1. Các định nghĩa và công thức</h2>
-                <ul>
+                <h3>2.1. Các định nghĩa và công thức</h3>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         <strong>Tỷ lệ tài trợ (Rtt):</strong> Tiền/đầu tư gửi
                         trên tài khoản để ký kỹ tại HYRACAP theo đúng tỷ lệ
@@ -937,21 +954,21 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             BP = Số dư tiền + TSC x Rtt - dư nợ lũy kế (Dn)
                         </div>
                     </li>
-                </ul>
+                </ol>
 
-                <h2>2.2. Các tỷ lệ duy trì trên tài khoản ký quỹ</h2>
-                <h3>2.2.1. Nguyên tắc xác định tỷ lệ</h3>
+                <h3>2.2. Các tỷ lệ duy trì trên tài khoản ký quỹ</h3>
+                <h4>2.2.1. Nguyên tắc xác định tỷ lệ</h4>
                 <p>
                     Việc xác định các yếu tố để tính giá trị tài sản và tỷ lệ
                     theo quy định của hợp đồng này được xác định trên cơ sở đã
                     trừ đi các khoản phí khách hàng phải trả cho HYRACAP.
                 </p>
 
-                <h3>
+                <h4>
                     2.2.2. Các tỷ lệ duy trì và xử lý trên tài khoản giao dịch
                     ký quỹ
-                </h3>
-                <ul>
+                </h4>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         <strong>Tỷ lệ an toàn tài khoản:</strong> Khi Rtt ≤ 67%:
                         Tài khoản khách hàng ở trạng thái đảm bảo an toàn theo
@@ -997,10 +1014,10 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         quyền khiếu nại HYRACAP về thời điểm xử lý tài sản đảm
                         bảo.
                     </li>
-                </ul>
-                <h2>3. Đảm bảo khoản vay</h2>
-                <h3>3.1. Nghĩa vụ được bảo đảm và tài sản bảo đảm</h3>
-                <ul>
+                </ol>
+                <h3>3. Đảm bảo khoản vay</h3>
+                <h4>3.1. Nghĩa vụ được bảo đảm và tài sản bảo đảm</h4>
+                <ol style={{ listStylePosition: "inside" }}>
                     <li>
                         <strong>Nghĩa vụ được bảo đảm:</strong> Là nghĩa vụ trả
                         nợ được quy định tại hợp đồng này (bao gồm: trả nợ gốc,
@@ -1016,13 +1033,13 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         hàng và tài sản hình thành từ vốn vay của HYRACAP) theo
                         quy định của hợp đồng này.
                     </li>
-                </ul>
+                </ol>
 
-                <h1>Điều Khoản Tài Sản Đảm Bảo</h1>
+                <h3>ĐIỀU KHOẢN TÀI SẢN ĐẢM BẢO</h3>
 
                 <section>
-                    <h2>3.1. Giá trị Tài Sản Đảm Bảo (TSĐB)</h2>
-                    <ul>
+                    <h4>3.1. Giá trị Tài Sản Đảm Bảo (TSĐB)</h4>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             HYRACAP có quyền tính toán, đánh giá và xác định lại
                             giá trị TSĐB của Khách hàng tại bất kỳ thời điểm nào
@@ -1035,11 +1052,11 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             các tài sản khác hợp pháp tại HYRACAP làm TSĐB, trừ
                             khi có thỏa thuận khác.
                         </li>
-                    </ul>
+                    </ol>
                 </section>
 
                 <section>
-                    <h2>3.2. Thời hạn bảo đảm</h2>
+                    <h4>3.2. Thời hạn bảo đảm</h4>
                     <p>
                         Kể từ ngày ký kết Hợp đồng cho đến khi Khách hàng thực
                         hiện toàn bộ nghĩa vụ trả nợ gốc, lãi, phí, phạt, nghĩa
@@ -1049,8 +1066,8 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                 </section>
 
                 <section>
-                    <h2>3.3. Phong tỏa, sử dụng và quản lý TSĐB</h2>
-                    <ul>
+                    <h4>3.3. Phong tỏa, sử dụng và quản lý TSĐB</h4>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             HYRACAP phong tỏa toàn bộ TSĐB của Khách hàng. Mọi
                             giao dịch mua bán đầu tư của Khách hàng tại HYRACAP
@@ -1065,14 +1082,14 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             Khi Khách hàng hoàn thành nghĩa vụ trả nợ, HYRACAP
                             sẽ giải phóng TSĐB theo quy định của Hợp đồng.
                         </li>
-                    </ul>
+                    </ol>
                 </section>
 
                 <section>
-                    <h2>3.4. Xử lý TSĐB</h2>
+                    <h4>3.4. Xử lý TSĐB</h4>
 
-                    <h3>3.4.1. Điều kiện xử lý TSĐB</h3>
-                    <ul>
+                    <h4>3.4.1. Điều kiện xử lý TSĐB</h4>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             Khách hàng không thực hiện đúng hoặc đầy đủ các
                             nghĩa vụ trả nợ.
@@ -1086,21 +1103,21 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                             HYRACAP phải thu hồi nợ.
                         </li>
                         <li>Biến động thị trường gây giảm giá trị TSĐB.</li>
-                    </ul>
-                    <h3>3.4.2. Phương thức xử lý TSĐB</h3>
-                    <ul>
+                    </ol>
+                    <h4>3.4.2. Phương thức xử lý TSĐB</h4>
+                    <ol style={{ listStylePosition: "inside" }}>
                         <li>
                             HYRACAP có quyền tự động thanh lý một phần hoặc toàn
                             bộ đầu tư trên tài khoản của Khách hàng để thu hồi
                             nợ mà không cần sự chấp thuận của Khách hàng.
                         </li>
-                    </ul>
+                    </ol>
 
-                    <h1>Thông Báo và Thời Gian Xử Lý</h1>
+                    <h3>THÔNG BÁO VÀ THỜI GIAN XỬ LÝ</h3>
 
                     <div>
-                        <h2>1. Quyền và nghĩa vụ của HYRACAP</h2>
-                        <ul>
+                        <h3>1. Quyền và nghĩa vụ của HYRACAP</h3>
+                        <ol style={{ listStylePosition: "inside" }}>
                             <li>
                                 - Trực tiếp nhận TSĐB (bao gồm cả gốc, lãi và
                                 các quyền lợi phát sinh từ tài sản) để bù trừ,
@@ -1136,18 +1153,18 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                                 nghĩa vụ tài chính khác phát sinh trong quá
                                 trình xử lý TSĐB do Khách hàng chịu.
                             </li>
-                        </ul>
+                        </ol>
                     </div>
 
                     <div>
-                        <h2>4. Thông báo và Thời gian xử lý</h2>
+                        <h3>4. Thông báo và Thời gian xử lý</h3>
                         <p>
                             Phù hợp với quy định tại Điều 11 của Hợp đồng,
                             HYRACAP sẽ gửi thông báo cho Khách hàng trong ngày
                             T. Theo đó, trừ trường hợp thông báo có quy định
                             khác đi, Khách hàng chậm nhất trong ngày:
                         </p>
-                        <ul>
+                        <ol style={{ listStylePosition: "inside" }}>
                             <li>
                                 - T + 1 phải bổ sung TSĐB hoặc thanh lý toàn bộ
                                 hoặc một phần tài sản để duy trì Tỷ lệ tài trợ
@@ -1159,7 +1176,7 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                                 một phần tài sản để duy trì Tỷ lệ tài trợ (Rtt),
                                 đối với trường hợp Tài khoản chạm tỷ lệ xử lý.
                             </li>
-                        </ul>
+                        </ol>
                         <p>
                             Nếu Khách hàng không thực hiện hoặc thực hiện không
                             đầy đủ việc bổ sung TSĐB hoặc thanh lý tài sản theo
@@ -1168,23 +1185,26 @@ const ContractForm: React.FC<ContractFormProps> = ({ data }) => {
                         </p>
                     </div>
 
-                    <div>
-                        <div>
-                            <p>ĐẠI DIỆN KHÁCH HÀNG</p>
+                    <div className="pt-6">
+                        <div className="flex justify-around">
+                            <div className="flex flex-col justify-center text-center">
+                                <h3>ĐẠI DIỆN KHÁCH HÀNG</h3>
+                                <p>
+                                    Đã đọc và đồng ý với các nội dung của Hợp
+                                    đồng
+                                </p>
+                            </div>
+                            <div>
+                                <h3>ĐẠI DIỆN HYRACAP</h3>
+                            </div>
+                        </div>
+                        <div className="flex flex-col justify-center text-center items-center py-24">
+                            <h3>BÊN NHẬN ỦY QUYỀN GIAO DỊCH (nếu có)</h3>
                             <p>
                                 Đã đọc và đồng ý với các nội dung của Hợp đồng
                             </p>
                         </div>
-                        <div>
-                            <p>ĐẠI DIỆN HYRACAP</p>
-                        </div>
-                        <div>
-                            <p>BÊN NHẬN ỦY QUYỀN GIAO DỊCH (nếu có)</p>
-                            <p>
-                                Đã đọc và đồng ý với các nội dung của Hợp đồng
-                            </p>
-                        </div>
-                        <div>
+                        <div className="flex flex-col justify-center text-center items-center">
                             <p>Cán bộ thụ lý hồ sơ</p>
                             <p>(Ký và ghi rõ họ tên)</p>
                         </div>

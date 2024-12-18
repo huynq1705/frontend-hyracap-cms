@@ -30,6 +30,8 @@ import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
 import apiSaleHistoryService from "@/api/apiSaleHistory.service";
 import StatusCardV2 from "@/components/status-card/index-v2";
+import DateSchedule from "../../dashboard/component/custom-datetime-picker";
+import moment from "moment";
 
 interface ColumnProps {
     actions: {
@@ -367,10 +369,13 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
     const { getSaleHistory } = apiSaleHistoryService();
     //permissions
     const { hasPermission } = usePermissionCheck("sale_history");
-
+    const [selectedDateStatistic, setSelectedDateStatistic] = useState(
+        moment()
+    );
+    const date = selectedDateStatistic.startOf("month").format("YYYY-MM-DD");
     const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ["GET_SALE_HISTORY", param_payload, pathname],
-        queryFn: () => getSaleHistory(param_payload),
+        queryKey: ["GET_SALE_HISTORY", param_payload, pathname, date],
+        queryFn: () => getSaleHistory(param_payload, date),
         keepPreviousData: true,
     });
     console.log("data", data);
@@ -467,26 +472,34 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
                                 : `Không tìm thấy nội dung nào phù hợp với '${key_search?.text}'`}
                         </div>
                     )}
-                    <div className="wrapper-from">
-                        <StatusCardV2
-                            statusData={{
-                                label: "Tổng nhân viên",
-                                value: total.total_user,
-                                color: "#217732",
-                            }}
-                            customCss="min-w-[250px]"
-                        />
-                        <StatusCardV2
-                            statusData={{
-                                label: "Tổng tiền hoa hồng",
-                                value: `${
-                                    data &&
-                                    formatCurrencyNoUnit(+total.total_kpi)
-                                } vnđ`,
-                                color: "#7A52DE",
-                            }}
-                            customCss="min-w-[250px]"
-                        />
+                    <div className="flex justify-between items-center">
+                        <div className="wrapper-from">
+                            <StatusCardV2
+                                statusData={{
+                                    label: "Tổng nhân viên",
+                                    value: total.total_user,
+                                    color: "#217732",
+                                }}
+                                customCss="min-w-[250px]"
+                            />
+                            <StatusCardV2
+                                statusData={{
+                                    label: "Tổng tiền hoa hồng",
+                                    value: `${
+                                        data &&
+                                        formatCurrencyNoUnit(+total.total_kpi)
+                                    } vnđ`,
+                                    color: "#7A52DE",
+                                }}
+                                customCss="min-w-[250px]"
+                            />
+                        </div>
+                        <div className="items-end">
+                            <DateSchedule
+                                selectedDate={selectedDateStatistic}
+                                setSelectedDate={setSelectedDateStatistic}
+                            />
+                        </div>
                     </div>
                     {/* <Card> */}
                     <Table

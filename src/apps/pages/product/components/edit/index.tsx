@@ -126,7 +126,9 @@ export default function EditPage(props: EditPageProps) {
                     max_duration: response.max_duration.toString(),
                     total_capacity: response.total_capacity.toString(),
                     total_invested: response.total_invested.toString(),
-                    interest_rate: response.current_interest_rate,
+                    interest_rate: (+response.current_interest_rate)
+                        .toFixed(2)
+                        .toString(),
                     category_id: response.category_id,
                     effective_from: dayjs().add(1, "day").format("DD-MM-YYYY"),
                 };

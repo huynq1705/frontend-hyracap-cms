@@ -70,7 +70,11 @@ export function formatDate(date: string | Date, format: DateFormat): string {
             throw new Error("Invalid format type");
     }
 }
-
+// dd-mm-yyyy => yyyy-mm-dd
+export function formatDateCustom(dateStr: string): string {
+    const [day, month, year] = dateStr.split("-");
+    return `${year}-${month}-${day}`;
+}
 export const formatTime = (time: string): string => {
     return dayjs(time, "HH:mm:ss").format("HH:mm:ss");
 };

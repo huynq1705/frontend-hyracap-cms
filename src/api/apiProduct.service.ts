@@ -5,7 +5,7 @@ import { PayloadProduct, ResponseProductItem } from "@/types/product";
 import { ResponseFromServerV1, ResponseFromServerV2 } from "@/types/types";
 import { InitProductKeys } from "@/constants/init-state/product";
 import { validateRequiredKeys } from "@/utils";
-import { formatDate } from "@/utils/date-time";
+import { formatDate, formatDateCustom } from "@/utils/date-time";
 type ProductService = {
     getProduct: (
         param?: any
@@ -42,7 +42,7 @@ export default function apiProductService(): ProductService {
             min_duration: +payload.min_duration,
             max_duration: +payload.max_duration,
             category_id: +payload.category_id,
-            interest_rate: payload.interest_rate.toString(),
+            interest_rate: (+payload.interest_rate).toFixed(4).toString(),
         };
         const result = validateRequiredKeys(convert_payload, requiredKeys);
         if (!result.isValid) return result;
@@ -64,6 +64,25 @@ export default function apiProductService(): ProductService {
         code: string,
         requiredKeys: string[]
     ) => {
+        console.log(
+            "formatDate(payload.effective_from",
+            formatDateCustom(payload.effective_from),
+            payload.effective_from
+        );
+        const validate_payload: any = {
+            name: payload.name,
+            min_invest: payload.min_invest,
+            max_invest: payload.max_invest,
+            total_capacity: (+payload.total_capacity).toFixed(4).toString(),
+            min_duration: +payload.min_duration,
+            max_duration: +payload.max_duration,
+            category_id: +payload.category_id,
+            interest_rate: payload.interest_rate.toString(),
+            effective_from: formatDateCustom(payload.effective_from),
+        };
+
+        const result = validateRequiredKeys(validate_payload, requiredKeys);
+        if (!result.isValid) return result;
         const convert_payload: any = {
             name: payload.name,
             min_invest: payload.min_invest,
@@ -72,13 +91,9 @@ export default function apiProductService(): ProductService {
             min_duration: +payload.min_duration,
             max_duration: +payload.max_duration,
             category_id: +payload.category_id,
-            new_interest_rate: payload.interest_rate.toString(),
-            effective_from: formatDate(payload.effective_from, "YYYYMMDD"),
+            new_interest_rate: (+payload.interest_rate).toFixed(4).toString(),
+            effective_from: formatDateCustom(payload.effective_from),
         };
-        console.log("convert_payload", convert_payload);
-
-        const result = validateRequiredKeys(convert_payload, requiredKeys);
-        if (!result.isValid) return result;
         return httpClient
             .put<ResponseFromServerV2<any>>(
                 AppConfig.PRODUCT.END_POINT + "/" + code,

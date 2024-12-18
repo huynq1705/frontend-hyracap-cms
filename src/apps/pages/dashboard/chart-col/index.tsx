@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import apiDashboardService from "@/api/apiDashboard.service";
 import ChartDashboardRevenue from "./chart-revenue";
+import { formatCurrency } from "@/utils";
 interface ChartDashboardProps {
     color?: string;
 }
@@ -81,14 +82,18 @@ const ChartDashboard: React.FC<ChartDashboardProps> = (props) => {
         {
             key: "year",
             label: "Cả năm",
-            value: `${dashboardResult ? dashboardResult.totalYear : 0} vnđ`,
+            value: `${
+                dashboardResult ? formatCurrency(+dashboardResult.totalYear) : 0
+            }`,
         },
         {
             key: "month",
             label: "Tháng này",
             value: `${
-                dashboardResult ? dashboardResult.totalCurrentMonth : 0
-            } vnđ`,
+                dashboardResult
+                    ? formatCurrency(+dashboardResult.totalCurrentMonth)
+                    : 0
+            }`,
         },
     ];
 
