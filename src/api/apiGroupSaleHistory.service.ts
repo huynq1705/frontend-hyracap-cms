@@ -5,12 +5,13 @@ import { ResponseFromServerV1, ResponseFromServerV2 } from "@/types/types";
 import { ResponseGroupSaleHistoryItem } from "@/types/groupSaleHistory";
 type GroupSaleHistoryService = {
     getGroupSaleHistory: (
-        param?: any
+        param?: any,
+        date?: any
     ) => Promise<ResponseFromServerV1<ResponseGroupSaleHistoryItem[]>>;
 };
 export default function apiGroupSaleHistoryService(): GroupSaleHistoryService {
     const httpClient = useHttpClient();
-    const getGroupSaleHistory = (param?: any): Promise<any> => {
+    const getGroupSaleHistory = (param?: any, date?: any): Promise<any> => {
         const paramRaw: any = param ?? {
             page: 1,
             take: 10,
@@ -21,7 +22,7 @@ export default function apiGroupSaleHistoryService(): GroupSaleHistoryService {
             .get<any>(
                 `${AppConfig.GROUP_SALE_HISTORY.GET_GROUP_SALE_HISTORY(
                     queryParams
-                )}`
+                )}&month__eq=${date}`
             )
             .then((res: ResponseFromServerV1<any>) => {
                 if (res) return res;

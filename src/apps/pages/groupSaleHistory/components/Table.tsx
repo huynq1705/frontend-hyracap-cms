@@ -30,6 +30,8 @@ import StatusCardV2 from "@/components/status-card/index-v2";
 import apiGroupSaleHistoryService from "@/api/apiGroupSaleHistory.service";
 import { formatDate } from "@/utils/date-time";
 import ModalEditGroupSaleHistory from "./ModalEdit";
+import moment from "moment";
+import DateSchedule from "../../dashboard/component/custom-datetime-picker";
 
 interface ColumnProps {
     actions: {
@@ -343,10 +345,13 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
     const { getGroupSaleHistory } = apiGroupSaleHistoryService();
     //permissions
     const { hasPermission } = usePermissionCheck("group_sale_history");
-
+    const [selectedDateStatistic, setSelectedDateStatistic] = useState(
+        moment()
+    );
+    const date = selectedDateStatistic.startOf("month").format("YYYY-MM-DD");
     const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ["GET_GROUP_SALE_HISTORY", param_payload, pathname],
-        queryFn: () => getGroupSaleHistory(param_payload),
+        queryKey: ["GET_GROUP_SALE_HISTORY", param_payload, pathname, date],
+        queryFn: () => getGroupSaleHistory(param_payload, date),
         keepPreviousData: true,
     });
     console.log("data", data);
@@ -448,35 +453,47 @@ const GroupSaleHistoryTable = (props: GroupSaleHistoryTableProps) => {
                                 : `Không tìm thấy nội dung nào phù hợp với '${key_search?.text}'`}
                         </div>
                     )}
-                    <div className="wrapper-from">
-                        <StatusCardV2
-                            statusData={{
-                                label: "Tổng nhóm",
-                                value: total.total_user ?? 0,
-                                color: "#217732",
-                            }}
-                            customCss="min-w-[250px]"
-                        />
-                        <StatusCardV2
-                            statusData={{
-                                label: "Tổng kpi",
-                                value: `${
-                                    formatCurrencyNoUnit(+total.total_kpi) ?? 0
-                                } vnđ`,
-                                color: "#7A52DE",
-                            }}
-                            customCss="min-w-[250px]"
-                        />
-                        <StatusCardV2
-                            statusData={{
-                                label: "Tổng tiền hoa hồng",
-                                value: `${
-                                    formatCurrencyNoUnit(+total.total_kpi) ?? 0
-                                }  vnđ`,
-                                color: "#7A52DE",
-                            }}
-                            customCss="min-w-[250px]"
-                        />
+                    <div className="flex justify-between items-center">
+                        <div className="wrapper-from">
+                            <StatusCardV2
+                                statusData={{
+                                    label: "Tổng nhóm",
+                                    value: total.total_user ?? 0,
+                                    color: "#217732",
+                                }}
+                                customCss="min-w-[250px]"
+                            />
+                            <StatusCardV2
+                                statusData={{
+                                    label: "Tổng kpi",
+                                    value: `${
+                                        formatCurrencyNoUnit(
+                                            +total.total_kpi
+                                        ) ?? 0
+                                    } vnđ`,
+                                    color: "#7A52DE",
+                                }}
+                                customCss="min-w-[250px]"
+                            />
+                            <StatusCardV2
+                                statusData={{
+                                    label: "Tổng doanh thu nhóm",
+                                    value: `${
+                                        formatCurrencyNoUnit(
+                                            +total.total_kpi
+                                        ) ?? 0
+                                    }  vnđ`,
+                                    color: "#7A52DE",
+                                }}
+                                customCss="min-w-[250px]"
+                            />
+                        </div>
+                        <div className="items-end">
+                            <DateSchedule
+                                selectedDate={selectedDateStatistic}
+                                setSelectedDate={setSelectedDateStatistic}
+                            />
+                        </div>
                     </div>
                     {/* <Card> */}
                     <Table

@@ -80,7 +80,7 @@ const Login = () => {
         requestPermission()
             .then((newToken) => {
                 console.log("Received Token:", newToken);
-                setToken(newToken); // Save the token to state
+                setToken(newToken);
             })
             .catch((err) => {
                 console.error("Error fetching token:", err);
