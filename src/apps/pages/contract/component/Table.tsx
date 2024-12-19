@@ -426,7 +426,7 @@ const getColumns = (props: ColumnProps) => {
                                             navigate(
                                                 `/admin/contract/view/${d?.id}`
                                             );
-                                            actions.togglePopup("edit");
+                                            // actions.togglePopup("edit");
                                         }}
                                     />
                                 )}
@@ -553,9 +553,9 @@ const CTable = (props: CTableProps) => {
         () => keySearch?.text?.toString() ?? "",
         [keySearch?.text, pathname]
     );
-    // useEffect(() => {
-    //     refetch();
-    // }, [window.location.href]);
+    useEffect(() => {
+        refetch();
+    }, [window.location.href]);
     return (
         <>
             <Box className="h-full">

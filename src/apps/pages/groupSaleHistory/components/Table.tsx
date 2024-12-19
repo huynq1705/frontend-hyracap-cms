@@ -125,7 +125,7 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                                 navigate(
                                                     `/admin/group_sale_history/view/${item?.id}`
                                                 );
-                                                actions.togglePopup("edit");
+                                                // actions.togglePopup("edit");
                                             }}
                                         />
                                     )}
@@ -285,7 +285,7 @@ const getColumns = (props: ColumnProps) => {
                                             navigate(
                                                 `/admin/group_sale_history/view/${d?.id}`
                                             );
-                                            actions.togglePopup("edit");
+                                            // actions.togglePopup("edit");
                                         }}
                                     />
                                 )}

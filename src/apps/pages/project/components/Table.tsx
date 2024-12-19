@@ -512,7 +512,7 @@ const ProjectTable = (props: ProjectTableProps) => {
                                     }));
                                 }}
                                 handleSearch={handleSearch}
-                                placeholder="Tìm theo mã chức vụ, tên chức vụ"
+                                placeholder="Tìm theo tên dự án"
                             />
                         </div>
                     </div>
