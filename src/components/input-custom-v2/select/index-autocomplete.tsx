@@ -49,7 +49,15 @@ const CustomAutocomplete: React.FC<CustomAutocompleteProps> = (
         label: string;
     } | null>(null);
     const width = configUI?.width ? configUI.width : "100%";
-
+    useEffect(() => {
+        const initialOption = options.find(
+            (option) => option.value === values[name]
+        );
+        console.log("initialOption", initialOption);
+        if (initialOption) {
+            setSelectedValue(initialOption);
+        }
+    }, [values, name, options]);
     const handleSelect = (
         event: React.SyntheticEvent,
         value: string | { value: string; label: string } | null
@@ -68,7 +76,7 @@ const CustomAutocomplete: React.FC<CustomAutocompleteProps> = (
             });
         }
     };
-
+    console.log("vaue", values);
     // const getDisplayLabel = () => {
     //     const selectedOption = options.find(
     //         (option) => option.id === selectedValue
@@ -106,6 +114,7 @@ const CustomAutocomplete: React.FC<CustomAutocompleteProps> = (
                 error={Boolean(validate[name] && errors.includes(name))}
             >
                 <Autocomplete
+                    value={selectedValue}
                     freeSolo
                     options={options}
                     getOptionLabel={(option) =>

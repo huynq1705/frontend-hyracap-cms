@@ -31,7 +31,7 @@ import { setTotalItems } from "@/redux/slices/page.slice";
 import apiContractService from "@/api/apiContract.service";
 import ModalEditTransaction from "./Modal";
 import apiTransactionService from "@/api/apiTransaction.service";
-import { formatDate } from "@/utils/date-time";
+import { convertTimestamp, formatDate } from "@/utils/date-time";
 
 interface ColumnProps {
     actions: {
@@ -101,14 +101,6 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                         </span>
                         <div className="text-gray-9 text-base py-1">
                             <span>{formatCurrency(Number(item?.amount))}</span>
-                        </div>
-                    </div>
-                    <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                        <span className="font-medium text-gray-9 text-sm">
-                            Mã giao dịch
-                        </span>
-                        <div className="text-gray-9 text-base py-1">
-                            <span>{item?.code}</span>
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
@@ -256,24 +248,6 @@ const getColumns = (props: ColumnProps) => {
             width: 220,
         },
         {
-            title: "Mã giao dịch",
-            dataIndex: "code",
-            width: 120,
-            render: (_: any, d: any) => (
-                <Stack direction={"column"} spacing={1}>
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {d?.code}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
             title: "Thời gian giao dịch",
             dataIndex: "time",
             width: 120,
@@ -286,7 +260,8 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {formatDate(d?.time, "DDMMYY")}
+                        {d?.transactiontime &&
+                            convertTimestamp(d?.transactiontime.toString())}
                     </Typography>
                 </Stack>
             ),

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 import { Stack } from "@mui/material";
+import FormHelperTextCustom from "@/components/form-helper-text";
 
 interface MyTextareaAutosizeProps {
     label: string;
@@ -73,6 +74,9 @@ const MyTextareaAutosize: React.FC<MyTextareaAutosizeProps> = (
                 }}
                 {...prop}
             />
+            {validate[name] && errors?.includes(name) && (
+                <FormHelperTextCustom text={validate[name]} />
+            )}
         </Stack>
     );
 };

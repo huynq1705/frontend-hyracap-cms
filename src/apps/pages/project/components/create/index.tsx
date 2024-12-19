@@ -19,11 +19,54 @@ import ButtonCore from "@/components/button/core";
 import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
 import UploadImage from "@/apps/pages/blog/components/UploadImg";
 import MySelect from "@/components/input-custom-v2/select";
-import { ResponseProjectItem } from "@/types/project.type";
 import UploadFile from "../UploadFile";
-const VALIDATE = {};
+const VALIDATE = {
+    name: "Vui lòng nhập đầy đủ thông tin",
+    status: "Vui lòng nhập đầy đủ thông tin",
+    address: "Vui lòng nhập đầy đủ thông tin",
+    company_size: "Vui lòng nhập đầy đủ thông tin",
+    website: "Vui lòng nhập đầy đủ thông tin",
+    project_information_description: "Vui lòng nhập đầy đủ thông tin",
+    valuation: "Vui lòng nhập đầy đủ thông tin",
+    funding_amount: "Vui lòng nhập đầy đủ thông tin",
+    total_slots: "Vui lòng nhập đầy đủ thông tin",
+    investors: "Vui lòng nhập đầy đủ thông tin",
+    funding_round: "Vui lòng nhập đầy đủ thông tin",
+    investment_field: "Vui lòng nhập đầy đủ thông tin",
+    date_of_establishment: "Vui lòng nhập đầy đủ thông tin",
+    head_office: "Vui lòng nhập đầy đủ thông tin",
+    operating_status: "Vui lòng nhập đầy đủ thông tin",
+    founder: "Vui lòng nhập đầy đủ thông tin",
+    company_name: "Vui lòng nhập đầy đủ thông tin",
+    email: "Vui lòng nhập đầy đủ thông tin",
+    phone: "Vui lòng nhập đầy đủ thông tin",
+    growth_prospects: "Vui lòng nhập đầy đủ thông tin",
+    description: "Vui lòng nhập đầy đủ thông tin",
+};
 
-const KEY_REQUIRED = [""];
+const KEY_REQUIRED = [
+    "name",
+    "status",
+    "address",
+    "company_size",
+    "website",
+    "project_information_description",
+    "valuation",
+    "funding_amount",
+    "total_slots",
+    "investors",
+    "investment_field",
+    "date_of_establishment",
+    "head_office",
+    "operating_status",
+    "founder",
+    "email",
+    "phone",
+    "growth_prospects",
+    "description",
+    "funding_round",
+    "company_name",
+];
 interface Option {
     key: string;
     value: string;
@@ -106,6 +149,7 @@ export default function ProjectCreatePage() {
     };
     const handleChangeImage = (field: string) => (value: any) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+        console.log("formData", formData);
     };
     const getAllIndustry = async () => {
         try {
@@ -137,7 +181,7 @@ export default function ProjectCreatePage() {
                     name: response.name,
                     thumbnail: response.thumbnail,
                     images: response.images,
-                    status: response.status,
+                    status: response.status.toString(),
                     capital_raising_target: response.capital_raising_target,
                     mobilized_fund: response.mobilized_fund,
                     address: response.data.address,
@@ -172,20 +216,20 @@ export default function ProjectCreatePage() {
                     industry_ids: response.industry_ids,
                     pitching_deck:
                         response.pitching_deck === null
-                            ? [""]
-                            : [response.pitching_deck],
+                            ? []
+                            : response.pitching_deck,
                     contract_template:
                         response.contract_template === null
-                            ? [""]
-                            : [response.contract_template],
+                            ? []
+                            : response.contract_template,
                     financial_roadmap:
                         response.financial_roadmap === null
-                            ? [""]
-                            : [response.financial_roadmap],
+                            ? []
+                            : response.financial_roadmap,
                     business_plan:
                         response.business_plan === null
-                            ? [""]
-                            : [response.business_plan],
+                            ? []
+                            : response.business_plan,
                 };
                 console.log("convert_data", convert_data);
 
@@ -231,17 +275,18 @@ export default function ProjectCreatePage() {
         }
     };
     const handleUpdate = async () => {
+        console.log("formData", formData);
         if (!code) return;
         try {
             const response = await putProject(formData, code, KEY_REQUIRED);
-            let message = `Tạo ${title_page} thất bại`;
+            let message = `Chỉnh sửa ${title_page} thất bại`;
             let type = "error";
-            if (response.status === false && response?.missingKeys) {
+            if (typeof response === "object" && response?.missingKeys) {
                 setErrors(response.missingKeys);
                 return;
             }
             if (response.status === true) {
-                message = `Tạo ${title_page} thành công`;
+                message = `Chỉnh sửa ${title_page} thành công`;
                 type = "success";
                 navigate(`/admin/project/view/${response.data.id}`);
             }
@@ -255,7 +300,7 @@ export default function ProjectCreatePage() {
             dispatch(
                 setGlobalNoti({
                     type: "error",
-                    message: "createError",
+                    message: "Error",
                 })
             );
         }
@@ -276,7 +321,7 @@ export default function ProjectCreatePage() {
     }, []);
     return (
         <Stack className="h-auto">
-            <Stack direction={"row"} gap={2} className="p-4 bg-white">
+            <Stack direction={"row"} gap={5} className="p-4 bg-white">
                 <Typography.Title
                     level={4}
                     style={{
@@ -382,16 +427,16 @@ export default function ProjectCreatePage() {
                 >
                     <Stack
                         direction={"column"}
-                        gap={6}
+                        gap={5}
                         sx={{
                             width: "100%",
                             px: 2,
                         }}
                     >
-                        <Stack direction={"row"} gap={6} className="w-full">
+                        <Stack direction={"row"} gap={5} className="w-full">
                             <Stack
                                 direction={"column"}
-                                gap={2}
+                                gap={5}
                                 className="w-full"
                             >
                                 <Typography.Title
@@ -405,7 +450,7 @@ export default function ProjectCreatePage() {
                                 </Typography.Title>
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}
@@ -441,7 +486,7 @@ export default function ProjectCreatePage() {
                                 </Stack>
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}
@@ -478,7 +523,7 @@ export default function ProjectCreatePage() {
                                 </Stack>
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}
@@ -514,7 +559,7 @@ export default function ProjectCreatePage() {
                                 </Stack>
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}
@@ -550,7 +595,7 @@ export default function ProjectCreatePage() {
                                 </Stack>
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}
@@ -601,7 +646,7 @@ export default function ProjectCreatePage() {
                             </Stack>
                             <Stack
                                 direction={"column"}
-                                gap={2}
+                                gap={5}
                                 className="w-full"
                             >
                                 <Typography.Title
@@ -629,7 +674,7 @@ export default function ProjectCreatePage() {
                                 />
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}
@@ -683,7 +728,7 @@ export default function ProjectCreatePage() {
                                 />
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}
@@ -713,7 +758,7 @@ export default function ProjectCreatePage() {
                                 </Stack>
                                 <Stack
                                     direction={"row"}
-                                    gap={3}
+                                    gap={5}
                                     sx={{
                                         width: "100%",
                                     }}

@@ -7,7 +7,7 @@ export const INIT_PROJECT: {
     name: string;
     thumbnail: string;
     images: string[];
-    status: number;
+    status: string;
     capital_raising_target: number;
     mobilized_fund: number;
     address: string;
@@ -40,7 +40,7 @@ export const INIT_PROJECT: {
     name: "",
     thumbnail: "",
     images: [],
-    status: 0,
+    status: "",
     capital_raising_target: 0,
     mobilized_fund: 0,
     address: "",

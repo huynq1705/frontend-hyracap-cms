@@ -21,45 +21,16 @@ import { InitBlogKeys } from "@/constants/init-state/blog";
 const exist = ["phone", "email", "username"];
 type BlogService = {
     getBlog: (param?: any) => Promise<ResponseFromServerV1<ResponseBlogItem[]>>;
-    // getAccountTotal: (param?: {
-    //     text: string;
-    //     status: number;
-    // }) => Promise<ResponseFromServerV1<ResponseTotal[]>>;
     getBlogDetail: (param?: any) => Promise<ResponseFromServerV1<InitBlogKeys>>;
     postBlog: (
         payload: any,
         requiredKeys: string[]
     ) => ValidationResult | Promise<any>;
-    // putAccount: (
-    //   payload: any,
-    //   code: string | number,
-    //   requiredKeys: string[],
-    //   images: any[]
-    // ) => ValidationResult | Promise<
-    // {
-    //     isValid: boolean;
-    //     missingKeys: string;
-    // } | any>;
     putBlog: (
         payload: any,
         code: string,
         requiredKeys: string[]
     ) => ValidationResult | Promise<any>;
-    // postBlogResetPass: (code: number) => ValidationResult | Promise<boolean>;
-    // putAccountChangPass: (
-    //     payload: PayloadAccountPass,
-    //     code: number,
-    //     requiredKeys: string[]
-    // ) =>
-    //     | ValidationResult
-    //     | Promise<
-    //           | {
-    //                 isValid: boolean;
-    //                 missingKeys: string[];
-    //             }
-    //           | boolean
-    //       >;
-    // deleteCustomer: (payload: string[]) => Promise<boolean>;
 };
 export default function apiBlogService(): BlogService {
     const httpClient = useHttpClient();
@@ -74,13 +45,6 @@ export default function apiBlogService(): BlogService {
         const queryParams = Utils.parseObjectToParam(paramRaw);
         return httpClient.get<any>(`${AppConfig.BLOG.GET_BLOG(queryParams)}`);
     };
-    // const getAccountTotal = (param?: {
-    //     text: string;
-    //     status: number;
-    // }): Promise<any> => {
-    //     const queryParams = Utils.parseObjectToParam(param || {});
-    //     return httpClient.get<any>(`${AppConfig.ACCOUNT.TOTAL(queryParams)}`);
-    // };
     const getBlogDetail = (param: string): Promise<any> => {
         return httpClient.get<InitBlogKeys>(
             `${AppConfig.BLOG.END_POINT}/${param}`

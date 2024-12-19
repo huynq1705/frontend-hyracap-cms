@@ -1,5 +1,6 @@
 import BreadCrumbLink from "@/components/BreadCrumbLink";
 import GroupPage from ".";
+import ViewPageV2 from "./component/viewPage";
 
 export const groupRouter = [
     {
@@ -16,7 +17,7 @@ export const groupRouter = [
     {
         path: "/group/view/:code",
         canGuard: true,
-        element: <GroupPage />,
+        element: <ViewPageV2 />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"group"} label="label-group" />

@@ -1,11 +1,12 @@
 import BreadCrumbLink from "@/components/BreadCrumbLink";
 import ContractPage from ".";
+import EditPageV2 from "./component/editPage";
 
 export const contractRouter = [
     {
         path: "/contract/create",
         canGuard: true,
-        element: <ContractPage />,
+        element: <EditPageV2 />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"contract"} label="label-contract" />
@@ -16,7 +17,7 @@ export const contractRouter = [
     {
         path: "/contract/view/:code",
         canGuard: true,
-        element: <ContractPage />,
+        element: <EditPageV2 />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"contract"} label="label-contract" />

@@ -31,7 +31,6 @@ export default function apiTransactionService(): TransactionService {
             amount: +payload.amount,
             code: payload.code,
             time: new Date().toISOString().split(".")[0] + "Z",
-            contract_id: +payload.contract_id,
         };
 
         const result = validateRequiredKeys(convert_payload, requiredKeys);

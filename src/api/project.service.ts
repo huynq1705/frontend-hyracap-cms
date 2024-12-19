@@ -33,6 +33,35 @@ export default function apiProjectService(): ProjectService {
         payload: InitProjectKeys,
         requiredKeys: string[]
     ) => {
+        const validate_payload = {
+            name: payload.name,
+            status: payload.status,
+            address: payload.address,
+            company_size: payload.company_size,
+            website: payload.website,
+            project_information_description:
+                payload.project_information_description,
+            valuation: payload.valuation,
+            funding_amount: payload.funding_amount,
+            total_slots: payload.total_slots,
+            investors: payload.investors,
+            funding_round: payload.funding_round,
+            investment_field: payload.investment_field,
+            date_of_establishment: payload.date_of_establishment,
+            head_office: payload.head_office,
+            operating_status: payload.operating_status,
+            founder: payload.founder,
+            company_name: payload.company_name,
+            email: payload.email,
+            phone: payload.phone,
+            growth_prospects: payload.growth_prospects,
+            description: payload.description,
+        };
+        console.log("convert_payload", validate_payload);
+        const result = validateRequiredKeys(validate_payload, requiredKeys);
+
+        console.log(result);
+        if (!result.isValid) return result;
         const convert_payload: any = {
             name: payload.name,
             images: payload.images,
@@ -96,11 +125,6 @@ export default function apiProjectService(): ProjectService {
             financial_roadmap: payload.financial_roadmap,
             business_plan: payload.business_plan,
         };
-        console.log("convert_payload", convert_payload);
-        // const result = validateRequiredKeys(convert_payload, requiredKeys);
-
-        // console.log(result);
-        // if (!result.isValid) return result;
         return httpClient
             .post<ResponseFromServerV2<any>>(
                 AppConfig.PROJECT.END_POINT,
@@ -119,6 +143,37 @@ export default function apiProjectService(): ProjectService {
         code: string,
         requiredKeys: string[]
     ) => {
+        const validate_payload = {
+            name: payload.name,
+            status: payload.status,
+            address: payload.address,
+            company_size: payload.company_size,
+            website: payload.website,
+            project_information_description:
+                payload.project_information_description,
+            valuation: payload.valuation,
+            funding_amount: payload.funding_amount,
+            total_slots: payload.total_slots,
+            investors: payload.investors,
+            funding_round: payload.funding_round,
+            investment_field: payload.investment_field,
+            date_of_establishment: payload.date_of_establishment,
+            head_office: payload.head_office,
+            operating_status: payload.operating_status,
+            founder: payload.founder,
+            company_name: payload.company_name,
+            email: payload.email,
+            phone: payload.phone,
+            growth_prospects: payload.growth_prospects,
+            description: payload.description,
+        };
+
+        console.log("validate_payload", validate_payload);
+
+        const result = validateRequiredKeys(validate_payload, requiredKeys);
+        console.log("result", result);
+
+        if (!result.isValid) return result;
         const convert_payload: any = {
             name: payload.name,
             images: payload.images,
@@ -182,10 +237,6 @@ export default function apiProjectService(): ProjectService {
             financial_roadmap: payload.financial_roadmap,
             business_plan: payload.business_plan,
         };
-        // console.log("convert_payload", convert_payload);
-
-        // const result = validateRequiredKeys(convert_payload, requiredKeys);
-        // if (!result.isValid) return result;
         return httpClient
             .put<ResponseFromServerV2<any>>(
                 AppConfig.PROJECT.END_POINT + "/" + code,
