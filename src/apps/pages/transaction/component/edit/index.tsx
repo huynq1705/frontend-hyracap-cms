@@ -27,10 +27,9 @@ import apiContractService from "@/api/apiContract.service";
 import { INIT_TRANSACTION } from "@/constants/init-state/transaction";
 const VALIDATE = {
   amount: "Hãy nhập số tiền",
-  code: "Nhập mã giao dịch",
   contract_id: "Chọn hợp đồng",
 };
-const KEY_REQUIRED = ["amount", "contract_id", "code"];
+const KEY_REQUIRED = ["amount", "code"];
 const OptionTypeSelect = [
   {
     value: "0",
@@ -257,21 +256,6 @@ export default function EditPage(props: EditPageProps) {
             itemsPerPage={5} // Adjust items per page as needed
             disabled={isView}
             placeholder="Chọn"
-          />
-          {/* name */}
-          <MyTextField
-            label="Mã giao dịch"
-            errors={errors}
-            required={KEY_REQUIRED}
-            configUI={{
-              width: "calc(50% - 12px)",
-            }}
-            name="code"
-            placeholder="Nhập"
-            handleChange={handleOnchange}
-            values={formData}
-            validate={VALIDATE}
-            disabled={isView}
           />
           {/* amount */}
           <CurrencyInput

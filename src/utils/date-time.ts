@@ -75,6 +75,23 @@ export function formatDateCustom(dateStr: string): string {
     const [day, month, year] = dateStr.split("-");
     return `${year}-${month}-${day}`;
 }
+// second to datetime
+export function convertTimestamp(transactionTime: string) {
+    // Chuyển đổi từ milliseconds sang Date object
+    const date = new Date(Number(transactionTime));
+
+    // Định dạng giờ và phút
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    // Định dạng ngày, tháng, năm
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+
+    // Ghép các phần lại
+    return `${hours}:${minutes} ${day}/${month}/${year}`;
+}
 export const formatTime = (time: string): string => {
     return dayjs(time, "HH:mm:ss").format("HH:mm:ss");
 };
