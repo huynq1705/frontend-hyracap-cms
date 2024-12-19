@@ -135,6 +135,8 @@ const ListConfigSetting = (props: ListRequestDepositProps) => {
   const dataConvert = useMemo(() => {
     dispatch(setTotalItems(data?.meta?.itemCount || 1));
     if (data && data.data && Array.isArray(data.data)) {
+      console.log("moment", moment(new Date()));
+
       const filterredData = data.data.filter((record) => {
         return moment(record.effective_from).isBefore(moment());
       });
