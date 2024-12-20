@@ -121,10 +121,7 @@ const CustomAutocomplete: React.FC<CustomAutocompleteProps> = (
                         typeof option === "string" ? option : option.label
                     }
                     onInputChange={(event, newInputValue) => {
-                        setSelectedValue({
-                            value: newInputValue,
-                            label: "",
-                        });
+                        setSearchValue(newInputValue);
                     }}
                     onChange={handleSelect}
                     renderOption={(props, option) => (

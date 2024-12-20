@@ -40,7 +40,9 @@ export default function apiProductCategoryService(): ProductCategoryService {
             name: payload.name,
             min_duration: +payload.min_duration,
             max_duration: +payload.max_duration,
-            min_interest_rate: payload.min_interest_rate.toString(),
+            min_interest_rate: (+payload.min_interest_rate / 100)
+                .toFixed(4)
+                .toString(),
         };
         const result = validateRequiredKeys(convert_payload, requiredKeys);
         if (!result.isValid) return result;
@@ -66,7 +68,9 @@ export default function apiProductCategoryService(): ProductCategoryService {
             name: payload.name,
             min_duration: +payload.min_duration,
             max_duration: +payload.max_duration,
-            min_interest_rate: payload.min_interest_rate.toString(),
+            min_interest_rate: (+payload.min_interest_rate / 100)
+                .toFixed(4)
+                .toString(),
         };
         const result = validateRequiredKeys(convert_payload, requiredKeys);
 

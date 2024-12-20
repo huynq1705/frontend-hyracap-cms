@@ -21,6 +21,7 @@ const PAGE_OFF_CREATE: string[] = [
     "users",
     "sale_history",
     "group_sale_history",
+    "withdrawRequest",
 ];
 const PAGE_REPORT: string[] = ["sale_history", "group_sale_history"];
 interface TopTableCustomProps {

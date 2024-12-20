@@ -61,7 +61,9 @@ export default function EditProductCategoryPage(props: EditPageProps) {
                     min_duration: response.min_duration ?? "",
                     max_duration: response.max_duration ?? "",
                     min_interest_rate: response.min_interest_rate
-                        ? response.min_interest_rate
+                        ? (+response.min_interest_rate * 100)
+                              .toFixed(2)
+                              .toString()
                         : "",
                 };
                 setFormData(convert_data);

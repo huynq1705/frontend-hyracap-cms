@@ -19,6 +19,10 @@ export default class AppConfig {
         GET_TRANSACTION: (params: string) => `/transaction${params}&`,
         END_POINT: "/transaction",
     };
+    static WITHDRAW = {
+        GET_WITHDRAW: (params: string) => `/withdrawRequest${params}&`,
+        END_POINT: "/withdrawRequest",
+    };
     static PRODUCT = {
         GET_PRODUCT: (params: string) => `/products${params}&`,
         END_POINT: "/products",

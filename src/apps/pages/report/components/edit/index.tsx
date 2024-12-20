@@ -252,7 +252,7 @@ export default function EditPage(props: EditPageProps) {
                     <UploadFile
                         setImgUrl={handleChangeImage("file")}
                         imageUrl={formData.file}
-                        isEditable={true}
+                        isEditable={!isView}
                         hasError={""}
                         setIsFirstRemoved={(e) => {}}
                     />

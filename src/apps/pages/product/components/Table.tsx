@@ -378,7 +378,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {(+d?.current_interest_rate).toFixed(2) + " %"}
+                        {(+d?.current_interest_rate * 100).toFixed(2) + " %"}
                     </Typography>
                 </Stack>
             ),
@@ -589,9 +589,9 @@ const CTable = (props: CTableProps) => {
         () => keySearch?.text?.toString() ?? "",
         [keySearch?.text, pathname]
     );
-    // useEffect(() => {
-    //     refetch();
-    // }, [window.location.href]);
+    useEffect(() => {
+        refetch();
+    }, [window.location.href]);
     return (
         <>
             <Box className="h-full">
