@@ -5,26 +5,16 @@ import apiProductService from "@/api/apiProduct.service";
 import apiCommonService from "@/api/apiCommon.service";
 import ActionsEditPage from "@/components/actions-edit-page";
 import { setGlobalNoti, setIsLoading } from "@/redux/slices/app.slice";
-import { ResponseProductItem } from "@/types/product";
-import MyTextField from "@/components/input-custom-v2/text-field";
-import MyTextareaAutosize from "@/components/input-custom-v2/textarea-autosize";
 import MySelect from "@/components/input-custom-v2/select";
 import CurrencyInput from "@/components/input-custom-v2/currency";
-import apiProductCategoryService from "@/api/apiProductCategory.service";
 import { OptionSelect } from "@/types/types";
-import MySwitch from "@/components/input-custom-v2/switch";
 import HeaderModalEdit from "@/components/header-modal-edit";
 import { getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
-import ListImage from "@/components/list-image";
-import { UploadFile } from "antd";
-import { v4 as uuidv4 } from "uuid";
-import CustomCurrencyInput from "@/components/input-custom-v2/currency";
-import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui";
-import dayjs from "dayjs";
 import apiTransactionService from "@/api/apiTransaction.service";
 import apiContractService from "@/api/apiContract.service";
 import { INIT_TRANSACTION } from "@/constants/init-state/transaction";
+import MySelectSearchQuery from "@/components/input-custom-v2/select/select-search-query";
 const VALIDATE = {
     amount: "Hãy nhập số tiền",
     contract_id: "Chọn hợp đồng",
@@ -58,11 +48,12 @@ export default function EditPage(props: EditPageProps) {
     const { postTransaction } = apiTransactionService();
     const { getContract } = apiContractService();
 
-    const getAllContract = async () => {
+    const getAllContract = async (searchText = "") => {
         try {
             const param = {
                 page: 1,
-                take: 999,
+                take: 50,
+                text: searchText,
             };
             const response = await getContract(param);
             if (response) {
@@ -243,7 +234,7 @@ export default function EditPage(props: EditPageProps) {
                 <div className="wrapper-from items-end">
                     <MySelect
                         configUI={{
-                            width: "calc(50% - 12px)",
+                            width: "100%",
                         }}
                         label="Loại giao dịch"
                         name="type"
@@ -266,13 +257,13 @@ export default function EditPage(props: EditPageProps) {
                         errors={errors}
                         validate={VALIDATE}
                         required={KEY_REQUIRED}
-                        configUI={{ width: "calc(50% - 12px)" }}
+                        configUI={{ width: "100%" }}
                         disabled={isView}
                     />
                     {/* product_category_id */}
-                    <MySelect
+                    <MySelectSearchQuery
                         configUI={{
-                            width: "calc(50% - 12px)",
+                            width: "100%",
                         }}
                         label="Hợp đồng"
                         name="contract_id"
@@ -285,6 +276,7 @@ export default function EditPage(props: EditPageProps) {
                         itemsPerPage={5} // Adjust items per page as needed
                         disabled={isView}
                         placeholder="Chọn"
+                        onSearch={(query: any) => getAllContract(query)}
                     />
                 </div>
             </div>

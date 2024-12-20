@@ -54,7 +54,7 @@ export default function EditPageV2() {
                 setProduct(
                     response.data.map((it: any) => ({
                         value: it.id.toString(),
-                        label: it.name,
+                        label: `${it.name} - ${it.category.name}`,
                     }))
                 );
                 setProductInfo(response.data);

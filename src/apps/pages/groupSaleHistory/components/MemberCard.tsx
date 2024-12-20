@@ -17,16 +17,17 @@ export default function MemberCard(props: MemberCardProps) {
     return (
         <Stack
             direction={"row"}
-            spacing={"6px"}
+            spacing={"12px"}
             alignItems={"center"}
             borderRadius={4}
             p={1}
             bgcolor={palette.bgPrimary}
             sx={{
-                width: "fit-content",
+                width: "100%",
             }}
             onClick={() => {
-                navigate(`/admin/staff/view/${data?.members_staff_id}`);
+                // navigate(`/admin/staff/view/${data?.members_staff_id}`);
+                navigate(`/admin/sale_history`);
             }}
         >
             <Stack

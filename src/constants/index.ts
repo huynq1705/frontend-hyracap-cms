@@ -17,6 +17,12 @@ export const TITLE_PAGE = [
         key_title: "transaction",
         key: "transaction",
     },
+    // withdrawRequest
+    {
+        pathname: "/withdrawRequest",
+        key_title: "withdrawRequest",
+        key: "withdrawRequest",
+    },
     // contract
     {
         pathname: "/contract",
@@ -97,16 +103,16 @@ export const TITLE_PAGE = [
     },
 ];
 export const GENDER = [
-  { label: "Nam", value: "0" },
-  { label: "Nữ", value: "1" },
+    { label: "Nam", value: "0" },
+    { label: "Nữ", value: "1" },
 ];
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyD2fn018hgm2_0PDDV32YdZGlm_9Q3B4nU",
-  authDomain: "hyracap.firebaseapp.com",
-  projectId: "hyracap",
-  storageBucket: "hyracap.firebasestorage.app",
-  messagingSenderId: "296459576176",
-  appId: "1:296459576176:web:6642a65a943c1336ef25b5",
-  measurementId: "G-N52KTFQE8G",
+    apiKey: "AIzaSyD2fn018hgm2_0PDDV32YdZGlm_9Q3B4nU",
+    authDomain: "hyracap.firebaseapp.com",
+    projectId: "hyracap",
+    storageBucket: "hyracap.firebasestorage.app",
+    messagingSenderId: "296459576176",
+    appId: "1:296459576176:web:6642a65a943c1336ef25b5",
+    measurementId: "G-N52KTFQE8G",
 };

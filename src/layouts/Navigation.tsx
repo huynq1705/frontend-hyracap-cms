@@ -109,12 +109,28 @@ const Navigation = (props: NavigationProps): JSX.Element => {
                         // role: ["admin"],
                     },
                     {
-                        label: `Giao dịch`,
+                        label: `Quản lý giao dịch`, //
                         icon: <RevenueIcon />, // icon - name : tên ảnh svg
-                        key: "admin/transaction",
-                        type: "link",
+
+                        key: "admin/manage-transaction", // check width pathname => activate navbar
+                        betaItem: true, // type navbar
                         // role: ["admin"],
+                        children: [
+                            {
+                                label: `Giao dịch`,
+                                key: "admin/transaction",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                            {
+                                label: `Yêu cầu rút tiền`,
+                                key: "admin/withdrawRequest",
+                                type: "link",
+                                // role: ["admin"],
+                            },
+                        ],
                     },
+
                     {
                         label: `Khách hàng`,
                         icon: <CustomerIcon />, // icon - name : tên ảnh svg

@@ -22,7 +22,6 @@ export default function SelectSearchInput() {
 
     const handleCreateNew = () => {
         setOpen(false);
-        // Xử lý tạo mới tại đây
         console.log("Tạo mới:", value);
     };
 
