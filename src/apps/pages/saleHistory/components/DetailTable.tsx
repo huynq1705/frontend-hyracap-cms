@@ -6,14 +6,13 @@ import { useQuery } from "@tanstack/react-query";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import PopupConfirmRemove from "@/components/popup/confirm-remove";
 import PopupConfirmImport from "@/components/popup/confirm-import";
-import palette from "@/theme/palette-common";
 import {
   useLocation,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { formatCurrency } from "@/utils";
+import { formatCurrency, formatCurrencyNoUnit } from "@/utils";
 import usePermissionCheck from "@/hooks/usePermission";
 import SearchBoxTable from "@/components/search-box-table";
 import ActionButton from "@/components/button/action";
@@ -29,8 +28,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectPage } from "@/redux/selectors/page.slice";
 import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
+import apiSaleHistoryService from "@/api/apiSaleHistory.service";
 import apiContractService from "@/api/apiContract.service";
-import ModalEditContract from "./ModalEdit";
+import StatusCardV2 from "@/components/status-card/index-v2";
+import DateSchedule from "../../dashboard/component/custom-datetime-picker";
+import moment from "moment";
+import palette from "@/theme/palette-common";
+import TopTableCustomV2 from "@/components/top-table-custom-v2";
 
 interface ColumnProps {
   actions: {
@@ -51,123 +55,77 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
         >
           <div className="flex flex-row justify-between border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
             <div>
-              <span className="font-medium text-gray-9 text-sm">
-                Mã hợp đồng
-              </span>
-              <div className="text-gray-9 text-base py-1">
-                <span>{item?.contract_id}</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row justify-between border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <div>
               <span className="font-medium text-gray-9 text-sm">STT</span>
               <div className="text-gray-9 text-base py-1">
                 <span>{index + 1}</span>
               </div>
             </div>
-            {/* <div className="min-w-[80px]">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Trạng thái
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <CStatus
-                                    type={item?.status ? "success" : "error"}
-                                    name={item?.status ? "Active" : "Inactive"}
-                                />
-                            </div>
-                        </div> */}
           </div>
 
           <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">Khách hàng</span>
-            <div className="text-gray-9 text-base py-1">
-              <span> {item?.user.firstName + " " + item?.user.lastName}</span>
-            </div>
-          </div>
-          <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">Mã sản phẩm</span>
-            <div className="text-gray-9 text-base py-1">
-              <span>{item?.id}</span>
-            </div>
-          </div>
-
-          <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">Thời hạn</span>
+            <span className="font-medium text-gray-9 text-sm">Họ và tên</span>
             <div className="text-gray-9 text-base py-1">
               <span className="font-medium" style={{ color: "#50945d" }}>
-                {item?.duration + " Tháng"}
+                {`${item?.staff?.first_name}` +
+                  " " +
+                  `${item?.staff?.last_name}`}
               </span>
             </div>
           </div>
 
           <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">Vốn đầu tư</span>
+            <span className="font-medium text-gray-9 text-sm">Email</span>
             <div className="text-gray-9 text-base py-1">
-              <span>{formatCurrency(Number(item?.capital))}</span>
+              {item?.staff?.email}
             </div>
           </div>
           <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">
-              Mức lãi suất hiện tại
-            </span>
+            <span className="font-medium text-gray-9 text-sm">SĐT</span>
             <div className="text-gray-9 text-base py-1">
-              <span>
-                {(item?.product.current_interest_rate * 100).toFixed(2) + " %"}
-              </span>
+              {item?.staff?.phone}
             </div>
           </div>
           <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">
-              Tổng lãi dự kiến
-            </span>
+            <span className="font-medium text-gray-9 text-sm">Mốc đạt KPI</span>
             <div className="text-gray-9 text-base py-1">
-              <span> {formatCurrency(Number(item?.profit_before_tax))}</span>
+              <span>{formatCurrency(+item?.kpi)}</span>
             </div>
           </div>
           <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">
-              Tổng lãi hiện tại
-            </span>
+            <span className="font-medium text-gray-9 text-sm">KPI thực tế</span>
             <div className="text-gray-9 text-base py-1">
-              <span> {formatCurrency(Number(item?.current_profit))}</span>
+              {formatCurrency(+item?.sales_revenue)}
             </div>
           </div>
           <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">
-              Tên sản phẩm
-            </span>
+            <span className="font-medium text-gray-9 text-sm">Thưởng KPI</span>
             <div className="text-gray-9 text-base py-1">
-              <span> {item?.product.name}</span>
+              {formatCurrency(+item?.kpi_bonus)}
             </div>
           </div>
 
-          <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-            <span className="font-medium text-gray-9 text-sm">
-              Danh mục sản phẩm
-            </span>
-            <div className="text-gray-9 text-base py-1">
-              <span>{item?.product.category.name}</span>
-            </div>
-          </div>
-          {(hasPermission.update || hasPermission.delete) && (
-            <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-              <span className="font-medium text-gray-9 text-sm">Thao tác</span>
-              <div className="text-gray-9 text-base py-1">
-                <div className="flex items-center g-8 justify-start space-x-4">
-                  {hasPermission.getDetail && (
-                    <ActionButton
-                      type="view"
-                      onClick={() => {
-                        navigate(`/admin/contract/view/${item?.id}`);
-                        actions.togglePopup("edit");
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+          {/* {(hasPermission.update || hasPermission.delete) && (
+                        <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+                            <span className="font-medium text-gray-9 text-sm">
+                                Thao tác
+                            </span>
+                            <div className="text-gray-9 text-base py-1">
+                                <div className="flex items-center g-8 justify-start space-x-4">
+                                    {hasPermission.getDetail && (
+                                        <ActionButton
+                                            type="view"
+                                            onClick={() => {
+                                                navigate(
+                                                    `/admin/sale_history/view/${item?.id}`
+                                                );
+                                                actions.togglePopup("edit");
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )} */}
         </div>
       ))}
     </div>
@@ -179,13 +137,13 @@ const getColumns = (props: ColumnProps) => {
   const { T } = useCustomTranslation();
   const { pathname } = useLocation();
   //permissions
-  const { hasPermission } = usePermissionCheck("contract");
+  const { hasPermission } = usePermissionCheck("sale_history");
 
   const { actions, indexItem } = props;
   const columns: any = [
     {
       title: "STT",
-      dataIndex: "contract",
+      dataIndex: "sale_history",
 
       render: (_: any, item: any, index: number) => (
         <Stack direction={"column"} spacing={1}>
@@ -205,62 +163,19 @@ const getColumns = (props: ColumnProps) => {
     },
     {
       title: "Mã hợp đồng",
-      dataIndex: "contract",
-
-      render: (_: any, item: any, index: number) => (
-        <Stack direction={"column"} spacing={1}>
-          <Typography
-            style={{
-              fontSize: "14px",
-              fontWeight: 400,
-              color: "var(--text-color-three)",
-              textAlign: "left",
-            }}
-          >
-            {item?.contract_id}
-          </Typography>
-        </Stack>
+      dataIndex: "sale_history",
+      fixed: "left" as const,
+      render: (_: any, item: any) => (
+        <Typography
+          style={{
+            fontSize: "14px",
+            fontWeight: 500,
+          }}
+        >
+          {`${item?.contract_id || ""}`}
+        </Typography>
       ),
-      width: 200,
-    },
-
-    {
-      title: "Khách hàng",
-      dataIndex: "user",
-
-      render: (_: any, item: any, index: number) => (
-        <Stack direction={"column"} spacing={1}>
-          <Typography
-            style={{
-              fontSize: "14px",
-              fontWeight: 400,
-              color: "var(--text-color-three)",
-              textAlign: "left",
-            }}
-          >
-            {item?.user.firstName + " " + item?.user.lastName}
-          </Typography>
-        </Stack>
-      ),
-      width: 120,
-    },
-    {
-      title: "Vốn đầu tư",
-      dataIndex: "capital",
-      width: 120,
-      render: (_: any, d: any) => (
-        <Stack direction={"column"} spacing={1}>
-          <Typography
-            style={{
-              fontSize: "14px",
-              fontWeight: 400,
-              color: "var(--text-color-three)",
-            }}
-          >
-            {formatCurrency(Number(d?.capital))}
-          </Typography>
-        </Stack>
-      ),
+      width: 220,
     },
     {
       title: `Trạng thái `,
@@ -316,8 +231,8 @@ const getColumns = (props: ColumnProps) => {
       ),
     },
     {
-      title: "Thời hạn",
-      dataIndex: "duration",
+      title: "Họ và tên",
+      dataIndex: "sale_history",
       fixed: "left" as const,
       render: (_: any, item: any) => (
         <Typography
@@ -326,14 +241,16 @@ const getColumns = (props: ColumnProps) => {
             fontWeight: 500,
           }}
         >
-          {item?.duration + " Tháng"}
+          {`${item?.user?.firstName || ""}` +
+            " " +
+            `${item?.user?.lastName || ""}`}
         </Typography>
       ),
-      width: 100,
+      width: 220,
     },
     {
-      title: "Mức lãi suất hiện tại",
-      dataIndex: "current_interest_rate",
+      title: "Vốn",
+      dataIndex: "capital",
       width: 120,
       render: (_: any, d: any) => (
         <Stack direction={"column"} spacing={1}>
@@ -344,31 +261,13 @@ const getColumns = (props: ColumnProps) => {
               color: "var(--text-color-three)",
             }}
           >
-            {(d?.product.current_interest_rate * 100).toFixed(2) + " %"}
+            {formatCurrency(+d?.capital)}
           </Typography>
         </Stack>
       ),
     },
     {
-      title: "Tổng lãi dự tính",
-      dataIndex: "profit_before_tax",
-      width: 120,
-      render: (_: any, d: any) => (
-        <Stack direction={"column"} spacing={1}>
-          <Typography
-            style={{
-              fontSize: "14px",
-              fontWeight: 400,
-              color: "var(--text-color-three)",
-            }}
-          >
-            {formatCurrency(Number(d?.profit_before_tax))}
-          </Typography>
-        </Stack>
-      ),
-    },
-    {
-      title: "Tổng lãi hiện tại",
+      title: "Lợi nhuận hiện tại",
       dataIndex: "current_profit",
       width: 120,
       render: (_: any, d: any) => (
@@ -380,14 +279,14 @@ const getColumns = (props: ColumnProps) => {
               color: "var(--text-color-three)",
             }}
           >
-            {formatCurrency(Number(d?.current_profit))}
+            {formatCurrency(+d?.current_profit)}
           </Typography>
         </Stack>
       ),
     },
     {
-      title: "Tên sản phẩm",
-      dataIndex: "product",
+      title: "Thời hạn",
+      dataIndex: "duration",
       width: 120,
       render: (_: any, d: any) => (
         <Stack direction={"column"} spacing={1}>
@@ -398,71 +297,56 @@ const getColumns = (props: ColumnProps) => {
               color: "var(--text-color-three)",
             }}
           >
-            {d?.product.name}
-          </Typography>
-        </Stack>
-      ),
-    },
-    {
-      title: "Danh mục sản phẩm",
-      dataIndex: "category",
-      width: 120,
-      render: (_: any, d: any) => (
-        <Stack direction={"column"} spacing={1}>
-          <Typography
-            style={{
-              fontSize: "14px",
-              fontWeight: 400,
-              color: "var(--text-color-three)",
-            }}
-          >
-            {d?.product.category.name}
+            {+d?.duration || 0} tháng
           </Typography>
         </Stack>
       ),
     },
   ];
-  {
-    (hasPermission.update || hasPermission.delete) &&
-      columns.push({
-        title: T("action"),
-        width: 120,
-        dataIndex: "actions",
-        fixed: "right" as const,
-        render: (_: any, d: any) => (
-          <>
-            {true && (
-              <Stack
-                direction={"row"}
-                sx={{
-                  gap: "12px",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                }}
-              >
-                {hasPermission.getDetail && (
-                  <ActionButton
-                    type="view"
-                    onClick={() => {
-                      navigate(`/admin/contract/view/${d?.id}`);
-                      actions.togglePopup("edit");
-                    }}
-                  />
-                )}
-              </Stack>
-            )}
-          </>
-        ),
-      });
-  }
+  // {
+  //     (hasPermission.update || hasPermission.delete) &&
+  //         columns.push({
+  //             title: T("action"),
+  //             width: 120,
+  //             dataIndex: "actions",
+  //             fixed: "right" as const,
+  //             render: (_: any, d: any) => (
+  //                 <>
+  //                     {/* check permission */}
+  //                     {true && (
+  //                         <Stack
+  //                             direction={"row"}
+  //                             sx={{
+  //                                 gap: "12px",
+  //                                 justifyContent: "flex-start",
+  //                                 alignItems: "center",
+  //                             }}
+  //                         >
+  //                             {hasPermission.getDetail && (
+  //                                 <ActionButton
+  //                                     type="view"
+  //                                     onClick={() => {
+  //                                         navigate(
+  //                                             `/admin/sale_history/view/${d?.id}`
+  //                                         );
+  //                                         actions.togglePopup("edit");
+  //                                     }}
+  //                                 />
+  //                             )}
+  //                         </Stack>
+  //                     )}
+  //                 </>
+  //             ),
+  //         });
+  // }
   return columns;
 };
 
-interface CTableProps {
+interface SaleHistoryTableProps {
   authorizedPermissions?: any;
 }
 
-const CTable = (props: CTableProps) => {
+const SaleHistoryTable = (props: SaleHistoryTableProps) => {
   const { code } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -470,6 +354,16 @@ const CTable = (props: CTableProps) => {
   const dispatch = useDispatch();
   // --state
   const page = useSelector(selectPage);
+  const [total, setTotal] = useState({
+    staffName: "",
+    staffPosition: "",
+    total_user: 0,
+    total_kpi: 0,
+    kpi: 0,
+    kpi_bonus: 0,
+    direct_bonus: 0,
+    kpi_bonus_base: 0,
+  });
 
   // search
   const handleGetParam = () => {
@@ -497,17 +391,38 @@ const CTable = (props: CTableProps) => {
   const [keySearch, setKeySearch] = useState<KeySearchType>({});
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const { getStatistics } = apiCommonService();
+  const { getSaleHistory, getDetailSaleHistory } = apiSaleHistoryService();
   const { getContract } = apiContractService();
   //permissions
-  const { hasPermission } = usePermissionCheck("contract");
+  const { hasPermission } = usePermissionCheck("sale_history");
+  const [selectedDateStatistic, setSelectedDateStatistic] = useState(moment());
+  const date = selectedDateStatistic.startOf("month").format("YYYY-MM-DD");
+  const endDate = selectedDateStatistic.endOf("month").format("YYYY-MM-DD");
+
+  const {
+    data: dataDetail,
+    isLoading: isLoadingDetail,
+    isError: isErrorDetail,
+  } = code
+    ? useQuery({
+        queryKey: ["GET_DETAIL_SALE_HISTORY", code, date],
+        queryFn: () => getDetailSaleHistory(+code),
+      })
+    : { data: undefined, isLoading: false, isError: false };
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["GET_CONTRACT", param_payload, pathname],
-    queryFn: () => getContract(param_payload),
+    queryKey: ["GET_CONTRACT_STAFF", param_payload, dataDetail?.data?.staff_id],
+    queryFn: () =>
+      getContract({
+        ...param_payload,
+        staff_id__eq: dataDetail?.data?.staff_id,
+      }),
     keepPreviousData: true,
+    enabled: !isLoadingDetail && !isErrorDetail && !!dataDetail?.data.id,
   });
-  console.log("data", data);
+
+  console.log("contract", data);
+
   // convert data
   const dataConvert = useMemo(() => {
     const data_res = data?.data;
@@ -518,11 +433,12 @@ const CTable = (props: CTableProps) => {
       return data_res.map((item) => ({ ...item, key: item?.id }));
     return [];
   }, [data]);
+  console.log("dataConvert", dataConvert);
 
   const selectedRowLabels = useMemo(() => {
     return dataConvert
       .filter((item) => selectedRowKeys.includes(item.key))
-      .map((item) => item.product.name);
+      .map((item) => item);
   }, [selectedRowKeys]);
   const togglePopup = (params: keyof typeof popup, value?: boolean) => {
     setPopup((prev) => ({ ...prev, [params]: value ?? !prev[params] }));
@@ -531,23 +447,10 @@ const CTable = (props: CTableProps) => {
   useEffect(() => {
     const new_key_search = parseQueryParams(param_payload);
     setKeySearch(new_key_search);
-    if (pathname.includes("add_category") && !popup.create_category) {
-      togglePopup("create_category");
-      return;
-    }
 
-    if (!code && !pathname.includes("create")) return;
     if (pathname.includes("view") && !popup.edit) {
-      navigate(`/admin/contract/view/${code}`);
+      navigate(`/admin/sale_history/view/${code}`);
       togglePopup("edit");
-    }
-    if (pathname.includes("edit") && !popup.edit) {
-      navigate(`/admin/contract/edit/${code}`);
-      togglePopup("edit");
-    }
-    if (pathname.includes("create") && !popup.edit) {
-      togglePopup("edit");
-      return;
     }
   }, [window.location.href]);
   // search
@@ -573,13 +476,41 @@ const CTable = (props: CTableProps) => {
     [keySearch?.text, pathname]
   );
   useEffect(() => {
+    if (data?.data && dataDetail?.data) {
+      setTotal({
+        staffName:
+          `${dataDetail?.data?.staff.first_name} ${dataDetail?.data?.staff.last_name} ` ||
+          "",
+        staffPosition: dataDetail?.data?.staff_position.position.name || "",
+        total_user: data?.meta?.itemCount || 0,
+        total_kpi: +dataDetail?.data.sales_revenue || 0,
+        kpi: +dataDetail?.data.kpi || 0,
+        kpi_bonus: +dataDetail?.data.kpi_bonus || 0,
+        direct_bonus: +dataDetail?.data.direct_bonus || 0,
+        kpi_bonus_base: +dataDetail?.data.position_setting.kpi_bonus_base || 0,
+      });
+    }
+  }, [data]);
+
+  const handleRowClick = (record: any) => {
+    // console.log("row", record);
+    // navigate(`/admin/sale_history/${record.id}`);
+  };
+
+  useEffect(() => {
     refetch();
   }, [window.location.href]);
   return (
     <>
       <Box className="h-full">
         <Box className="custom-table-wrapper shadow">
-          <div className="md:flex items-end  justify-between space-y-4 flex-wrap">
+          <div className="md:flex items-start flex-col  justify-between space-y-4 flex-wrap">
+            <div className="w-full md:w-1/3">
+              <TopTableCustomV2
+                title={`${total.staffName}`}
+                description={`${total.staffPosition}`}
+              />
+            </div>
             <div className="w-full md:w-1/3">
               <SearchBoxTable
                 keySearch={text_search}
@@ -590,7 +521,7 @@ const CTable = (props: CTableProps) => {
                   }));
                 }}
                 handleSearch={handleSearch}
-                placeholder="Tìm theo mã hợp đồng, tên khách hàng"
+                placeholder="Tìm theo mã hợp đồng"
               />
             </div>
           </div>
@@ -601,6 +532,72 @@ const CTable = (props: CTableProps) => {
                 : `Không tìm thấy nội dung nào phù hợp với '${key_search?.text}'`}
             </div>
           )}
+          <div className="flex justify-between items-center">
+            <div className="wrapper-from">
+              <StatusCardV2
+                statusData={{
+                  label: "Số lượng hợp đồng",
+                  value: total.total_user,
+                  color: "#217732",
+                }}
+                customCss="min-w-[250px]"
+              />
+              <StatusCardV2
+                statusData={{
+                  label: "KPI",
+                  value: `${data && formatCurrencyNoUnit(+total.kpi)} vnđ`,
+                  color: "#7A52DE",
+                }}
+                customCss="min-w-[250px]"
+              />
+              <StatusCardV2
+                statusData={{
+                  label: "Mức thưởng KPI",
+                  value: `${
+                    data && formatCurrencyNoUnit(+total.kpi_bonus_base)
+                  } vnđ`,
+                  color: "#7A52DE",
+                }}
+                customCss="min-w-[250px]"
+              />
+              <StatusCardV2
+                statusData={{
+                  label: "Tổng tiền doanh thu",
+                  value: `${
+                    data && formatCurrencyNoUnit(+total.total_kpi)
+                  } vnđ`,
+                  color: "#7A52DE",
+                }}
+                customCss="min-w-[250px]"
+              />
+              <StatusCardV2
+                statusData={{
+                  label: "Thưởng KPI",
+                  value: `${
+                    data && formatCurrencyNoUnit(+total.kpi_bonus)
+                  } vnđ`,
+                  color: "#7A52DE",
+                }}
+                customCss="min-w-[250px]"
+              />
+              <StatusCardV2
+                statusData={{
+                  label: "Thưởng trực tiếp",
+                  value: `${
+                    data && formatCurrencyNoUnit(+total.direct_bonus)
+                  } vnđ`,
+                  color: "#7A52DE",
+                }}
+                customCss="min-w-[250px]"
+              />
+            </div>
+            <div className="items-end">
+              <DateSchedule
+                selectedDate={selectedDateStatistic}
+                setSelectedDate={setSelectedDateStatistic}
+              />
+            </div>
+          </div>
           {/* <Card> */}
           <Table
             size="middle"
@@ -615,7 +612,12 @@ const CTable = (props: CTableProps) => {
               ),
             }}
             bordered
-            // rowSelection={rowSelection}
+            // rowSelection={() => {
+            //   console.log("selection");
+            // }}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record),
+            })}
             loading={isLoading}
             dataSource={dataConvert}
             columns={getColumns({
@@ -625,6 +627,7 @@ const CTable = (props: CTableProps) => {
             pagination={false}
             scroll={{ x: "100%" }}
             className="custom-table custom-table hidden md:block"
+            rowClassName={"cursor-pointer"}
           />
 
           {/* mobile */}
@@ -639,18 +642,25 @@ const CTable = (props: CTableProps) => {
       </Box>
 
       {/*  */}
-      {popup.edit && (
-        <ModalEditContract
-          open={popup.edit}
-          toggle={(param) => {
-            togglePopup(param);
-            navigate(`/admin/contract`);
-          }}
-          refetch={refetch}
-        />
-      )}
+      {/* <PopupConfirmRemove
+        listItem={selectedRowKeys}
+        open={popup.remove}
+        handleClose={() => {
+          togglePopup("remove");
+        }}
+        refetch={refetch}
+        name_item={selectedRowLabels}
+      /> */}
+      {/*  */}
+      <PopupConfirmImport
+        open={popup.upload}
+        handleClose={() => {
+          togglePopup("upload");
+        }}
+        refetch={refetch}
+      />
     </>
   );
 };
 
-export default CTable;
+export default SaleHistoryTable;

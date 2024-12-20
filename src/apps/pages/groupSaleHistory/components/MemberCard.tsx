@@ -17,17 +17,16 @@ export default function MemberCard(props: MemberCardProps) {
     return (
         <Stack
             direction={"row"}
-            spacing={"12px"}
+            spacing={"6px"}
             alignItems={"center"}
             borderRadius={4}
             p={1}
             bgcolor={palette.bgPrimary}
             sx={{
-                width: "100%",
+                width: "fit-content",
             }}
             onClick={() => {
-                // navigate(`/admin/staff/view/${data?.members_staff_id}`);
-                navigate(`/admin/sale_history`);
+                navigate(`/admin/staff/view/${data?.members_staff_id}`);
             }}
         >
             <Stack
@@ -66,7 +65,7 @@ export default function MemberCard(props: MemberCardProps) {
                     {"Họ tên : " +
                         data?.members_first_name +
                         " " +
-                        data?.members_first_name}
+                        data?.members_last_name}
                 </Stack>
                 <Stack
                     direction={"row"}

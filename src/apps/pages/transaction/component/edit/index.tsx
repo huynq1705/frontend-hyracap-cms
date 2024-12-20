@@ -48,12 +48,11 @@ export default function EditPage(props: EditPageProps) {
     const { postTransaction } = apiTransactionService();
     const { getContract } = apiContractService();
 
-    const getAllContract = async (searchText = "") => {
+    const getAllContract = async () => {
         try {
             const param = {
                 page: 1,
-                take: 50,
-                text: searchText,
+                take: 10,
             };
             const response = await getContract(param);
             if (response) {
@@ -234,7 +233,7 @@ export default function EditPage(props: EditPageProps) {
                 <div className="wrapper-from items-end">
                     <MySelect
                         configUI={{
-                            width: "100%",
+                            width: "calc(50% - 12px)",
                         }}
                         label="Loại giao dịch"
                         name="type"
@@ -257,13 +256,13 @@ export default function EditPage(props: EditPageProps) {
                         errors={errors}
                         validate={VALIDATE}
                         required={KEY_REQUIRED}
-                        configUI={{ width: "100%" }}
+                        configUI={{ width: "calc(50% - 12px)" }}
                         disabled={isView}
                     />
                     {/* product_category_id */}
-                    <MySelectSearchQuery
+                    <MySelect
                         configUI={{
-                            width: "100%",
+                            width: "calc(50% - 12px)",
                         }}
                         label="Hợp đồng"
                         name="contract_id"
@@ -276,7 +275,6 @@ export default function EditPage(props: EditPageProps) {
                         itemsPerPage={5} // Adjust items per page as needed
                         disabled={isView}
                         placeholder="Chọn"
-                        onSearch={(query: any) => getAllContract(query)}
                     />
                 </div>
             </div>
