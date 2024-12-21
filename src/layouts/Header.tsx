@@ -257,19 +257,19 @@ const Header = (props: HeaderProps): JSX.Element => {
             // flexDirection: 'row'
           }}
         >
-          {/* <ButtonCore
-                        title={T("createCustomer")}
-                        type="bgWhite"
-                        onClick={() => {
-                            navigate("/admin/customer/create");
-                        }}
-                    />
-                    <ButtonCore
-                        title={T("createOder")}
-                        onClick={() => {
-                            navigate("/admin/order/create");
-                        }}
-                    /> */}
+          <ButtonCore
+            title={"Tạo hợp đồng"}
+            type="bgWhite"
+            onClick={() => {
+              navigate("/admin/contract/create");
+            }}
+          />
+          <ButtonCore
+            title={"Tạo dự án"}
+            onClick={() => {
+              navigate("/admin/project/create");
+            }}
+          />
         </Box>
         {/* <Stack
                     className="h-9 w-9 flex items-center justify-center relative bg-[#F9FAFB]"

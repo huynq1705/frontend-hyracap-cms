@@ -542,8 +542,37 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
   }, [window.location.href]);
   return (
     <>
-      <Box className="h-full">
-        <Box className="custom-table-wrapper shadow">
+      <Stack direction={"row"} gap={5} className="p-4 bg-white border-b">
+        <Typography.Title
+          level={4}
+          style={{
+            fontSize: "14px",
+            lineHeight: "22px",
+            margin: "0",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            navigate("/admin/sale_history");
+          }}
+        >
+          Hoa hồng cá nhân
+        </Typography.Title>
+        <img src="/src/assets/icons/chevron-right-icon.svg" alt="" />
+        <Typography.Title
+          level={4}
+          style={{
+            fontSize: "14px",
+            lineHeight: "22px",
+            color: "#50945D",
+
+            margin: "0",
+          }}
+        >
+          {total?.staffName || "Thông tin chi tiết"}
+        </Typography.Title>
+      </Stack>
+      <Box className="h-full bg-[#f0f2f5] gap-2 flex flex-col p-4 ">
+        <Box className="custom-table-wrapper shadow   ">
           <div className="md:flex items-start flex-col  justify-between space-y-4 flex-wrap">
             <div className="w-full md:w-1/3">
               <TopTableCustomV2

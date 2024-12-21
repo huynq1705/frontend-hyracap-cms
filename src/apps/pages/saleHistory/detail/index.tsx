@@ -3,9 +3,9 @@ import DetailTable from "../components/DetailTable";
 
 function SaleDetailPage() {
   return (
-    <ContainerBody>
+    // <ContainerBody>
       <DetailTable />
-    </ContainerBody>
+    // </ContainerBody>
   );
 }
 

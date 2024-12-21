@@ -159,24 +159,20 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
             </div>
           </div>
 
-                    {(hasPermission.update || hasPermission.delete) && (
-                        <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Thao tác
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <div className="flex items-center g-8 justify-start space-x-4">
-                                    {hasPermission.getDetail && (
-                                        <ActionButton
-                                            type="view"
-                                            onClick={() => {
-                                                navigate(
-                                                    `/admin/users/view/${item?.sub}`
-                                                );
-                                            }}
-                                        />
-                                    )}
-                                    {/* {hasPermission.update && (
+          {(hasPermission.update || hasPermission.delete) && (
+            <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
+              <span className="font-medium text-gray-9 text-sm">Thao tác</span>
+              <div className="text-gray-9 text-base py-1">
+                <div className="flex items-center g-8 justify-start space-x-4">
+                  {hasPermission.getDetail && (
+                    <ActionButton
+                      type="view"
+                      onClick={() => {
+                        navigate(`/admin/users/view/${item?.sub}`);
+                      }}
+                    />
+                  )}
+                  {/* {hasPermission.update && (
                                         <ActionButton
                                             type="edit"
                                             onClick={() =>
@@ -211,236 +207,238 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
 };
 
 const getColumns = (props: ColumnProps) => {
-    const navigate = useNavigate();
-    const { T } = useCustomTranslation();
-    const { hasPermission } = usePermissionCheck("product");
-    const { actions, indexItem } = props;
-    const columns = [
-        {
-            title: "STT",
-            dataIndex: "stt",
-            render: (_: any, item: any, index: number) => (
-                <Typography
-                    style={{
-                        fontSize: "14px",
-                        color: palette.textQuaternary,
-                        lineHeight: "22px",
-                    }}
-                    onClick={() => {
-                        navigate(`/admin/users/view/${item?.sub}`);
-                    }}
-                >
-                    {index + 1 + indexItem}
-                </Typography>
-            ),
-            width: 46,
-        },
-        {
-            title: "Mã người dùng",
-            dataIndex: "stt",
-            render: (_: any, item: any, index: number) => (
-                <Typography
-                    style={{
-                        fontSize: "14px",
-                        color: palette.textQuaternary,
-                        lineHeight: "22px",
-                    }}
-                    onClick={() => {
-                        navigate(`/admin/users/view/${item?.sub}`);
-                        // actions.togglePopup("edit");
-                    }}
-                >
-                    {item.sub}
-                </Typography>
-            ),
-            width: 100,
-        },
-        {
-            title: T("fullName"),
-            dataIndex: "full_name",
-            // fixed: "left" as const,
-            render: (_: any, item: any) => (
-                <Stack
-                    direction={"row"}
-                    spacing={1}
-                    justifyContent={"flex-start"}
-                    sx={{
-                        alignItems: "center",
-                        // cursor: "pointer",
-                    }}
-                    onClick={() => {
-                        navigate(`/admin/users/view/${item?.sub}`);
-                        // actions.togglePopup("edit");
-                    }}
-                >
-                    <Stack direction={"column"}>
-                        <Typography
-                            style={{
-                                fontSize: "14px",
-                                fontWeight: 500,
-                                // color: "var(--text-color-primary)",
-                            }}
-                        >
-                            {`${item?.firstName}` + " " + `${item?.lastName}`}
-                        </Typography>
-                    </Stack>
-                </Stack>
-            ),
-            width: 182,
-        },
-        {
-            title: T("email"),
-            dataIndex: "email",
-            width: 240,
-            render: (_: any, item: any) => (
-                <Stack
-                    direction={"column"}
-                    spacing={1}
-                    onClick={() => {
-                        navigate(`/admin/users/view/${item?.sub}`);
-                        // actions.togglePopup("edit");
-                    }}
-                >
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                            textAlign: "left",
-                        }}
-                    >
-                        {item?.email}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            width: 175,
-            title: T("phone_number"),
-            dataIndex: "phone_number",
-            render: (_: any, item: any) => (
-                <Typography
-                    onClick={() => {
-                        navigate(`/admin/users/view/${item?.sub}`);
-                        // actions.togglePopup("edit");
-                    }}
-                    style={{ textAlign: "left" }}
-                >
-                    {item?.phone ?? "- -"}
-                </Typography>
-            ),
-        },
-        {
-            title: T("joining_date"),
-            dataIndex: "create_at",
-            width: 144,
-            render: (_: any, item: any) => (
-                <Stack
-                    onClick={() => {
-                        navigate(`/admin/users/view/${item?.sub}`);
-                        // actions.togglePopup("edit");
-                    }}
-                    direction={"column"}
-                    spacing={1}
-                >
-                    <Typography
-                        style={{
-                            fontSize: "14px",
-                            fontWeight: 400,
-                            color: "var(--text-color-three)",
-                        }}
-                    >
-                        {formatDate(item?.created_at, "DDMMYY")}
-                    </Typography>
-                </Stack>
-            ),
-        },
-        {
-            title: `Trạng thái tài khoản`,
-            width: 124,
-            dataIndex: "verified",
-            render: (_: any, d: any) => (
-                <Stack
-                    direction={"row"}
-                    spacing={"6px"}
-                    alignItems={"center"}
-                    borderRadius={4}
-                    p={1}
-                    bgcolor={palette.bgPrimary}
-                    sx={{
-                        width: "fit-content",
-                    }}
-                    onClick={() => {
-                        navigate(`/admin/users/view/${d?.sub}`);
-                        // actions.togglePopup("edit");
-                    }}
-                >
-                    <CStatus
-                        type={(() => {
-                            switch (d?.kycStatus) {
-                                case "NONE":
-                                    return "info";
-                                case "VERIFIED":
-                                    return "success";
-                                case "VERIFYING":
-                                    return "warning";
-                                case "REJECTED":
-                                    return "error";
-                                default:
-                                    return "error"; // giá trị mặc định nếu kycStatus không khớp
-                            }
-                        })()}
-                        name={(() => {
-                            switch (d?.kycStatus) {
-                                case "NONE":
-                                    return "Chưa xác thực";
-                                case "VERIFIED":
-                                    return "Đã xác thực";
-                                case "VERIFYING":
-                                    return "Đang xác thực";
-                                case "REJECTED":
-                                    return "Từ chối xác thực";
-                                default:
-                                    return "Từ chối xác thực"; // giá trị mặc định nếu kycStatus không khớp
-                            }
-                        })()}
-                    />
-                </Stack>
-            ),
-        },
-        {
-            title: "Thao tác",
-            width: 100,
-            dataIndex: "actions",
-            fixed: "right" as const,
-            shadows: " box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.5);",
-            zIndex: 100,
-            render: (_: any, d: any) => (
-                <>
-                    {/* check permission */}
-                    <Stack
-                        direction={"row"}
-                        sx={{
-                            gap: "16px",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            px: "9px",
-                            // position: 'absolute',
-                            // right: 0,
-                            // top: 0,
-                            // bottom: 0
-                        }}
-                    >
-                        {hasPermission.getDetail && (
-                            <ActionButton
-                                type="view"
-                                onClick={() => {
-                                    navigate(`/admin/users/view/${d?.sub}`);
-                                    // actions.togglePopup("edit");
-                                }}
-                            />
-                        )}
-                        {/* {hasPermission.update && (
+  const navigate = useNavigate();
+  const { T } = useCustomTranslation();
+  const { hasPermission } = usePermissionCheck("product");
+  const { actions, indexItem } = props;
+  const columns = [
+    {
+      title: "STT",
+      dataIndex: "stt",
+      render: (_: any, item: any, index: number) => (
+        <Typography
+          style={{
+            fontSize: "14px",
+            color: palette.textQuaternary,
+            lineHeight: "22px",
+          }}
+          onClick={() => {
+            navigate(`/admin/users/view/${item?.sub}`);
+          }}
+        >
+          {index + 1 + indexItem}
+        </Typography>
+      ),
+      width: 46,
+    },
+    {
+      title: "Mã người dùng",
+      dataIndex: "stt",
+      render: (_: any, item: any, index: number) => (
+        <Typography
+          style={{
+            fontSize: "14px",
+            color: palette.textQuaternary,
+            lineHeight: "22px",
+          }}
+          onClick={() => {
+            navigate(`/admin/users/view/${item?.sub}`);
+            // actions.togglePopup("edit");
+          }}
+        >
+          {item.sub}
+        </Typography>
+      ),
+      width: 100,
+    },
+    {
+      title: T("fullName"),
+      dataIndex: "full_name",
+      // fixed: "left" as const,
+      render: (_: any, item: any) => (
+        <Stack
+          direction={"row"}
+          spacing={1}
+          justifyContent={"flex-start"}
+          sx={{
+            alignItems: "center",
+            
+            // cursor: "pointer",
+          }}
+          onClick={() => {
+            navigate(`/admin/users/view/${item?.sub}`);
+            // actions.togglePopup("edit");
+          }}
+        >
+          <Stack direction={"column"}>
+            <Typography
+              style={{
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "var(--text-color-primary)",
+                textDecoration: "underline",
+              }}
+            >
+              {`${item?.firstName}` + " " + `${item?.lastName}`}
+            </Typography>
+          </Stack>
+        </Stack>
+      ),
+      width: 182,
+    },
+    {
+      title: T("email"),
+      dataIndex: "email",
+      width: 240,
+      render: (_: any, item: any) => (
+        <Stack
+          direction={"column"}
+          spacing={1}
+          onClick={() => {
+            navigate(`/admin/users/view/${item?.sub}`);
+            // actions.togglePopup("edit");
+          }}
+        >
+          <Typography
+            style={{
+              fontSize: "14px",
+              fontWeight: 400,
+              color: "var(--text-color-three)",
+              textAlign: "left",
+            }}
+          >
+            {item?.email}
+          </Typography>
+        </Stack>
+      ),
+    },
+    {
+      width: 175,
+      title: T("phone_number"),
+      dataIndex: "phone_number",
+      render: (_: any, item: any) => (
+        <Typography
+          onClick={() => {
+            navigate(`/admin/users/view/${item?.sub}`);
+            // actions.togglePopup("edit");
+          }}
+          style={{ textAlign: "left" }}
+        >
+          {item?.phone ?? "- -"}
+        </Typography>
+      ),
+    },
+    {
+      title: T("joining_date"),
+      dataIndex: "create_at",
+      width: 144,
+      render: (_: any, item: any) => (
+        <Stack
+          onClick={() => {
+            navigate(`/admin/users/view/${item?.sub}`);
+            // actions.togglePopup("edit");
+          }}
+          direction={"column"}
+          spacing={1}
+        >
+          <Typography
+            style={{
+              fontSize: "14px",
+              fontWeight: 400,
+              color: "var(--text-color-three)",
+            }}
+          >
+            {formatDate(item?.created_at, "DDMMYY")}
+          </Typography>
+        </Stack>
+      ),
+    },
+    {
+      title: `Trạng thái tài khoản`,
+      width: 124,
+      dataIndex: "verified",
+      render: (_: any, d: any) => (
+        <Stack
+          direction={"row"}
+          spacing={"6px"}
+          alignItems={"center"}
+          borderRadius={4}
+          p={1}
+          bgcolor={palette.bgPrimary}
+          sx={{
+            width: "fit-content",
+          }}
+          onClick={() => {
+            navigate(`/admin/users/view/${d?.sub}`);
+            // actions.togglePopup("edit");
+          }}
+        >
+          <CStatus
+            type={(() => {
+              switch (d?.kycStatus) {
+                case "NONE":
+                  return "info";
+                case "VERIFIED":
+                  return "success";
+                case "VERIFYING":
+                  return "warning";
+                case "REJECTED":
+                  return "error";
+                default:
+                  return "error"; // giá trị mặc định nếu kycStatus không khớp
+              }
+            })()}
+            name={(() => {
+              switch (d?.kycStatus) {
+                case "NONE":
+                  return "Chưa xác thực";
+                case "VERIFIED":
+                  return "Đã xác thực";
+                case "VERIFYING":
+                  return "Đang xác thực";
+                case "REJECTED":
+                  return "Từ chối xác thực";
+                default:
+                  return "Từ chối xác thực"; // giá trị mặc định nếu kycStatus không khớp
+              }
+            })()}
+          />
+        </Stack>
+      ),
+    },
+    {
+      title: "Thao tác",
+      width: 100,
+      dataIndex: "actions",
+      fixed: "right" as const,
+      shadows: " box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.5);",
+      zIndex: 100,
+      render: (_: any, d: any) => (
+        <>
+          {/* check permission */}
+          <Stack
+            direction={"row"}
+            sx={{
+              gap: "16px",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              px: "9px",
+              // position: 'absolute',
+              // right: 0,
+              // top: 0,
+              // bottom: 0
+            }}
+          >
+            {hasPermission.getDetail && (
+              <ActionButton
+                type="view"
+                onClick={() => {
+                  navigate(`/admin/users/view/${d?.sub}`);
+                  // actions.togglePopup("edit");
+                }}
+              />
+            )}
+            {/* {hasPermission.update && (
                             <ActionButton
                                 type="edit"
                                 onClick={() =>
@@ -666,6 +664,13 @@ const ListUser = (props: ListRequestDepositProps) => {
           pagination={false}
           scroll={{ x: "100%" }}
           className="custom-table hidden md:block"
+          onRow={(record) => {
+            return {
+              onMouseMove: (e) => {
+                e.currentTarget.style.cursor = "pointer";
+              },
+            };
+          }}
           // style={{ height: "calc(100vh - 333px)" }}
         />
       </Box>
