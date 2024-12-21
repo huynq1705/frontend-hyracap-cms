@@ -185,9 +185,8 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                             type="view"
                                             onClick={() => {
                                                 navigate(
-                                                    `/admin/users/edit/${item?.sub}`
+                                                    `/admin/users/view/${item?.sub}`
                                                 );
-                                                actions.togglePopup("edit");
                                             }}
                                         />
                                     )}
@@ -241,6 +240,9 @@ const getColumns = (props: ColumnProps) => {
                         color: palette.textQuaternary,
                         lineHeight: "22px",
                     }}
+                    onClick={() => {
+                        navigate(`/admin/users/view/${item?.sub}`);
+                    }}
                 >
                     {index + 1 + indexItem}
                 </Typography>
@@ -256,6 +258,10 @@ const getColumns = (props: ColumnProps) => {
                         fontSize: "14px",
                         color: palette.textQuaternary,
                         lineHeight: "22px",
+                    }}
+                    onClick={() => {
+                        navigate(`/admin/users/view/${item?.sub}`);
+                        // actions.togglePopup("edit");
                     }}
                 >
                     {item.sub}
@@ -276,7 +282,10 @@ const getColumns = (props: ColumnProps) => {
                         alignItems: "center",
                         // cursor: "pointer",
                     }}
-                    // onClick={() => navigate(`${pathname}/edit/${item?.sh_code}`)}
+                    onClick={() => {
+                        navigate(`/admin/users/view/${item?.sub}`);
+                        // actions.togglePopup("edit");
+                    }}
                 >
                     <Stack direction={"column"}>
                         <Typography
@@ -298,7 +307,14 @@ const getColumns = (props: ColumnProps) => {
             dataIndex: "email",
             width: 240,
             render: (_: any, item: any) => (
-                <Stack direction={"column"} spacing={1}>
+                <Stack
+                    direction={"column"}
+                    spacing={1}
+                    onClick={() => {
+                        navigate(`/admin/users/view/${item?.sub}`);
+                        // actions.togglePopup("edit");
+                    }}
+                >
                     <Typography
                         style={{
                             fontSize: "14px",
@@ -317,7 +333,13 @@ const getColumns = (props: ColumnProps) => {
             title: T("phone_number"),
             dataIndex: "phone_number",
             render: (_: any, item: any) => (
-                <Typography style={{ textAlign: "left" }}>
+                <Typography
+                    onClick={() => {
+                        navigate(`/admin/users/view/${item?.sub}`);
+                        // actions.togglePopup("edit");
+                    }}
+                    style={{ textAlign: "left" }}
+                >
                     {item?.phone ?? "- -"}
                 </Typography>
             ),
@@ -327,7 +349,14 @@ const getColumns = (props: ColumnProps) => {
             dataIndex: "create_at",
             width: 144,
             render: (_: any, item: any) => (
-                <Stack direction={"column"} spacing={1}>
+                <Stack
+                    onClick={() => {
+                        navigate(`/admin/users/view/${item?.sub}`);
+                        // actions.togglePopup("edit");
+                    }}
+                    direction={"column"}
+                    spacing={1}
+                >
                     <Typography
                         style={{
                             fontSize: "14px",
@@ -354,6 +383,10 @@ const getColumns = (props: ColumnProps) => {
                     bgcolor={palette.bgPrimary}
                     sx={{
                         width: "fit-content",
+                    }}
+                    onClick={() => {
+                        navigate(`/admin/users/view/${d?.sub}`);
+                        // actions.togglePopup("edit");
                     }}
                 >
                     <CStatus
@@ -416,8 +449,8 @@ const getColumns = (props: ColumnProps) => {
                             <ActionButton
                                 type="view"
                                 onClick={() => {
-                                    navigate(`/admin/users/edit/${d?.sub}`);
-                                    actions.togglePopup("edit");
+                                    navigate(`/admin/users/view/${d?.sub}`);
+                                    // actions.togglePopup("edit");
                                 }}
                             />
                         )}

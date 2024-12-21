@@ -276,20 +276,37 @@ export default function ViewPageV2() {
                                 disabled={isView}
                             />
                             <Stack direction={"column"} width={"100%"}>
-                                <div className="pb-6">
-                                    {" "}
-                                    Thông tin thành viên:{" "}
-                                </div>
+                                <div className="pb-6"> Trưởng nhóm: </div>
                                 <Grid container spacing={2}>
-                                    {formData.members.map(
-                                        (member: any, index: number) => (
+                                    {formData.members
+                                        .filter(
+                                            (member: any) => +member.role === 0
+                                        )
+                                        .map((member: any, index: number) => (
                                             <Grid item xs={4} key={index}>
                                                 {" "}
                                                 {/* xs=4 tương ứng với 1/3 chiều rộng của container */}
                                                 <MemberCard data={member} />
                                             </Grid>
+                                        ))}
+                                </Grid>
+                            </Stack>
+                            <Stack direction={"column"} width={"100%"}>
+                                <div className="pb-6">
+                                    {" "}
+                                    Thông tin thành viên:{" "}
+                                </div>
+                                <Grid container spacing={2}>
+                                    {formData.members
+                                        .filter(
+                                            (member: any) => +member.role !== 0
                                         )
-                                    )}
+                                        .map((member: any, index: number) => (
+                                            <Grid item xs={4} key={index}>
+                                                {" "}
+                                                <MemberCard data={member} />
+                                            </Grid>
+                                        ))}
                                 </Grid>
                             </Stack>
                         </div>

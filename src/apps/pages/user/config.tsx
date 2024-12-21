@@ -1,9 +1,6 @@
 import BreadCrumbLink from "@/components/BreadCrumbLink";
-// import EditPage from "./edit";
-// import NavigateRoute from "@/routers/NavigateRoute";
-// import ListServiceCatalog from "./components/ListServiceCatalog";
-// import EditCatalogPage from "./edit/EditCatalog";
 import AdminPage from ".";
+import ViewPage from "./components/PageAdmin";
 
 export const adminRouter = [
     {
@@ -31,7 +28,7 @@ export const adminRouter = [
     {
         path: "/users/view/:code",
         canGuard: true,
-        element: <AdminPage />,
+        element: <ViewPage />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"users"} label="Create-users" />

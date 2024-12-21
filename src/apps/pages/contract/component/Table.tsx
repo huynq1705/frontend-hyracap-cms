@@ -359,7 +359,7 @@ const getColumns = (props: ColumnProps) => {
                     alignItems={"center"}
                     borderRadius={4}
                     p={1}
-                    bgcolor={palette.bgPrimary}
+                    // bgcolor={palette.bgPrimary}
                     sx={{
                         width: "fit-content",
                     }}

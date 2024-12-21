@@ -1,18 +1,17 @@
 import palette from "@/theme/palette-common";
+import { formatCurrency } from "@/utils";
 import { formatDate } from "@/utils/date-time";
 import { Box, Grid, Stack } from "@mui/material";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
 
-export interface MemberCardProps {
+export interface ContractCartProps {
     data?: any;
 }
 
-export default function MemberCard(props: MemberCardProps) {
+export default function ContractCart(props: ContractCartProps) {
     const { data } = props;
     const navigate = useNavigate();
-
-    console.log("data", data);
     return (
         <Stack
             direction={"row"}
@@ -25,7 +24,7 @@ export default function MemberCard(props: MemberCardProps) {
                 width: "100%",
             }}
             onClick={() => {
-                navigate(`/admin/staff/view/${data?.members_staff_id}`);
+                navigate(`/admin/contract/view/${data?.id}`);
             }}
         >
             <Stack
@@ -48,7 +47,7 @@ export default function MemberCard(props: MemberCardProps) {
                             backgroundColor: "var(--success-color)",
                         }}
                     ></Box>
-                    {"Mã nhân viên : " + data?.members_staff_id}
+                    {"Hợp đồng số : " + data?.contract_id}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -61,8 +60,7 @@ export default function MemberCard(props: MemberCardProps) {
                             backgroundColor: "var(--success-color)",
                         }}
                     ></Box>
-                    {"Chức vụ : " +
-                        (+data?.role === 1 ? "Nhân viên" : "Quản lý")}
+                    {"Sản phẩm : " + data?.product?.name}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -75,10 +73,7 @@ export default function MemberCard(props: MemberCardProps) {
                             backgroundColor: "var(--success-color)",
                         }}
                     ></Box>
-                    {"Họ tên : " +
-                        data?.members_first_name +
-                        " " +
-                        data?.members_first_name}
+                    {"Số tiền đầu tư : " + data?.capital}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -91,7 +86,7 @@ export default function MemberCard(props: MemberCardProps) {
                             backgroundColor: "var(--success-color)",
                         }}
                     ></Box>
-                    {"Email : " + data?.members_email}
+                    {"Kỳ hạn : " + data?.duration + " tháng"}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -104,7 +99,36 @@ export default function MemberCard(props: MemberCardProps) {
                             backgroundColor: "var(--success-color)",
                         }}
                     ></Box>
-                    {"SĐT : " + data?.members_phone}
+                    {"Lợi nhuận ước tính : " +
+                        formatCurrency(+data?.provisional_profit)}
+                </Stack>
+                <Stack
+                    direction={"row"}
+                    gap={1}
+                    className={clsx("items-center text-xs capitalize ")}
+                >
+                    <Box
+                        className="w-2 h-2 rounded-full"
+                        sx={{
+                            backgroundColor: "var(--success-color)",
+                        }}
+                    ></Box>
+                    {"Lợi nhuận hiện tại : " +
+                        formatCurrency(+data?.current_profit)}
+                </Stack>
+                <Stack
+                    direction={"row"}
+                    gap={1}
+                    className={clsx("items-center text-xs capitalize ")}
+                >
+                    <Box
+                        className="w-2 h-2 rounded-full"
+                        sx={{
+                            backgroundColor: "var(--success-color)",
+                        }}
+                    ></Box>
+                    {"Lợi nhuậ trước thuế : " +
+                        formatCurrency(+data?.profit_before_tax)}
                 </Stack>
             </Stack>
         </Stack>
