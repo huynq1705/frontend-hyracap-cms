@@ -376,6 +376,14 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
     return params;
   };
 
+  const handleSetParam = (params: any) => {
+    const new_params = new URLSearchParams();
+    for (const key in params) {
+      new_params.append(key, params[key]);
+    }
+    setSearchParams(new_params);
+  };
+
   const { currentPage, pageSize, key_search } = handleGetPage(searchParams);
   const param_payload = useMemo(() => {
     return handleGetParam();
@@ -395,9 +403,20 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
   const { getContract } = apiContractService();
   //permissions
   const { hasPermission } = usePermissionCheck("sale_history");
-  const [selectedDateStatistic, setSelectedDateStatistic] = useState(moment());
+  const [selectedDateStatistic, setSelectedDateStatistic] = useState(
+    moment(param_payload.effective_from__gt)
+  );
   const date = selectedDateStatistic.startOf("month").format("YYYY-MM-DD");
   const endDate = selectedDateStatistic.endOf("month").format("YYYY-MM-DD");
+
+  // useEffect(() => {
+  //   let filter = convertObjToParam(param_payload, {
+  //     effective_from__gt: date,
+  //     effective_from__lt: endDate,
+  //   });
+  //   let url = `${pathname}${filter}`;
+  //   navigate(url);
+  // }, [selectedDateStatistic]);
 
   const {
     data: dataDetail,
@@ -416,6 +435,8 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
       getContract({
         ...param_payload,
         staff_id__eq: dataDetail?.data?.staff_id,
+        effective_from__gt: date,
+        effective_from__lt: endDate,
       }),
     keepPreviousData: true,
     enabled: !isLoadingDetail && !isErrorDetail && !!dataDetail?.data.id,
@@ -449,10 +470,27 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
     setKeySearch(new_key_search);
 
     if (pathname.includes("view") && !popup.edit) {
-      navigate(`/admin/sale_history/view/${code}`);
+      navigate(`/admin/sale_history/${code}`);
       togglePopup("edit");
     }
   }, [window.location.href]);
+
+  // useEffect(() => {
+  //   let filter = convertObjToParam(
+  //     {
+  //       page: currentPage || 1,
+  //       take: pageSize || 10,
+  //     },
+  //     {
+  //       effective_from__gt: date,
+  //       effective_from__lt: endDate,
+  //     }
+  //   );
+  //   let url = `${pathname}${filter}`;
+  //   console.log("url", url);
+
+  //   // navigate(url);
+  // }, [selectedDateStatistic]);
   // search
   const handleSearch = () => {
     let filter = convertObjToParam(keySearch, {
@@ -461,6 +499,8 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
       text: keySearch?.text?.toString().trim(),
     });
     let url = `${pathname}${filter}`;
+    // console.log("url", url);
+
     navigate(url);
   };
 

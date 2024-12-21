@@ -368,6 +368,7 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
   const { hasPermission } = usePermissionCheck("sale_history");
   const [selectedDateStatistic, setSelectedDateStatistic] = useState(moment());
   const date = selectedDateStatistic.startOf("month").format("YYYY-MM-DD");
+  const endDate = selectedDateStatistic.endOf("month").format("YYYY-MM-DD");
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["GET_SALE_HISTORY", param_payload, pathname, date],
     queryFn: () => getSaleHistory(param_payload, date),
@@ -439,7 +440,9 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
 
   const handleRowClick = (record: any) => {
     console.log("row", record);
-    navigate(`/admin/sale_history/${record.id}`);
+    navigate(
+      `/admin/sale_history/${record.id}?effective_from__gt=${date}&effective_from__lt=${endDate}`
+    );
   };
 
   useEffect(() => {
