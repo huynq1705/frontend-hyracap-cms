@@ -40,11 +40,11 @@ const UploadFile: React.FC<UploadFileProps> = ({
                 uid: `${index}`,
                 name: url,
                 status: "done",
-                url,
+                url: url,
+                thumbUrl: url,
             }))
         );
     }, [normalizedImageUrl]);
-
     const propsUpload: UploadProps = useMemo(
         () => ({
             height: "200px",
@@ -83,10 +83,18 @@ const UploadFile: React.FC<UploadFileProps> = ({
                     setImgUrl(remainingUrls);
                 }
             },
-
+            onPreview(file) {
+                const previewUrl = file.url || file.thumbUrl;
+                console.log("dfsef", previewUrl);
+                if (previewUrl) {
+                    window.open(previewUrl, "_blank");
+                } else {
+                    message.error("Không thể preview tệp này.");
+                }
+            },
             showUploadList: {
-                showPreviewIcon: false,
-                showDownloadIcon: false,
+                showPreviewIcon: true,
+                showDownloadIcon: true,
                 showRemoveIcon: true,
             },
             onRemove() {
