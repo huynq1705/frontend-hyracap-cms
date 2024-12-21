@@ -3,7 +3,7 @@ import useHttpClient from "./useHttpClient";
 import Utils from "@/utils/utils";
 import { ResponseFromServerV1, ResponseFromServerV2 } from "@/types/types";
 import { validateRequiredKeys } from "@/utils";
-import { PayloadContract, ResponseContractItem } from "@/types/contract";
+import { PayloadContract, PayloadUpdateContract, ResponseContractItem } from "@/types/contract";
 import { InitContractKeys } from "@/constants/init-state/contract";
 import { useSelector } from "react-redux";
 import { selectUserInfo } from "@/redux/selectors/user.selector";
@@ -13,6 +13,7 @@ type ContractService = {
     ) => Promise<ResponseFromServerV1<ResponseContractItem[]>>;
     postContract: (payload: InitContractKeys, requiredKeys: string[]) => any;
     putContract: (payload: any, code: string, requiredKeys: string[]) => any;
+    updateContract: (payload:any, id:number, requiredKeys: string[]) => Promise<ResponseFromServerV2<any>> | any;
 };
 export default function apiContractService(): ContractService {
     const userInfo = useSelector(selectUserInfo);
@@ -93,9 +94,38 @@ export default function apiContractService(): ContractService {
             });
     };
 
+    const updateContract = async (
+        payload: any,
+        id: number,
+        requiredKeys: string[]
+    )  => {
+        const convert_payload: PayloadUpdateContract = {
+            capital: payload.capital,
+            duration: +payload.duration,
+            status: +payload.status,
+        };
+        console.log("convert_payload", convert_payload);
+
+        const result = validateRequiredKeys(convert_payload, requiredKeys);
+        if (!result.isValid) return result;
+        return httpClient
+            .put<any>(
+                AppConfig.CONTRACT.END_POINT + "/" + id,
+                convert_payload,
+                {}
+            )
+            .then((res: ResponseFromServerV2<any>) => {
+                return res;
+            })
+            .catch((err) => {
+                throw err;
+            });
+    };
+
     return {
         getContract,
         postContract,
         putContract,
+        updateContract,
     };
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Typography, Table, Pagination, PaginationProps, Empty } from "antd";
-import { Box } from "@mui/system";
+import { bgcolor, borderColor, Box, width } from "@mui/system";
 import { Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
@@ -31,6 +31,11 @@ import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
 import apiContractService from "@/api/apiContract.service";
 import ModalEditContract from "./ModalEdit";
+import MySelect from "@/components/input-custom-v2/select";
+import { PayloadUpdateContract } from "@/types/contract";
+import { t } from "i18next";
+import { set } from "lodash";
+import { setGlobalNoti } from "@/redux/slices/app.slice";
 
 interface ColumnProps {
   actions: {
@@ -178,10 +183,24 @@ const getColumns = (props: ColumnProps) => {
   const navigate = useNavigate();
   const { T } = useCustomTranslation();
   const { pathname } = useLocation();
+  const { updateContract } = apiContractService();
   //permissions
   const { hasPermission } = usePermissionCheck("contract");
 
   const { actions, indexItem } = props;
+
+  const handleUpdate = async (id: number, value: PayloadUpdateContract) => {
+    try {
+      // console.log(value);
+      props.actions.handleUpdateContract(id, value);
+
+      // const response = await updateContract(value, id, []);
+      // console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const columns: any = [
     {
       title: "STT",
@@ -264,7 +283,7 @@ const getColumns = (props: ColumnProps) => {
     },
     {
       title: `Trạng thái `,
-      width: 150,
+      width: 200,
       dataIndex: "status",
       render: (_: any, d: any) => (
         <Stack
@@ -278,7 +297,43 @@ const getColumns = (props: ColumnProps) => {
             width: "fit-content",
           }}
         >
-          <CStatus
+          <MySelect
+            name="status"
+            values={d}
+            placeholder={(() => {
+              switch (d?.status) {
+                case 0:
+                  return "Chờ thanh toán";
+                case 1:
+                  return "Đang hoạt động";
+                case 2:
+                  return "Từ chối";
+                case 3:
+                  return "Hoàn tất";
+                case 4:
+                  return "Đã rút";
+                default:
+                  return "error";
+              }
+            })()}
+            options={[
+              { value: "0", label: "Chờ thanh toán" },
+              { value: "1", label: "Đang hoạt động" },
+              { value: "2", label: "Từ chối" },
+              { value: "3", label: "Hoàn tất" },
+              { value: "4", label: "Đã rút" },
+            ]}
+            handleChange={(value) => {
+              handleUpdate(d.id, {
+                capital: d.capital,
+                duration: d.duration,
+                status: +value.target.value,
+              });
+            }}
+            validate={{}}
+            errors={[]}
+          />
+          {/* <CStatus
             type={(() => {
               switch (d?.status) {
                 case 0:
@@ -311,7 +366,7 @@ const getColumns = (props: ColumnProps) => {
                   return "error";
               }
             })()}
-          />
+          /> */}
         </Stack>
       ),
     },
@@ -498,7 +553,7 @@ const CTable = (props: CTableProps) => {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { getStatistics } = apiCommonService();
-  const { getContract } = apiContractService();
+  const { getContract, updateContract } = apiContractService();
   //permissions
   const { hasPermission } = usePermissionCheck("contract");
 
@@ -561,12 +616,38 @@ const CTable = (props: CTableProps) => {
     navigate(url);
   };
 
+  const handleUpdateContract = async (
+    id: number,
+    value: PayloadUpdateContract
+  ) => {
+    try {
+      const response = await updateContract(value, id, []);
+      if (!response || response.statusCode !== 200) throw response;
+      dispatch(
+        setGlobalNoti({
+          type: "success",
+          message: "Cập nhật thành công",
+        })
+      );
+
+      refetch();
+    } catch (error) {
+      console.log(error);
+      dispatch(
+        setGlobalNoti({
+          type: "error",
+          message: "Cập nhật thất bại",
+        })
+      );
+    }
+  };
   const actions = {
     openRemoveConfirm: (key_popup: string, code_item: string) => {
       togglePopup(key_popup as keyof typeof popup);
       setSelectedRowKeys([code_item]);
     },
     togglePopup,
+    handleUpdateContract,
   };
   const text_search = useMemo(
     () => keySearch?.text?.toString() ?? "",

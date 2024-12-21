@@ -481,7 +481,7 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
         staffName:
           `${dataDetail?.data?.staff.first_name} ${dataDetail?.data?.staff.last_name} ` ||
           "",
-        staffPosition: dataDetail?.data?.staff_position.position.name || "",
+        staffPosition: dataDetail?.data?.staff_position?.position?.name || "",
         total_user: data?.meta?.itemCount || 0,
         total_kpi: +dataDetail?.data.sales_revenue || 0,
         kpi: +dataDetail?.data.kpi || 0,
@@ -507,8 +507,8 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
           <div className="md:flex items-start flex-col  justify-between space-y-4 flex-wrap">
             <div className="w-full md:w-1/3">
               <TopTableCustomV2
-                title={`${total.staffName}`}
-                description={`${total.staffPosition}`}
+                title={`${total?.staffName}`}
+                description={`${total?.staffPosition}`}
               />
             </div>
             <div className="w-full md:w-1/3">
