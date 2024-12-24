@@ -134,25 +134,23 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                     {hasPermission.getDetail && (
                                         <ActionButton
                                             type="view"
-                                            onClick={() =>
-                                                actions.openEditConfirm(
-                                                    true,
-                                                    "detail",
-                                                    item
-                                                )
-                                            }
+                                            onClick={() => {
+                                                navigate(
+                                                    `/admin/staff/view/${item?.id}`
+                                                );
+                                                // actions.togglePopup("edit");
+                                            }}
                                         />
                                     )}
                                     {hasPermission.update && (
                                         <ActionButton
                                             type="edit"
-                                            onClick={() =>
-                                                actions.openEditConfirm(
-                                                    true,
-                                                    "edit",
-                                                    item
-                                                )
-                                            }
+                                            onClick={() => {
+                                                navigate(
+                                                    `/admin/staff/edit/${item?.id}`
+                                                );
+                                                // actions.togglePopup("edit");
+                                            }}
                                         />
                                     )}
                                     {hasPermission.delete && (
@@ -321,7 +319,7 @@ const getColumns = (props: ColumnProps) => {
                                             navigate(
                                                 `/admin/staff/view/${d?.id}`
                                             );
-                                            actions.togglePopup("edit");
+                                            // actions.togglePopup("edit");
                                         }}
                                     />
                                 )}
@@ -332,7 +330,7 @@ const getColumns = (props: ColumnProps) => {
                                             navigate(
                                                 `/admin/staff/edit/${d?.id}`
                                             );
-                                            actions.togglePopup("edit");
+                                            // actions.togglePopup("edit");
                                         }}
                                     />
                                 )}

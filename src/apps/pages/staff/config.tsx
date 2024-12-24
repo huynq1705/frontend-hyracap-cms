@@ -1,5 +1,6 @@
 import BreadCrumbLink from "@/components/BreadCrumbLink";
 import StaffPage from ".";
+import EditPage from "./components/editPage";
 
 export const staffRouter = [
     {
@@ -16,7 +17,7 @@ export const staffRouter = [
     {
         path: "/staff/create",
         canGuard: true,
-        element: <StaffPage />,
+        element: <EditPage />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"staff"} label="Create-staff" />
@@ -27,7 +28,7 @@ export const staffRouter = [
     {
         path: "/staff/view/:code",
         canGuard: true,
-        element: <StaffPage />,
+        element: <EditPage />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"staff"} label="Create-staff" />
@@ -38,7 +39,7 @@ export const staffRouter = [
     {
         path: "/staff/edit/:code",
         canGuard: true,
-        element: <StaffPage />,
+        element: <EditPage />,
         handle: {
             crumb: () => (
                 <BreadCrumbLink linkTo={"staff"} label="Create-staff" />

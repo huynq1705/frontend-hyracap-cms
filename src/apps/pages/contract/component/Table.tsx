@@ -722,7 +722,10 @@ const CTable = (props: CTableProps) => {
         let url = `${pathname}${filter}`;
         navigate(url);
     };
-
+    const handleRowClick = (record: any) => {
+        console.log("row", record);
+        navigate(`/admin/contract/view/${record.id}`);
+    };
     const handleUpdateContract = async (
         id: number,
         value: PayloadUpdateContract
@@ -806,6 +809,9 @@ const CTable = (props: CTableProps) => {
                         }}
                         bordered
                         // rowSelection={rowSelection}
+                        onRow={(record) => ({
+                            onClick: () => handleRowClick(record),
+                        })}
                         loading={isLoading}
                         dataSource={dataConvert}
                         columns={getColumns({

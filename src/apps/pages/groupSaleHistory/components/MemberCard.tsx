@@ -26,7 +26,7 @@ export default function MemberCard(props: MemberCardProps) {
                 width: "fit-content",
             }}
             onClick={() => {
-                navigate(`/admin/staff/view/${data?.members_staff_id}`);
+                navigate(`/admin/sale_history/${data?.members_staff_id}`);
             }}
         >
             <Stack

@@ -227,7 +227,7 @@ export default function ViewPage() {
     }, []);
     return (
         <Stack className="h-auto">
-            <Stack direction={"row"} gap={5} className="p-4 bg-white border-b">
+            <Stack direction={"row"} gap={2} className="p-4 bg-white border-b">
                 <Typography.Title
                     level={4}
                     style={{
@@ -242,7 +242,16 @@ export default function ViewPage() {
                 >
                     Danh sách khách hàng
                 </Typography.Title>
-                <img src="/src/assets/icons/chevron-right-icon.svg" alt="" />
+                <Typography.Title
+                    level={4}
+                    style={{
+                        fontSize: "14px",
+                        lineHeight: "22px",
+                        margin: "0",
+                    }}
+                >
+                    /
+                </Typography.Title>
                 <Typography.Title
                     level={4}
                     style={{

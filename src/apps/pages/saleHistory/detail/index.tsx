@@ -1,12 +1,12 @@
 import ContainerBody from "@/components/ContainerBody";
-import DetailTable from "../components/DetailTable";
+import DetailSaleHistoryTable from "../components/DetailTable";
 
 function SaleDetailPage() {
-  return (
-    // <ContainerBody>
-      <DetailTable />
-    // </ContainerBody>
-  );
+    return (
+        <ContainerBody>
+            <DetailSaleHistoryTable />
+        </ContainerBody>
+    );
 }
 
 export default SaleDetailPage;

@@ -6,6 +6,7 @@ import navigationSlice from "./slices/navigation.slice";
 import pageSlice from "./slices/page.slice";
 import dataOrderScheduleSlice from "./slices/dataOrderSchedule.slice";
 import checkPanigationSlice from "./slices/checkPanigation.slice";
+import logoSlice from "./slices/logo.slice";
 
 export const rootEpic = combineEpics();
 
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
     app: appSlice,
     navigation: navigationSlice,
     page: pageSlice,
+    logo: logoSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
