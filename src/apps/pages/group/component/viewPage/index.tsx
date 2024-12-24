@@ -175,7 +175,16 @@ export default function ViewPageV2() {
                 >
                     Danh sách nhóm
                 </Typography.Title>
-                <img src="/src/assets/icons/chevron-right-icon.svg" alt="" />
+                <Typography.Title
+                    level={4}
+                    style={{
+                        fontSize: "14px",
+                        lineHeight: "22px",
+                        margin: "0",
+                    }}
+                >
+                    /
+                </Typography.Title>
                 <Typography.Title
                     level={4}
                     style={{

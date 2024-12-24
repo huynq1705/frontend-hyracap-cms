@@ -39,7 +39,9 @@ export default function ContractCart(props: ContractCartProps) {
                 <Stack
                     direction={"row"}
                     gap={1}
-                    className={clsx("items-center text-xs capitalize ")}
+                    className={clsx(
+                        "items-center text-xs capitalize font-bold"
+                    )}
                 >
                     <Box
                         className="w-2 h-2 rounded-full"
@@ -48,6 +50,30 @@ export default function ContractCart(props: ContractCartProps) {
                         }}
                     ></Box>
                     {"Hợp đồng số : " + data?.contract_id}
+                </Stack>
+                <Stack
+                    direction={"row"}
+                    gap={1}
+                    className={clsx(
+                        "items-center text-xs capitalize font-bold"
+                    )}
+                >
+                    <Box
+                        className="w-2 h-2 rounded-full"
+                        sx={{
+                            backgroundColor: "var(--success-color)",
+                        }}
+                    ></Box>
+                    {"Trạng thái : " +
+                        (data?.status === 0
+                            ? "Chờ thanh toán"
+                            : data?.status === 1
+                            ? "Đang hoạt động"
+                            : data?.status === 2
+                            ? "Từ chối"
+                            : data?.status === 3
+                            ? "Hoàn tất"
+                            : "Đã rút")}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -73,7 +99,7 @@ export default function ContractCart(props: ContractCartProps) {
                             backgroundColor: "var(--success-color)",
                         }}
                     ></Box>
-                    {"Số tiền đầu tư : " + data?.capital}
+                    {"Số tiền đầu tư : " + formatCurrency(+data?.capital)}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -100,7 +126,9 @@ export default function ContractCart(props: ContractCartProps) {
                         }}
                     ></Box>
                     {"Lợi nhuận ước tính : " +
-                        formatCurrency(+data?.provisional_profit)}
+                        (data?.provisional_profit
+                            ? formatCurrency(+data?.provisional_profit)
+                            : "0 đ")}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -114,7 +142,9 @@ export default function ContractCart(props: ContractCartProps) {
                         }}
                     ></Box>
                     {"Lợi nhuận hiện tại : " +
-                        formatCurrency(+data?.current_profit)}
+                        (+data?.current_profit
+                            ? formatCurrency(+data?.current_profit)
+                            : "0 đ")}
                 </Stack>
                 <Stack
                     direction={"row"}
@@ -128,7 +158,9 @@ export default function ContractCart(props: ContractCartProps) {
                         }}
                     ></Box>
                     {"Lợi nhuậ trước thuế : " +
-                        formatCurrency(+data?.profit_before_tax)}
+                        (+data?.profit_before_tax
+                            ? formatCurrency(+data?.profit_before_tax)
+                            : "0 đ")}
                 </Stack>
             </Stack>
         </Stack>

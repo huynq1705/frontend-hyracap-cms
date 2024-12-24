@@ -19,6 +19,8 @@ import UploadImage from "@/apps/pages/blog/components/UploadImg";
 import { Stack } from "@mui/material";
 import { Typography } from "antd";
 import UploadFile from "@/apps/pages/project/components/UploadFile";
+import PDFPreview from "@/components/previewPDF";
+import PreviewMultiFile from "@/components/previewMultiFile";
 const VALIDATE = {
     name: "Hãy nhập tên sản phẩm",
 };
@@ -270,6 +272,17 @@ export default function EditPage(props: EditPageProps) {
                         Vui lòng upload file.
                     </Typography.Title>
                 )}
+                <Typography.Title
+                    level={4}
+                    style={{
+                        fontSize: "14px",
+                        margin: "0",
+                        paddingTop: "24px",
+                    }}
+                >
+                    Preview
+                </Typography.Title>
+                <PreviewMultiFile files={formData.file} />
             </div>
             <ActionsEditPage actions={actions} isView={isView} />
         </>

@@ -20,6 +20,8 @@ import MyDatePickerMui from "@/components/input-custom-v2/calendar/calender_mui"
 import UploadImage from "@/apps/pages/blog/components/UploadImg";
 import MySelect from "@/components/input-custom-v2/select";
 import UploadFile from "../UploadFile";
+import PDFPreview from "@/components/previewPDF";
+import PreviewMultiFile from "@/components/previewMultiFile";
 const VALIDATE = {
     name: "Vui lòng nhập đầy đủ thông tin",
     status: "Vui lòng nhập đầy đủ thông tin",
@@ -321,14 +323,13 @@ export default function ProjectCreatePage() {
     }, []);
     return (
         <Stack className="h-auto">
-            <Stack direction={"row"} gap={5} className="p-4 bg-white">
+            <Stack direction={"row"} gap={2} className="p-4 bg-white">
                 <Typography.Title
                     level={4}
                     style={{
                         fontSize: "14px",
                         lineHeight: "22px",
                         margin: "0",
-                        color: "#50945D",
                         cursor: "pointer",
                     }}
                     onClick={() => {
@@ -337,13 +338,23 @@ export default function ProjectCreatePage() {
                 >
                     Quản lý dự án
                 </Typography.Title>
-                <img src="/src/assets/icons/chevron-right-icon.svg" alt="" />
                 <Typography.Title
                     level={4}
                     style={{
                         fontSize: "14px",
                         lineHeight: "22px",
                         margin: "0",
+                    }}
+                >
+                    /
+                </Typography.Title>
+                <Typography.Title
+                    level={4}
+                    style={{
+                        fontSize: "14px",
+                        lineHeight: "22px",
+                        margin: "0",
+                        color: "#50945D",
                     }}
                 >
                     Cấu hình dự án
@@ -916,6 +927,7 @@ export default function ProjectCreatePage() {
                                     setIsFirstRemoved={(e) => {}}
                                 />
                             </div>
+                            {/* <PreviewMultiFile files={formData.pitching_deck} /> */}
                         </Stack>
                     </Stack>
                 </Box>

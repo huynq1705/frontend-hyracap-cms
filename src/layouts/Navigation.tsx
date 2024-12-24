@@ -287,7 +287,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             <NavigationToolbar isOpen={props.isOpen} isHover={props.isHover} />
             <div
                 className={clsx(
-                    "h-full pt-8 pb-3 sm:pb-5 flex flex-col justify-between"
+                    "h-full py-3 sm:pb-5 flex flex-col justify-between"
                 )}
             >
                 <div className="grow h-1">

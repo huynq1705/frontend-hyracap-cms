@@ -70,9 +70,11 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                                 className="font-medium"
                                 style={{ color: "#50945d" }}
                             >
-                                {`${item?.staff.first_name}` +
-                                    " " +
-                                    `${item?.staff.last_name}`}
+                                {item?.staff
+                                    ? `${item?.staff?.first_name}` +
+                                      " " +
+                                      `${item?.staff?.last_name}`
+                                    : "Nhân viên đã bị xóa"}
                             </span>
                         </div>
                     </div>
@@ -82,7 +84,9 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             Email
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            {item?.staff.email}
+                            {item?.staff
+                                ? item?.staff.email
+                                : "Nhân viên đã bị xóa"}
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
@@ -90,7 +94,9 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
                             SĐT
                         </span>
                         <div className="text-gray-9 text-base py-1">
-                            {item?.staff.phone}
+                            {item?.staff
+                                ? item?.staff.phone
+                                : "Nhân viên đã bị xóa"}
                         </div>
                     </div>
                     <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
@@ -202,9 +208,11 @@ const getColumns = (props: ColumnProps) => {
                         fontWeight: 500,
                     }}
                 >
-                    {`${item?.staff.first_name}` +
-                        " " +
-                        `${item?.staff.last_name}`}
+                    {item?.staff
+                        ? `${item?.staff?.first_name}` +
+                          " " +
+                          `${item?.staff?.last_name}`
+                        : "Nhân viên đã bị xóa"}
                 </Typography>
             ),
             width: 220,
@@ -222,7 +230,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.staff.email}
+                        {d?.staff ? d?.staff.email : "Nhân viên đã bị xóa"}
                     </Typography>
                 </Stack>
             ),
@@ -240,7 +248,7 @@ const getColumns = (props: ColumnProps) => {
                             color: "var(--text-color-three)",
                         }}
                     >
-                        {d?.staff.phone}
+                        {d?.staff ? d?.staff.phone : "Nhân viên đã bị xóa"}
                     </Typography>
                 </Stack>
             ),
@@ -516,7 +524,7 @@ const SaleHistoryTable = (props: SaleHistoryTableProps) => {
 
     const handleRowClick = (record: any) => {
         console.log("row", record);
-        navigate(`/admin/sale_history/${record.id}`);
+        navigate(`/admin/sale_history/${record.staff_id}`);
     };
 
     useEffect(() => {

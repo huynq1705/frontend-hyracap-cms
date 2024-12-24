@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import apiProductService from "@/api/apiProduct.service";
@@ -154,24 +160,6 @@ export default function EditPageV2() {
             );
         }
     };
-    // const handleCancel = () => {
-    //     setFormData(INIT_CONTRACT);
-    //     navigate("/admin/contract");
-    //     onClose();
-    // };
-    // const handelSave = async () => {
-    //     if (isView) {
-    //         navigate(`/admin/contract/edit/${code}`);
-    //     } else {
-    //         // dispatch(setIsLoading(true));
-    //         await (code ? handleUpdate() : handleCreate());
-    //         // setFormData(INIT_CONTRACT);
-    //         refetch();
-    //     }
-    //     setTimeout(() => {
-    //         dispatch(setIsLoading(false));
-    //     }, 200);
-    // };
     const handleUpdate = async () => {
         if (!code) return;
         try {
@@ -320,14 +308,13 @@ export default function EditPageV2() {
     }, [pathname]);
     return (
         <Stack className="h-auto">
-            <Stack direction={"row"} gap={5} className="p-4 bg-white">
+            <Stack direction={"row"} gap={2} className="p-4 bg-white">
                 <Typography.Title
                     level={4}
                     style={{
                         fontSize: "14px",
                         lineHeight: "22px",
                         margin: "0",
-                        color: "#50945D",
                         cursor: "pointer",
                     }}
                     onClick={() => {
@@ -336,13 +323,23 @@ export default function EditPageV2() {
                 >
                     Danh sách hợp đồng
                 </Typography.Title>
-                <img src="/src/assets/icons/chevron-right-icon.svg" alt="" />
                 <Typography.Title
                     level={4}
                     style={{
                         fontSize: "14px",
                         lineHeight: "22px",
                         margin: "0",
+                    }}
+                >
+                    /
+                </Typography.Title>
+                <Typography.Title
+                    level={4}
+                    style={{
+                        fontSize: "14px",
+                        lineHeight: "22px",
+                        margin: "0",
+                        color: "#50945D",
                     }}
                 >
                     {" "}
@@ -378,6 +375,11 @@ export default function EditPageV2() {
                         justifyContent={"center"}
                         sx={{ gap: "12px" }}
                     >
+                        {/* <ButtonCore
+                            title={"In"}
+                            type="bgWhite"
+                            onClick={handlePrint}
+                        /> */}
                         {isCreate && (
                             <ButtonCore
                                 title={T("cancel")}

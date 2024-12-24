@@ -3,54 +3,58 @@ import useHttpClient from "./useHttpClient";
 import Utils from "@/utils/utils";
 import { ResponseFromServerV1, ResponseFromServerV2 } from "@/types/types";
 import {
-  ResponseSaleHistoryItem,
-  SaleHistoryDetail,
+    ResponseSaleHistoryItem,
+    SaleHistoryDetail,
 } from "@/types/saleHistory.type";
 type SaleHistoryService = {
-  getSaleHistory: (
-    param?: any,
-    date?: any
-  ) => Promise<ResponseFromServerV1<ResponseSaleHistoryItem[]>>;
-  getDetailSaleHistory: (
-    id: number
-  ) => Promise<ResponseFromServerV2<SaleHistoryDetail>>;
+    getSaleHistory: (
+        param?: any,
+        date?: any
+    ) => Promise<ResponseFromServerV1<ResponseSaleHistoryItem[]>>;
+    getDetailSaleHistory: (param?: any) => Promise<ResponseFromServerV2<any>>;
 };
 export default function apiSaleHistoryService(): SaleHistoryService {
-  const httpClient = useHttpClient();
-  const getSaleHistory = (param?: any, date?: any): Promise<any> => {
-    const paramRaw: any = param ?? {
-      page: 1,
-      take: 10,
-      ...param,
+    const httpClient = useHttpClient();
+    const getSaleHistory = (param?: any, date?: any): Promise<any> => {
+        const paramRaw: any = param ?? {
+            page: 1,
+            take: 10,
+            ...param,
+        };
+        const queryParams = Utils.parseObjectToParam(paramRaw);
+        return httpClient
+            .get<any>(
+                `${AppConfig.SALE_HISTORY.GET_SALE_HISTORY(
+                    queryParams
+                )}&month__eq=${date}`
+            )
+            .then((res: ResponseFromServerV1<any>) => {
+                if (res) return res;
+            })
+            .catch((err) => {
+                throw err;
+            });
     };
-    const queryParams = Utils.parseObjectToParam(paramRaw);
-    return httpClient
-      .get<any>(
-        `${AppConfig.SALE_HISTORY.GET_SALE_HISTORY(
-          queryParams
-        )}&month__eq=${date}`
-      )
-      .then((res: ResponseFromServerV1<any>) => {
-        if (res) return res;
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
 
-  const getDetailSaleHistory = (id: number): Promise<any> => {
-    return httpClient
-      .get<any>(`${AppConfig.SALE_HISTORY.END_POINT}/${id}`)
-      .then((res: ResponseFromServerV2<SaleHistoryDetail>) => {
-        if (res) return res;
-      })
-      .catch((err) => {
-        throw err;
-      });
-  };
+    const getDetailSaleHistory = (param?: any): Promise<any> => {
+        const paramRaw: any = param ?? {
+            page: 1,
+            take: 10,
+            ...param,
+        };
+        const queryParams = Utils.parseObjectToParam(paramRaw);
+        return httpClient
+            .get<any>(`${AppConfig.SALE_HISTORY.GET_SALE_HISTORY(queryParams)}`)
+            .then((res: ResponseFromServerV2<any>) => {
+                if (res) return res;
+            })
+            .catch((err) => {
+                throw err;
+            });
+    };
 
-  return {
-    getSaleHistory,
-    getDetailSaleHistory,
-  };
+    return {
+        getSaleHistory,
+        getDetailSaleHistory,
+    };
 }

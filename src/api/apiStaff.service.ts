@@ -39,7 +39,7 @@ export default function apiStaffService(): StaffService {
             email: payload.email,
             phone: payload.phone,
             password: payload.password,
-            role_id: null,
+            role_id: 1,
             current_staff_position: +payload.current_staff_position,
         };
         const result = validateRequiredKeys(new_payload, requiredKeys);
@@ -52,7 +52,7 @@ export default function apiStaffService(): StaffService {
             email: new_payload.email,
             phone: new_payload.phone,
             password: new_payload.password,
-            role_id: null,
+            role_id: 1,
             staff_position: {
                 position_id: +new_payload.current_staff_position,
             },
