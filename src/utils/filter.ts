@@ -10,6 +10,7 @@ export const convertObjToParam = (
     delete obj["take"];
     delete obj["page"];
     delete obj["text"];
+    delete obj["filterStr"];
     url += `page=${page_obj.page}`;
     url += `&take=${page_obj.take}`;
     Object.keys(page_obj).forEach((key) => {
