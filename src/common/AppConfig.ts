@@ -17,6 +17,7 @@ export default class AppConfig {
   };
   static TRANSACTION = {
     GET_TRANSACTION: (params: string) => `/transaction${params}&`,
+    TRANSACTION_SYNC: "/transaction-sync",
     END_POINT: "/transaction",
   };
   static WITHDRAW = {

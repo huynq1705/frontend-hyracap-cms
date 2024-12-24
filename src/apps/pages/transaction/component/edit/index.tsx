@@ -17,18 +17,20 @@ import { INIT_TRANSACTION } from "@/constants/init-state/transaction";
 import MySelectSearchQuery from "@/components/input-custom-v2/select/select-search-query";
 import CustomAutocomplete from "@/components/input-custom-v2/select/index-autocomplete";
 import { includes } from "lodash";
+import MyTextField from "@/components/input-custom-v2/text-field";
 const VALIDATE = {
   amount: "Hãy nhập số tiền",
   contract_id: "Chọn hợp đồng",
+  bankaccount: "Hãy nhập số tài khoản",
 };
-const KEY_REQUIRED = ["amount", "contract_id"];
+const KEY_REQUIRED = ["amount", "contract_id", "bankaccount"];
 const OptionTypeSelect = [
   {
-    value: "0",
+    value: "D",
     label: "Nạp tiền",
   },
   {
-    value: "1",
+    value: "W",
     label: "Rút tiền",
   },
 ];
@@ -60,7 +62,7 @@ export default function EditPage(props: EditPageProps) {
       if (response) {
         setProductCategory(
           response.data.map((it: any) => ({
-            value: it.id.toString(),
+            value: it.contract_id,
             label: `Hợp đồng mã số: ${it.contract_id}`,
           }))
         );
@@ -235,12 +237,12 @@ export default function EditPage(props: EditPageProps) {
     if (accountMatch) {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        contract_id: +accountMatch.value,
+        contract_id: accountMatch.value,
       }));
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
-        contract_id: +value,
+        contract_id: value,
       }));
     }
   };
@@ -277,6 +279,17 @@ export default function EditPage(props: EditPageProps) {
             label="Số tiền"
             name="amount"
             handleChange={handleOnchangeCurrency}
+            values={formData}
+            errors={errors}
+            validate={VALIDATE}
+            required={KEY_REQUIRED}
+            configUI={{ width: "calc(50% - 12px)" }}
+            disabled={isView}
+          />
+          <MyTextField
+            label="Số tài khoản"
+            name="bankaccount"
+            handleChange={handleOnchange}
             values={formData}
             errors={errors}
             validate={VALIDATE}
