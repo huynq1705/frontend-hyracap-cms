@@ -1,5 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import palette from "@/theme/palette-common";
+import { formatDate } from "@/utils/date-time";
+import { Box, Grid, Stack } from "@mui/material";
+import clsx from "clsx";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import apiProductService from "@/api/apiProduct.service";
 import apiCommonService from "@/api/apiCommon.service";
@@ -9,15 +13,16 @@ import MySelect from "@/components/input-custom-v2/select";
 import CurrencyInput from "@/components/input-custom-v2/currency";
 import { OptionSelect } from "@/types/types";
 import HeaderModalEdit from "@/components/header-modal-edit";
-import { getKeyPage } from "@/utils";
+import { formatCurrency, getKeyPage } from "@/utils";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import apiTransactionService from "@/api/apiTransaction.service";
 import apiContractService from "@/api/apiContract.service";
 import { INIT_TRANSACTION } from "@/constants/init-state/transaction";
 import MySelectSearchQuery from "@/components/input-custom-v2/select/select-search-query";
 import CustomAutocomplete from "@/components/input-custom-v2/select/index-autocomplete";
-import { includes } from "lodash";
+
 import MyTextField from "@/components/input-custom-v2/text-field";
+
 const VALIDATE = {
   amount: "Hãy nhập số tiền",
   contract_id: "Chọn hợp đồng",
@@ -52,6 +57,8 @@ export default function EditPage(props: EditPageProps) {
   const { postTransaction } = apiTransactionService();
   const { getContract } = apiContractService();
 
+  const [selectedContract, setSelectedContract] = useState<any>(null);
+
   const getAllContract = async () => {
     try {
       const param = {
@@ -64,6 +71,7 @@ export default function EditPage(props: EditPageProps) {
           response.data.map((it: any) => ({
             value: it.contract_id,
             label: `Hợp đồng mã số: ${it.contract_id}`,
+            ...it,
           }))
         );
       }
@@ -229,16 +237,14 @@ export default function EditPage(props: EditPageProps) {
     [formData]
   );
   const handleFindName = (value: string, label: string) => {
-    console.log("value", productCategory);
-
     const accountMatch = productCategory.find((c) => c.value == value);
-    console.log("accountMatch", accountMatch);
 
     if (accountMatch) {
       setFormData((prevFormData) => ({
         ...prevFormData,
         contract_id: accountMatch.value,
       }));
+      setSelectedContract(accountMatch);
     } else {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -314,22 +320,101 @@ export default function EditPage(props: EditPageProps) {
             disabled={isView}
             placeholder="Chọn hợp đồng"
           />
-          {/* <MySelect
-                        configUI={{
-                            width: "calc(50% - 12px)",
-                        }}
-                        label="Hợp đồng"
-                        name="contract_id"
-                        handleChange={handleOnchange}
-                        values={formData}
-                        options={productCategory}
-                        errors={errors}
-                        validate={VALIDATE}
-                        required={KEY_REQUIRED}
-                        itemsPerPage={5} // Adjust items per page as needed
-                        disabled={isView}
-                        placeholder="Chọn"
-                    /> */}
+          {selectedContract && (
+            <Stack
+              direction={"row"}
+              spacing={"6px"}
+              alignItems={"center"}
+              borderRadius={4}
+              p={1}
+              bgcolor={palette.bgPrimary}
+              sx={{
+                width: "100%",
+              }}
+            >
+              <Stack
+                direction={"column"}
+                gap={1}
+                sx={{
+                  color: "var(--text-color-three)",
+                  minWidth: "80px",
+                }}
+                className={clsx("px-2 py-1 w-fit h-fit ")}
+              >
+                <Stack
+                  direction={"row"}
+                  gap={1}
+                  className={clsx("items-center text-xs capitalize ")}
+                >
+                  <Box
+                    className="w-2 h-2 rounded-full"
+                    sx={{
+                      backgroundColor: "var(--success-color)",
+                    }}
+                  ></Box>
+                  {"Tên khách hàng : " +
+                    selectedContract?.user?.firstName +
+                    " " +
+                    selectedContract?.user?.lastName}
+                </Stack>
+                <Stack
+                  direction={"row"}
+                  gap={1}
+                  className={clsx("items-center text-xs capitalize ")}
+                >
+                  <Box
+                    className="w-2 h-2 rounded-full"
+                    sx={{
+                      backgroundColor: "var(--success-color)",
+                    }}
+                  ></Box>
+                  {"Vốn đầu tư: " + formatCurrency(Number(selectedContract?.capital))}
+                </Stack>
+                <Stack
+                  direction={"row"}
+                  gap={1}
+                  className={clsx("items-center text-xs capitalize ")}
+                >
+                  <Box
+                    className="w-2 h-2 rounded-full"
+                    sx={{
+                      backgroundColor: "var(--success-color)",
+                    }}
+                  ></Box>
+                  {`Sản phẩm: ${selectedContract?.product?.name}`}
+                </Stack>
+                <Stack
+                  direction={"row"}
+                  gap={1}
+                  className={clsx("items-center text-xs capitalize ")}
+                >
+                  <Box
+                    className="w-2 h-2 rounded-full"
+                    sx={{
+                      backgroundColor: "var(--success-color)",
+                    }}
+                  ></Box>
+                  {`Thời hạn: ${selectedContract?.duration} tháng`}
+                </Stack>
+                <Stack
+                  direction={"row"}
+                  gap={1}
+                  className={clsx("items-center text-xs capitalize ")}
+                >
+                  <Box
+                    className="w-2 h-2 rounded-full"
+                    sx={{
+                      backgroundColor: "var(--success-color)",
+                    }}
+                  ></Box>
+                  {`Ngày tạo: ${formatDate(
+                    selectedContract?.created_at,
+                    "DDMMYY"
+                  )}`}
+                </Stack>
+              </Stack>
+            </Stack>
+          )}
         </div>
       </div>
       <ActionsEditPage actions={actions} isView={isView} />

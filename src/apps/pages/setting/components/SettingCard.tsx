@@ -25,116 +25,143 @@ export default function SettingCard(props: SettingCardProps) {
     const { data } = props;
     console.log("data", data);
 
-    const handleBg = (status: number) => {
-        switch (status) {
-            case 0:
-                return palette.gray;
-            case 1:
-                return palette.bgPrimary;
-            case 3:
-                return palette.bgSecondary;
-            default:
-                return palette.bgPrimary;
-        }
-    };
-    return (
+  const handleBg = (status: number) => {
+    switch (status) {
+      case 0:
+        return palette.gray;
+      case 1:
+        return palette.bgPrimary;
+      case 3:
+        return palette.bgSecondary;
+      default:
+        return palette.bgPrimary;
+    }
+  };
+  return (
+    <Stack
+      direction={"row"}
+      spacing={"6px"}
+      alignItems={"center"}
+      borderRadius={4}
+      p={1}
+      bgcolor={handleBg(data?.status)}
+      sx={{
+        width: "fit-content",
+      }}
+    >
+      <Stack
+        direction={"column"}
+        gap={1}
+        sx={{
+          color: "var(--text-color-three)",
+          minWidth: "80px",
+        }}
+        className={clsx("px-2 py-1 w-fit h-fit ")}
+      >
         <Stack
-            direction={"row"}
-            spacing={"6px"}
-            alignItems={"center"}
-            borderRadius={4}
-            p={1}
-            bgcolor={handleBg(data?.active)}
-            sx={{
-                width: "fit-content",
-            }}
+          direction={"row"}
+          gap={1}
+          className={clsx("items-center text-xs capitalize ")}
         >
-            <Stack
-                direction={"column"}
-                gap={1}
-                sx={{
-                    color: "var(--text-color-three)",
-                    minWidth: "80px",
-                }}
-                className={clsx("px-2 py-1 w-fit h-fit ")}
-            >
-                <Stack
-                    direction={"row"}
-                    gap={1}
-                    className={clsx("items-center text-xs capitalize ")}
-                >
-                    <Box
-                        className="w-2 h-2 rounded-full"
-                        sx={{
-                            backgroundColor: "var(--success-color)",
-                        }}
-                    ></Box>
-                    {"Áp dụng từ : " +
-                        formatDate(data?.effective_from, "DDMMYY")}
-                </Stack>
-                <Stack
-                    direction={"row"}
-                    gap={1}
-                    className={clsx("items-center text-xs capitalize ")}
-                >
-                    <Box
-                        className="w-2 h-2 rounded-full"
-                        sx={{
-                            backgroundColor: "var(--success-color)",
-                        }}
-                    ></Box>
-                    {"% Thưởng trực tiếp: " +
-                        (Number(data?.direct_bonus_min_percent) * 100).toFixed(
-                            2
-                        ) +
-                        " %"}
-                </Stack>
-                <Stack
-                    direction={"row"}
-                    gap={1}
-                    className={clsx("items-center text-xs capitalize ")}
-                >
-                    <Box
-                        className="w-2 h-2 rounded-full"
-                        sx={{
-                            backgroundColor: "var(--success-color)",
-                        }}
-                    ></Box>
-                    {"Thưởng vượt KPI : " +
-                        (Number(data?.kpi_bonus_min_percent) * 100).toFixed(2) +
-                        " %" +
-                        " - " +
-                        (Number(data?.kpi_bonus_max_percent) * 100).toFixed(2) +
-                        " %"}
-                </Stack>
-                <Stack
-                    direction={"row"}
-                    gap={1}
-                    className={clsx("items-center text-xs capitalize ")}
-                >
-                    <Box
-                        className="w-2 h-2 rounded-full"
-                        sx={{
-                            backgroundColor: "var(--success-color)",
-                        }}
-                    ></Box>
-                    {"KPI theo từng tháng:"}
-                </Stack>
-                <Grid
-                    container
-                    rowSpacing={1}
-                    columnSpacing={{ xs: 1, sm: 2, md: 4 }}
-                >
-                    {months.map((month, index) => (
-                        <Grid item xs={4} md={3} key={month.key}>
-                            {month.name}:{" "}
-                            {(Number(data.monthly_rates[index]) * 100).toFixed(
-                                2
-                            ) + " %"}
-                        </Grid>
-                    ))}
-                </Grid>
-            </Stack>
+          <Box
+            className="w-2 h-2 rounded-full"
+            sx={{
+              backgroundColor: () => {
+                switch (data?.status) {
+                  case 1:
+                    return "var(--success-color)";
+                  case 0:
+                    return "gray";
+                  case 2:
+                    return "var(--warning-color)";
+                }
+              },
+            }}
+          ></Box>
+          {"Áp dụng từ : " + formatDate(data?.effective_from, "DDMMYY")}
         </Stack>
-    );
+        <Stack
+          direction={"row"}
+          gap={1}
+          className={clsx("items-center text-xs capitalize ")}
+        >
+          <Box
+            className="w-2 h-2 rounded-full"
+            sx={{
+              backgroundColor: () => {
+                switch (data?.status) {
+                  case 1:
+                    return "var(--success-color)";
+                  case 0:
+                    return "gray";
+                  case 2:
+                    return "var(--warning-color)";
+                }
+              },
+            }}
+          ></Box>
+          {"% Thưởng trực tiếp: " +
+            (Number(data?.direct_bonus_min_percent) * 100).toFixed(2) +
+            " %"}
+        </Stack>
+        <Stack
+          direction={"row"}
+          gap={1}
+          className={clsx("items-center text-xs capitalize ")}
+        >
+          <Box
+            className="w-2 h-2 rounded-full"
+            sx={{
+              backgroundColor: () => {
+                switch (data?.status) {
+                  case 1:
+                    return "var(--success-color)";
+                  case 0:
+                    return "gray";
+                  case 2:
+                    return "var(--warning-color)";
+                }
+              },
+            }}
+          ></Box>
+          {"Thưởng vượt KPI : " +
+            (Number(data?.kpi_bonus_min_percent) * 100).toFixed(2) +
+            " %" +
+            " - " +
+            (Number(data?.kpi_bonus_max_percent) * 100).toFixed(2) +
+            " %"}
+        </Stack>
+        <Stack
+          direction={"row"}
+          gap={1}
+          className={clsx("items-center text-xs capitalize ")}
+        >
+          <Box
+            className="w-2 h-2 rounded-full"
+            sx={{
+              backgroundColor: () => {
+                switch (data?.status) {
+                  case 1:
+                    return "var(--success-color)";
+                  case 0:
+                    return "gray";
+                  case 2:
+                    return "var(--warning-color)";
+                }
+              },
+            }}
+          ></Box>
+          {"KPI theo từng tháng:"}
+        </Stack>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 4 }}>
+          {months.map((month, index) => (
+            <Grid item xs={4} md={3} key={month.key}>
+              {month.name}:{" "}
+              {Number(data.monthly_rates[index]).toFixed(2) + " %"}
+            </Grid>
+          ))}
+        </Grid>
+      </Stack>
+    </Stack>
+  );
 }

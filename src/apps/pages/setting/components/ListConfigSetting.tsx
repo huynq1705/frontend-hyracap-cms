@@ -55,8 +55,30 @@ const getColumns = (props: ColumnProps) => {
           direction={"column"}
           sx={{
             border: "1px solid",
-            borderColor: "var(--success-color)",
-            backgroundColor: "var(--bg-color-primary)",
+            borderColor: () => {
+              switch (d.status) {
+                case 1:
+                  return "var(--success-color)";
+                case 0:
+                  return "var(--gray-color)";
+                case 2:
+                  return "var(--warning-color)";
+                default:
+                  return "var(--bg-color-primary)";
+              }
+            },
+            backgroundColor: () => {
+              switch (d.status) {
+                case 1:
+                  return "var(--bg-color-primary)";
+                case 0:
+                  return "var(--bg-color-secondary)";
+                case 2:
+                  return "var(--warning-color)";
+                default:
+                  return "var(--bg-color-secondary)";
+              }
+            },
             padding: "8px !important",
           }}
           className={clsx("rounded-lg")}
@@ -71,7 +93,7 @@ const getColumns = (props: ColumnProps) => {
               p: "9px",
             }}
           >
-            {hasPermission.delete && (
+            {hasPermission.delete && d?.status === 2 && (
               <ActionButton
                 type="remove"
                 onClick={() =>
