@@ -324,7 +324,13 @@ const getColumns = (props: ColumnProps) => {
               );
             }}
           >
-            {item?.staff?.first_name || "" + " " + item?.staff?.last_name || ""}
+            {item?.staff_id
+              ? `${
+                  item?.staff?.first_name ||
+                  "" + " " + item?.staff?.last_name ||
+                  ""
+                }`
+              : ""}
           </Typography>
         </Stack>
       ),
