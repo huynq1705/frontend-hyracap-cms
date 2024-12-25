@@ -1,0 +1,150 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+.ant-picker {
+    width: 100%;
+    height: 36px;
+    border: 1px solid #d0d5dd;
+    &:hover {
+        border: 1px solid black;
+        svg {
+            fill: black;
+        }
+    }
+    &:focus-within {
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+        border: 1px solid #50945d;
+        svg {
+            fill: #50945d;
+        }
+    }
+}
+.MuiInputBase-root {
+    // &:hover {
+    //     fieldset {
+    //         border: 1px solid black !important;
+    //     }
+    // }
+    fieldset {
+        border: 1px solid #d0d5dd !important;
+    }
+}
+.Mui-focused {
+    &:hover {
+        fieldset {
+            border: 1px solid #50945d !important;
+        }
+    }
+    fieldset {
+        border: 1px solid #50945d !important;
+    }
+}
+.ant-pagination-item {
+    border: 1px solid #50945d !important;
+    a {
+        color: black !important;
+    }
+}
+.MuiList-root {
+    .MuiButtonBase-root {
+        padding: 8px 16px !important;
+    }
+    .Mui-selected {
+        background-color: #f6faf7;
+        p {
+            color: #50945d !important;
+            font-weight: 500 !important;
+        }
+    }
+}
+
+.ant-table-content {
+    // border-radius: 6px !important;
+    .ant-table-thead {
+        .ant-table-cell {
+            color: #667085 !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            background-color: #f2f4f7 !important;
+            // border-left: 1px solid red !important;
+        }
+    }
+}
+.placeholder-black {
+    .ant-picker-input {
+        input::placeholder {
+            color: black !important;
+        }
+    }
+}
+.ant-switch-checked {
+    background-color: #50945d !important;
+}
+.ant-switch {
+    width: 40px !important;
+    height: 24px !important;
+
+    .ant-switch-handle {
+        width: 20px !important;
+        height: 20px !important;
+        top: 2px;
+        border-radius: 100% !important;
+    }
+
+    &.ant-switch-checked .ant-switch-handle {
+        left: calc(
+            100% - 22px
+        ); // Căn chỉnh lại vị trí của handle khi switch được bật
+    }
+}
+
+.selectCreate {
+    .label {
+        font-weight: 400 !important;
+        font-size: 14px !important;
+        line-height: 22px !important;
+        color: #1d2939;
+    }
+}
+
+.ant-picker-cell-today {
+    .ant-picker-cell-inner {
+        &::before {
+            border: 1px solid #50945d !important;
+        }
+    }
+}
+.ant-pagination-options {
+    .ant-select-selector {
+        border: 1px solid #50945d !important;
+    }
+}
+.error {
+    border: 1px solid #ff4d4f !important;
+}
+.errorSelect {
+    .MuiOutlinedInput-root {
+        fieldset {
+            border: 1px solid #ff4d4f !important;
+        }
+    }
+}
+.ant-table-tbody {
+    .ant-table-cell {
+        .MuiStack-root {
+            padding: 0px;
+        }
+    }
+}
+.ant-typography {
+    p {
+        margin: 0px;
+    }
+}
+@media (max-width: 768px) {
+    .blogFilterPage {
+        flex-direction: column;
+    }
+}
