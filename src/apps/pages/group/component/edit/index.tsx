@@ -107,7 +107,7 @@ export default function EditPage(props: EditPageProps) {
     };
     const handleView = async () => {};
     const handleCancel = () => {
-        setFormData(INIT_UPDATE_PRODUCT);
+        // setFormData(INIT_UPDATE_PRODUCT);
         navigate("/admin/group");
         onClose();
     };
