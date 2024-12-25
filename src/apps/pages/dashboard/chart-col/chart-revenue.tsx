@@ -10,12 +10,13 @@ import { formatCurrency } from "@/utils";
 interface ChartDashboardProps {
     color?: string;
     data?: any;
+    unit?: string;
 }
 const ChartDashboardRevenue: React.FC<ChartDashboardProps> = (props) => {
     const isNavOpen = useSelector(selectIsNavOpen);
     const isNavHover = useSelector(selectIsNavHover);
 
-    const { color = "#009E73", data } = props;
+    const { color = "#009E73", data, unit = "vnđ" } = props;
     const chartRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         if (chartRef.current) {
@@ -69,7 +70,7 @@ const ChartDashboardRevenue: React.FC<ChartDashboardProps> = (props) => {
                     {
                         type: "value",
                         axisLabel: {
-                            formatter: "{value} vnđ", // Thay "Đơn vị" bằng đơn vị mà bạn muốn
+                            formatter: `{value} ${unit}`, // Thay "Đơn vị" bằng đơn vị mà bạn muốn
                         },
                     },
                 ],

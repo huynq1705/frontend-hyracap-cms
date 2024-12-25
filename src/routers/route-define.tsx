@@ -27,6 +27,8 @@ import { reportRouter } from "@/apps/pages/report/config";
 import { groupSaleHistoryRouter } from "@/apps/pages/groupSaleHistory/config";
 import { groupRouter } from "@/apps/pages/group/config";
 import { withdrawRequestRouter } from "@/apps/pages/withdrawRequest/config";
+import { contactRouter } from "@/apps/pages/contact/config";
+import { faqRouter } from "@/apps/pages/faq/config";
 
 //collections
 //auth
@@ -110,6 +112,8 @@ const init_routes: RouteExtends[] = [
             ...productRouter,
             ...contractRouter,
             ...transactionRouter,
+            ...contactRouter,
+            ...faqRouter,
             {
                 path: "/404",
                 element: <NotFoundModule />,

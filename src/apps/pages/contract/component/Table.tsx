@@ -672,7 +672,7 @@ const CTable = (props: CTableProps) => {
     queryFn: () => getContract(param_payload),
     keepPreviousData: true,
   });
-  console.log("data", data);
+
   // convert data
   const dataConvert = useMemo(() => {
     const data_res = data?.data;
@@ -725,10 +725,7 @@ const CTable = (props: CTableProps) => {
     let url = `${pathname}${filter}`;
     navigate(url);
   };
-  const handleRowClick = (record: any) => {
-    console.log("row", record);
-    navigate(`/admin/contract/view/${record.id}`);
-  };
+
   const handleUpdateContract = async (
     id: number,
     value: PayloadUpdateContract
