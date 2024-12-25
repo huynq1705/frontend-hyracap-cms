@@ -83,6 +83,12 @@ export const TITLE_PAGE = [
     key_title: "blog",
     key: "blog",
   },
+   // manual
+   {
+    pathname: "/manual",
+    key_title: "manual",
+    key: "manual",
+},
   // industry
   {
     pathname: "/industry",

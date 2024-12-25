@@ -226,6 +226,10 @@ export default function EditPage(props: EditPageProps) {
                         level="H"
                         includeMargin={true}
                     />
+                    {/* <img
+                        src="https://api.vietqr.io/image/970407-4479008888-yWjvOtH.jpg?accountName=HYRACAP&amount=50000&addInfo=200"
+                        alt=""
+                    /> */}
                     <p>Số tài khoản: {formData.account_number}</p>
                     <p>Số tiền: {formatCurrencyNoUnit(+formData.amount)} VND</p>
                 </div>

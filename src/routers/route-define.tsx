@@ -29,6 +29,7 @@ import { groupRouter } from "@/apps/pages/group/config";
 import { withdrawRequestRouter } from "@/apps/pages/withdrawRequest/config";
 import { contactRouter } from "@/apps/pages/contact/config";
 import { faqRouter } from "@/apps/pages/faq/config";
+import { manualRouter } from "@/apps/pages/manual/config";
 
 //collections
 //auth
@@ -95,6 +96,7 @@ const init_routes: RouteExtends[] = [
                     crumb: () => <BreadCrumbLink linkTo={"404"} />,
                 },
             },
+            ...manualRouter,
             ...withdrawRequestRouter,
             ...groupRouter,
             ...reportRouter,

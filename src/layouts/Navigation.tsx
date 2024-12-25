@@ -238,6 +238,13 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             ],
           },
           {
+            label: `Hướng dẫn`,
+            icon: <ReportIcon />, // icon - name : tên ảnh svg
+            key: "admin/manual",
+            type: "link",
+            // role: ["admin"],
+        },
+          {
             label: `${T("setting")} ${t("system")}`, //
             icon: <SettingComponent />, // icon - name : tên ảnh svg
             key: "admin/systems", // check width pathname => activate navbar

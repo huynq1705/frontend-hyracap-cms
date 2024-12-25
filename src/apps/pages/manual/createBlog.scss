@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+@media print {
+    body {
+        margin: 0 !important;
+    }
+}
+
+.main-container {
+    font-family: "Lato";
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ck-content {
+    font-family: "Lato";
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+    min-width: 795px;
+    max-width: 795px;
+}
+
+.editor-container_include-block-toolbar {
+    margin-left: 42px;
+}
+.MuiFormControl-root {
+    margin-bottom: 0px !important;
+}
+.ant-upload-wrapper {
+    .ant-upload-drag {
+        border: 1px dashed #2e90fa;
+        border-radius: 12px;
+        background-color: rgba(245, 249, 255, 0.95);
+        padding: 16px 0px;
+        display: flex;
+        flex-direction: column;
+        span {
+            padding: 0px;
+        }
+        .ant-upload-drag-container {
+            .ant-upload-drag-icon {
+                margin: 0px 0px 10px !important;
+                height: fit-content !important;
+            }
+        }
+    }
+}
+.dontHaveLabel {
+    .label {
+        display: none !important;
+        height: 0px;
+        width: 0px;
+    }
+    .MuiBox-root {
+        margin: 0px !important;
+    }
+}
+.quill {
+    border-radius: 12px !important;
+    border: 1px solid rgba(208, 213, 221, 1);
+    .ql-toolbar {
+        border: 1px solid transparent;
+        border-bottom: 1px solid rgba(208, 213, 221, 1);
+    }
+    .ql-container {
+        border: 1px solid transparent;
+        min-height: 120px;
+        .ql-editor {
+            min-height: 120px;
+        }
+    }
+}
+.hasErrorUpload {
+    .ant-upload-drag {
+        border: 1px dashed #ff4d4f;
+        background-color: rgba(255, 245, 245, 0.95);
+        svg {
+            rect {
+                fill: rgb(255, 230, 230) !important;
+            }
+            path {
+                stroke: #ff4d4f;
+            }
+        }
+        &:hover {
+            border: 1px dashed #ff4d4f !important;
+        }
+    }
+}
+.errorCkEditor {
+    .quill {
+        border: 1px solid #ff4d4f;
+        .ql-toolbar {
+            border-bottom: 1px solid #ff4d4f;
+        }
+    }
+}
+@media (max-width: 768px) {
+    .ant-breadcrumb {
+        padding: 12px !important;
+    }
+}
