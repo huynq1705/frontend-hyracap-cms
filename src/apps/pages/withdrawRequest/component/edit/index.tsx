@@ -37,8 +37,9 @@ export default function EditPage(props: EditPageProps) {
   const { postTransaction } = apiTransactionService();
   const { getContract } = apiContractService();
   const { getWithdrawRequest } = apiWithdrawRequestService();
-
+  const [loading, setLoading] = useState(false);
   const getDetail = async () => {
+    setLoading(true);
     if (!code) return;
     try {
       const param = {
@@ -54,9 +55,11 @@ export default function EditPage(props: EditPageProps) {
           account_number: response.data[0].account_number,
           bank: response.data[0].bank_bin,
         });
+        setLoading(false);
       }
     } catch (e) {
       throw e;
+      setLoading(false);
     }
   };
   const handleCreate = async () => {
@@ -224,11 +227,24 @@ export default function EditPage(props: EditPageProps) {
             level="H"
             includeMargin={true}
           /> */}
-          <img
-            className="w-60 h-60 mt-2 mb-2"
-            src={`https://api.vietqr.io/image/${formData.bank}-${formData.account_number}-yWjvOtH.jpg?accountName=HYRACAP&amount=${formData.amount}&addInfo=200`}
-            alt=""
-          />
+          {loading ? (
+            <div className="loading">
+              <img
+                className="w-84 h-60 mt-2 mb-2"
+                src={`https://img.idesign.vn/2018/10/23/id-loading-1.gif`}
+                alt=""
+              />
+            </div>
+          ) : (
+            <div>
+              <img
+                className="w-60 h-60 mt-2 mb-2"
+                src={`https://api.vietqr.io/image/${formData.bank}-${formData.account_number}-yWjvOtH.jpg?accountName=HYRACAP&amount=${formData.amount}&addInfo=200`}
+                alt=""
+              />
+            </div>
+          )}
+
           <p>Số tài khoản: {formData.account_number} </p>
           <p>Số tiền: {formatCurrencyNoUnit(+formData.amount)} VND</p>
         </div>
