@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Typography, Table, Pagination, PaginationProps, Empty } from "antd";
 import { Box } from "@mui/system";
-import { Stack } from "@mui/material";
+// import { Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
 import PopupConfirmRemove from "@/components/popup/confirm-remove";
@@ -16,6 +16,8 @@ import { formatCurrency, formatCurrencyNoUnit } from "@/utils";
 import usePermissionCheck from "@/hooks/usePermission";
 import SearchBoxTable from "@/components/search-box-table";
 import ActionButton from "@/components/button/action";
+import { Grid, Stack, Tab, useMediaQuery } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { KeySearchType } from "@/types/types";
 import {
   convertObjToParam,
@@ -30,12 +32,13 @@ import EmptyIcon from "@/components/icons/empty";
 import { setTotalItems } from "@/redux/slices/page.slice";
 import apiSaleHistoryService from "@/api/apiSaleHistory.service";
 import apiContractService from "@/api/apiContract.service";
+import apiStaffService from "@/api/apiStaff.service";
 import StatusCardV2 from "@/components/status-card/index-v2";
 import DateSchedule from "../../dashboard/component/custom-datetime-picker";
 import moment from "moment";
 import palette from "@/theme/palette-common";
 import TopTableCustomV2 from "@/components/top-table-custom-v2";
-import ButtonCore from "@/components/button/core";
+import { setSubTab } from "@/redux/slices/checkPanigation.slice";
 
 interface ColumnProps {
   actions: {
@@ -106,29 +109,6 @@ const CustomCardList = ({ dataConvert, actions }: any) => {
               {formatCurrency(+item?.kpi_bonus)}
             </div>
           </div>
-
-          {/* {(hasPermission.update || hasPermission.delete) && (
-                        <div className="border-b border-t-0 border-x-0 border-solid border-gray-4 last:border-none animate-fadeup  px-3 py-2">
-                            <span className="font-medium text-gray-9 text-sm">
-                                Thao tác
-                            </span>
-                            <div className="text-gray-9 text-base py-1">
-                                <div className="flex items-center g-8 justify-start space-x-4">
-                                    {hasPermission.getDetail && (
-                                        <ActionButton
-                                            type="view"
-                                            onClick={() => {
-                                                navigate(
-                                                    `/admin/sale_history/view/${item?.id}`
-                                                );
-                                                actions.togglePopup("edit");
-                                            }}
-                                        />
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )} */}
         </div>
       ))}
     </div>
@@ -173,6 +153,11 @@ const getColumns = (props: ColumnProps) => {
           style={{
             fontSize: "14px",
             fontWeight: 500,
+            color: "var(--success-color)",
+            textDecoration: "underline",
+          }}
+          onClick={() => {
+            navigate(`/admin/contract/view/${item?.id}`);
           }}
         >
           {`${item?.contract_id || ""}`}
@@ -306,42 +291,7 @@ const getColumns = (props: ColumnProps) => {
       ),
     },
   ];
-  // {
-  //     (hasPermission.update || hasPermission.delete) &&
-  //         columns.push({
-  //             title: T("action"),
-  //             width: 120,
-  //             dataIndex: "actions",
-  //             fixed: "right" as const,
-  //             render: (_: any, d: any) => (
-  //                 <>
-  //                     {/* check permission */}
-  //                     {true && (
-  //                         <Stack
-  //                             direction={"row"}
-  //                             sx={{
-  //                                 gap: "12px",
-  //                                 justifyContent: "flex-start",
-  //                                 alignItems: "center",
-  //                             }}
-  //                         >
-  //                             {hasPermission.getDetail && (
-  //                                 <ActionButton
-  //                                     type="view"
-  //                                     onClick={() => {
-  //                                         navigate(
-  //                                             `/admin/sale_history/view/${d?.id}`
-  //                                         );
-  //                                         actions.togglePopup("edit");
-  //                                     }}
-  //                                 />
-  //                             )}
-  //                         </Stack>
-  //                     )}
-  //                 </>
-  //             ),
-  //         });
-  // }
+
   return columns;
 };
 
@@ -396,26 +346,35 @@ const DetailSaleHistoryTable = (props: DetailSaleHistoryTableProps) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const { getSaleHistory, getDetailSaleHistory } = apiSaleHistoryService();
   const { getContract } = apiContractService();
+  const { getDetailStaff } = apiStaffService();
   //permissions
   const { hasPermission } = usePermissionCheck("sale_history");
-  const [selectedDateStatistic, setSelectedDateStatistic] = useState(moment());
+
+  const [selectedDateStatistic, setSelectedDateStatistic] = useState(
+    moment(param_payload?.effective_from__gt) || moment()
+  );
   const date = selectedDateStatistic.startOf("month").format("YYYY-MM-DD");
   const endDate = selectedDateStatistic.endOf("month").format("YYYY-MM-DD");
+
+  const { data: dataStaff, isLoading: isLoadingStaff } = useQuery({
+    queryKey: ["GET_DETAIL_STAFF", code],
+    queryFn: () => getDetailStaff(Number(code) || 0),
+  });
 
   const {
     data: dataDetail,
     isLoading: isLoadingDetail,
     isError: isErrorDetail,
-  } = code
-    ? useQuery({
-        queryKey: ["GET_DETAIL_SALE_HISTORY", code, date],
-        queryFn: () =>
-          getDetailSaleHistory({
-            staff_id__eq: code,
-            month__eq: param_payload?.effective_from__gt,
-          }),
-      })
-    : { data: undefined, isLoading: false, isError: false };
+    refetch: refetchDetail,
+  } = useQuery({
+    queryKey: ["GET_DETAIL_SALE_HISTORY", code, date],
+    queryFn: () =>
+      getDetailSaleHistory({
+        staff_id__eq: code,
+        month__eq: date,
+      }),
+  });
+  // : { data: undefined, isLoading: false, isError: false };
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["GET_CONTRACT_STAFF", param_payload, dataDetail?.data?.staff_id],
@@ -423,15 +382,12 @@ const DetailSaleHistoryTable = (props: DetailSaleHistoryTableProps) => {
       getContract({
         ...param_payload,
         staff_id__eq: code,
-        effective_from__gt: param_payload?.effective_from__gt,
-        effective_from__lt: param_payload?.effective_from__lt,
+        effective_from__gt: date,
+        effective_from__lt: endDate,
       }),
     keepPreviousData: true,
-    enabled:
-      !isLoadingDetail && !isErrorDetail && !!dataDetail?.data?.[0].staff_id,
+    enabled: !isLoadingDetail && !isErrorDetail && !!code,
   });
-
-  console.log("contract", data);
 
   // convert data
   const dataConvert = useMemo(() => {
@@ -443,7 +399,6 @@ const DetailSaleHistoryTable = (props: DetailSaleHistoryTableProps) => {
       return data_res.map((item) => ({ ...item, key: item?.id }));
     return [];
   }, [data]);
-  console.log("dataConvert", dataConvert);
 
   const selectedRowLabels = useMemo(() => {
     return dataConvert
@@ -453,6 +408,11 @@ const DetailSaleHistoryTable = (props: DetailSaleHistoryTableProps) => {
   const togglePopup = (params: keyof typeof popup, value?: boolean) => {
     setPopup((prev) => ({ ...prev, [params]: value ?? !prev[params] }));
   };
+
+  useEffect(() => {
+    refetchDetail();
+    refetch();
+  }, [selectedDateStatistic]);
   // search
   useEffect(() => {
     const new_key_search = parseQueryParams(param_payload);
@@ -486,12 +446,13 @@ const DetailSaleHistoryTable = (props: DetailSaleHistoryTableProps) => {
     [keySearch?.text, pathname]
   );
   useEffect(() => {
-    if (data?.data && dataDetail?.data[0]) {
+    if (data?.data && dataDetail?.data) {
       setTotal({
-        staffName: dataDetail?.data[0]?.staff
-          ? `${dataDetail?.data[0]?.staff.first_name} ${dataDetail?.data[0]?.staff.last_name} `
+        staffName: dataStaff?.data?.first_name
+          ? `${dataStaff?.data?.first_name} ${dataStaff?.data?.last_name} `
           : "",
-        staffPosition: dataDetail?.data[0]?.staff_position?.position?.name || "",
+        staffPosition:
+          dataStaff?.data?.current_staff_position?.position?.name || "",
         total_user: data?.meta?.itemCount || 0,
         total_kpi: +dataDetail?.data[0]?.sales_revenue || 0,
         kpi: +dataDetail?.data[0]?.kpi || 0,
@@ -511,198 +472,189 @@ const DetailSaleHistoryTable = (props: DetailSaleHistoryTableProps) => {
   useEffect(() => {
     refetch();
   }, [window.location.href]);
+
+  const [subTabSchedule, setSubTabSchedule] = useState("1");
+  const handleChangeSubTab = (
+    event: React.SyntheticEvent,
+    newValue: string
+  ) => {
+    setSubTabSchedule(newValue);
+  };
+
+  useEffect(() => {
+    if (subTabSchedule === "2") {
+      dispatch(setSubTab(true));
+    } else {
+      dispatch(setSubTab(false));
+    }
+  }, [subTabSchedule, pathname, dispatch]);
   return (
     <Stack className="h-auto">
-      {/* <Stack
-                direction={"row"}
-                gap={5}
-                className="p-4 bg-white rounded-xl shadow"
-            >
-                <Typography.Title
-                    level={4}
-                    style={{
-                        fontSize: "14px",
-                        lineHeight: "22px",
-                        margin: "0",
-                        color: "#50945D",
-                        cursor: "pointer",
-                    }}
-                    onClick={() => {
-                        navigate("/admin/sale_history");
-                    }}
-                >
-                    Danh sách hoa hồng cá nhân
-                </Typography.Title>
-                <Typography.Title
-                    level={4}
-                    style={{
-                        fontSize: "14px",
-                        lineHeight: "22px",
-                        margin: "0",
-                    }}
-                >
-                    /
-                </Typography.Title>
-                <Typography.Title
-                    level={4}
-                    style={{
-                        fontSize: "14px",
-                        lineHeight: "22px",
-                        margin: "0",
-                    }}
-                >
-                    Thông tin chi tiết
-                </Typography.Title>
-            </Stack> */}
       <Box className="h-full">
         <Box className="custom-table-wrapper shadow">
-          <div className="md:flex items-start flex-col  justify-between space-y-4 flex-wrap">
-            <div className="w-full md:w-1/3">
-              <TopTableCustomV2
-                title={`${total?.staffName}`}
-                description={`${total?.staffPosition}`}
-              />
-            </div>
-            <div className="w-full md:w-1/3">
-              <SearchBoxTable
-                keySearch={text_search}
-                setKeySearch={(value?: string) => {
-                  setKeySearch((prev) => ({
-                    ...prev,
-                    text: value || "",
-                  }));
-                }}
-                handleSearch={handleSearch}
-                placeholder="Tìm theo mã hợp đồng"
-              />
-            </div>
-          </div>
-          {search.includes("text") && key_search?.text && (
-            <div>
-              {dataConvert.length
-                ? `Có ${page.totalItems} kết quả cho từ khóa '${key_search?.text}'`
-                : `Không tìm thấy nội dung nào phù hợp với '${key_search?.text}'`}
-            </div>
-          )}
-          <div className="flex justify-between items-center">
-            <div className="wrapper-from">
-              <StatusCardV2
-                statusData={{
-                  label: "Số lượng hợp đồng",
-                  value: total.total_user,
-                  color: "#217732",
-                }}
-                customCss="min-w-[250px]"
-              />
-              <StatusCardV2
-                statusData={{
-                  label: "KPI",
-                  value: `${data && formatCurrencyNoUnit(+total.kpi)} vnđ`,
-                  color: "#7A52DE",
-                }}
-                customCss="min-w-[250px]"
-              />
-              <StatusCardV2
-                statusData={{
-                  label: "Mức thưởng KPI",
-                  value: `${
-                    data && formatCurrencyNoUnit(+total.kpi_bonus_base)
-                  } vnđ`,
-                  color: "#7A52DE",
-                }}
-                customCss="min-w-[250px]"
-              />
-              <StatusCardV2
-                statusData={{
-                  label: "Tổng tiền doanh thu",
-                  value: `${
-                    data && formatCurrencyNoUnit(+total.total_kpi)
-                  } vnđ`,
-                  color: "#7A52DE",
-                }}
-                customCss="min-w-[250px]"
-              />
-              <StatusCardV2
-                statusData={{
-                  label: "Thưởng KPI",
-                  value: `${
-                    data && formatCurrencyNoUnit(+total.kpi_bonus)
-                  } vnđ`,
-                  color: "#7A52DE",
-                }}
-                customCss="min-w-[250px]"
-              />
-              <StatusCardV2
-                statusData={{
-                  label: "Thưởng trực tiếp",
-                  value: `${
-                    data && formatCurrencyNoUnit(+total.direct_bonus)
-                  } vnđ`,
-                  color: "#7A52DE",
-                }}
-                customCss="min-w-[250px]"
-              />
-            </div>
-            <div className="items-end">
-              <DateSchedule
-                selectedDate={selectedDateStatistic}
-                setSelectedDate={setSelectedDateStatistic}
-              />
-            </div>
-          </div>
-          {/* <Card> */}
-          <Table
-            size="middle"
-            locale={{
-              emptyText: (
-                <div className="flex justify-center items-center py-20">
-                  <div className="flex flex-col">
-                    <EmptyIcon />
-                    <p className="text-center mt-3">Không có dữ liệu</p>
+          <TabContext value={subTabSchedule}>
+            <Box
+              sx={{
+                borderBottom: 1,
+                borderColor: "divider",
+                backgroundColor: "#fff",
+              }}
+            >
+              <TabList
+                onChange={handleChangeSubTab}
+                aria-label="lab API tabs example"
+              >
+                <Tab label="Hoa hồng" value="1" />
+                {/* <Tab label="Thông tin cá nhân" value="2" /> */}
+              </TabList>
+            </Box>
+            <TabPanel value="1">
+              <div className="flex flex-col gap-2">
+                <div className="md:flex items-start flex-col  justify-between space-y-4 flex-wrap">
+                  <div className="w-full md:w-1/3">
+                    <TopTableCustomV2
+                      title={`${total?.staffName}`}
+                      description={`${total?.staffPosition}`}
+                    />
+                  </div>
+                  <div className="w-full md:w-1/3">
+                    <SearchBoxTable
+                      keySearch={text_search}
+                      setKeySearch={(value?: string) => {
+                        setKeySearch((prev) => ({
+                          ...prev,
+                          text: value || "",
+                        }));
+                      }}
+                      handleSearch={handleSearch}
+                      placeholder="Tìm theo mã hợp đồng"
+                    />
                   </div>
                 </div>
-              ),
-            }}
-            bordered
-            // rowSelection={() => {
-            //   console.log("selection");
-            // }}
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record),
-            })}
-            loading={isLoading}
-            dataSource={dataConvert}
-            columns={getColumns({
-              actions,
-              indexItem: pageSize * (currentPage - 1),
-            })}
-            pagination={false}
-            scroll={{ x: "100%" }}
-            className="custom-table custom-table hidden md:block"
-            rowClassName={"cursor-pointer"}
-          />
+                {search.includes("text") && key_search?.text && (
+                  <div>
+                    {dataConvert.length
+                      ? `Có ${page.totalItems} kết quả cho từ khóa '${key_search?.text}'`
+                      : `Không tìm thấy nội dung nào phù hợp với '${key_search?.text}'`}
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <div className="wrapper-from">
+                    <StatusCardV2
+                      statusData={{
+                        label: "Số lượng hợp đồng",
+                        value: total.total_user,
+                        color: "#217732",
+                      }}
+                      customCss="min-w-[250px]"
+                    />
+                    <StatusCardV2
+                      statusData={{
+                        label: "KPI",
+                        value: `${
+                          data && formatCurrencyNoUnit(+total.kpi)
+                        } vnđ`,
+                        color: "#7A52DE",
+                      }}
+                      customCss="min-w-[250px]"
+                    />
+                    <StatusCardV2
+                      statusData={{
+                        label: "Mức thưởng KPI",
+                        value: `${
+                          data && formatCurrencyNoUnit(+total.kpi_bonus_base)
+                        } vnđ`,
+                        color: "#7A52DE",
+                      }}
+                      customCss="min-w-[250px]"
+                    />
+                    <StatusCardV2
+                      statusData={{
+                        label: "Tổng tiền doanh thu",
+                        value: `${
+                          data && formatCurrencyNoUnit(+total.total_kpi)
+                        } vnđ`,
+                        color: "#7A52DE",
+                      }}
+                      customCss="min-w-[250px]"
+                    />
+                    <StatusCardV2
+                      statusData={{
+                        label: "Thưởng KPI",
+                        value: `${
+                          data && formatCurrencyNoUnit(+total.kpi_bonus)
+                        } vnđ`,
+                        color: "#7A52DE",
+                      }}
+                      customCss="min-w-[250px]"
+                    />
+                    <StatusCardV2
+                      statusData={{
+                        label: "Thưởng trực tiếp",
+                        value: `${
+                          data && formatCurrencyNoUnit(+total.direct_bonus)
+                        } vnđ`,
+                        color: "#7A52DE",
+                      }}
+                      customCss="min-w-[250px]"
+                    />
+                  </div>
+                  <div className="items-end">
+                    <DateSchedule
+                      selectedDate={selectedDateStatistic}
+                      setSelectedDate={setSelectedDateStatistic}
+                    />
+                  </div>
+                </div>
+                {/* <Card> */}
+                <Table
+                  size="middle"
+                  locale={{
+                    emptyText: (
+                      <div className="flex justify-center items-center py-20">
+                        <div className="flex flex-col">
+                          <EmptyIcon />
+                          <p className="text-center mt-3">Không có dữ liệu</p>
+                        </div>
+                      </div>
+                    ),
+                  }}
+                  bordered
+                  // rowSelection={() => {
+                  //   console.log("selection");
+                  // }}
+                  onRow={(record) => ({
+                    onClick: () => handleRowClick(record),
+                  })}
+                  loading={isLoading}
+                  dataSource={dataConvert}
+                  columns={getColumns({
+                    actions,
+                    indexItem: pageSize * (currentPage - 1),
+                  })}
+                  pagination={false}
+                  scroll={{ x: "100%" }}
+                  className="custom-table custom-table hidden md:block"
+                  rowClassName={"cursor-pointer"}
+                />
 
-          {/* mobile */}
-          <CustomCardList dataConvert={dataConvert} actions={actions} />
-          {dataConvert.length < 1 && (
-            <Empty
-              className="hidden max-sm:block w-full justify-center items-center"
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
-          )}
+                {/* mobile */}
+                <CustomCardList dataConvert={dataConvert} actions={actions} />
+                {dataConvert.length < 1 && (
+                  <Empty
+                    className="hidden max-sm:block w-full justify-center items-center"
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  />
+                )}
+              </div>
+            </TabPanel>
+            <TabPanel value="2">
+              <div> </div>
+            </TabPanel>
+          </TabContext>
         </Box>
       </Box>
 
-      {/*  */}
-      {/* <PopupConfirmRemove
-        listItem={selectedRowKeys}
-        open={popup.remove}
-        handleClose={() => {
-          togglePopup("remove");
-        }}
-        refetch={refetch}
-        name_item={selectedRowLabels}
-      /> */}
       {/*  */}
       <PopupConfirmImport
         open={popup.upload}

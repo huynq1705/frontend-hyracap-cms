@@ -1,9 +1,9 @@
 import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -53,9 +53,11 @@ export default function EditPageV2() {
       const param = {
         page: 1,
         take: 999,
-        total_invested__lt: "column_total_capacity",
+        total_invested__lt: isView ? "" : "column_total_capacity",
       };
       const response = await getProduct(param);
+      console.log("response", response);
+
       if (response) {
         setProduct(
           response.data.map((it: any) => ({

@@ -243,7 +243,7 @@ export default function EditPage() {
                         navigate("/admin/staff");
                     }}
                 >
-                    Danh sách khách hàng
+                    Danh sách nhân viên
                 </Typography.Title>
                 <Typography.Title
                     level={4}
