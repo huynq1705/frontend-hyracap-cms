@@ -230,8 +230,8 @@ export default function EditPage(props: EditPageProps) {
           {loading ? (
             <div className="loading">
               <img
-                className="w-84 h-60 mt-2 mb-2"
-                src={`https://img.idesign.vn/2018/10/23/id-loading-1.gif`}
+                className="w-90 h-60 mt-2 mb-2"
+                src={`https://camo.githubusercontent.com/bfb2b63eeb7b21626c1a896e6e58a55838135977ce8b5d7ee13a60080b56a1e7/68747470733a2f2f6173736574732d76322e6c6f7474696566696c65732e636f6d2f612f30336364633665302d313138622d313165652d626630382d3037643838613934316362642f696969774730764a514e2e676966`}
                 alt=""
               />
             </div>
