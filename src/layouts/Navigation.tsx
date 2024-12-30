@@ -14,6 +14,7 @@ import NavigationToolbar from "./NavigationToolbar";
 import CustomerIcon from "@/components/icons/customer";
 import ProductIcon from "@/components/icons/product";
 import ReportIcon from "@/components/icons/report";
+import NotificationIcon from "@ant-design/icons/NotificationOutlined";
 // import ContactIcon from "@/components/icons/contact";
 import ButtonCore from "@/components/button/core";
 import BlogV2Icon from "@/components/icons/blog";
@@ -269,6 +270,13 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             label: `FAQ`,
             icon: <ReportIcon />, // icon - name : tên ảnh svg
             key: "admin/faq",
+            type: "link",
+            // role: ["admin"],
+          },
+          {
+            label: `Thông báo`,
+            icon: <NotificationIcon />, // icon - name : tên ảnh svg
+            key: "admin/notification",
             type: "link",
             // role: ["admin"],
           },

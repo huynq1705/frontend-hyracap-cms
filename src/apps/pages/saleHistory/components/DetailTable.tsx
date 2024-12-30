@@ -12,6 +12,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import { Breadcrumb } from "antd";
 import { formatCurrency, formatCurrencyNoUnit } from "@/utils";
 import usePermissionCheck from "@/hooks/usePermission";
 import SearchBoxTable from "@/components/search-box-table";
@@ -490,7 +491,24 @@ const DetailSaleHistoryTable = (props: DetailSaleHistoryTableProps) => {
   }, [subTabSchedule, pathname, dispatch]);
   return (
     <Stack className="h-auto">
-      <Box className="h-full">
+      <Box className="h-full p-4 gap-4 flex flex-col">
+        <Breadcrumb
+          items={[
+            {
+              title: (
+                <p
+                  onClick={() => navigate("/admin/sale_history")}
+                  className="cursor-pointer hover:underline"
+                >
+                  Báo cáo hoa hồng
+                </p>
+              ),
+            },
+            {
+              title: total?.staffName,
+            },
+          ]}
+        />
         <Box className="custom-table-wrapper shadow">
           <TabContext value={subTabSchedule}>
             <Box
