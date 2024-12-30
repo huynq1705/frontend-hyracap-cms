@@ -23,6 +23,7 @@ interface FormData {
   amount: string;
   account_number: string;
   bank: string;
+  contractId: string;
 }
 export default function EditPage(props: EditPageProps) {
   //--init
@@ -54,6 +55,7 @@ export default function EditPage(props: EditPageProps) {
           amount: response.data[0].amount.toString(),
           account_number: response.data[0].account_number,
           bank: response.data[0].bank_bin,
+          contractId: response.data[0].contract.contract_id,
         });
         setLoading(false);
       }
@@ -96,6 +98,7 @@ export default function EditPage(props: EditPageProps) {
       amount: "",
       account_number: "",
       bank: "",
+      contractId: "",
     });
     navigate("/admin/transaction");
     onClose();
@@ -178,6 +181,7 @@ export default function EditPage(props: EditPageProps) {
     amount: "",
     account_number: "",
     bank: "",
+    contractId: "",
   });
   const [popup, setPopup] = useState({
     remove: false,
@@ -239,7 +243,7 @@ export default function EditPage(props: EditPageProps) {
             <div>
               <img
                 className="w-60 h-60 mt-2 mb-2"
-                src={`https://api.vietqr.io/image/${formData.bank}-${formData.account_number}-yWjvOtH.jpg?accountName=HYRACAP&amount=${formData.amount}&addInfo=200`}
+                src={`https://api.vietqr.io/image/${formData.bank}-${formData.account_number}-yWjvOtH.jpg?accountName=HYRACAP&amount=${formData.amount}&addInfo=${formData.contractId}`}
                 alt=""
               />
             </div>
