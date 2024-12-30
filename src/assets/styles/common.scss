@@ -7,19 +7,19 @@
     font-family: "mitu-font-petit";
     src: url("../fonts/PetitFormalScript-Regular.ttf");
 }
+
 .font-petit {
     font-family: "mitu-font-petit" !important;
 }
+
 .header-search-box {
     font-size: 14px;
     gap: 12px;
     align-items: center;
-
     input {
         border: none;
         outline: none;
     }
-
     svg {
         height: 14px;
     }
@@ -52,22 +52,21 @@
     transition: all 0.3s linear;
 }
 
+
 /* Responsive Styles for EditPage */
+
 @media (max-width: 600px) {
     .wrapper-edit-page {
         padding: 16px;
     }
-
     .wrapper-from {
         display: flex;
         flex-direction: column;
         gap: 16px;
     }
-
-    .wrapper-from > div {
+    .wrapper-from>div {
         width: 100% !important;
     }
-
     /* Customize MyTextField, MyTextareaAutosize, MySelect, MyDatePicker, MyRadio */
     .currency-input,
     .my-text-field,
@@ -77,13 +76,11 @@
     .my-radio {
         width: 100% !important;
     }
-
     /* Customize MyTextField inside ActionsEditPage */
     .actions-edit-page {
         flex-direction: column;
         width: 100%;
     }
-
     /* Customize Buttons in ActionsEditPage */
     .actions-edit-page .button {
         width: 100%;
@@ -92,10 +89,9 @@
 }
 
 @media (min-width: 600px) and (max-width: 1024px) {
-    .wrapper-from > div {
+    .wrapper-from>div {
         width: calc(50% - 12px) !important;
     }
-
     .my-select,
     .my-datepicker,
     .my-radio {
@@ -113,26 +109,24 @@
     transition: all 0.3s linear;
 }
 
+
 /* Responsive Styles for EditPage */
+
 @media (max-width: 600px) {
     .payment-edit-page {
         padding: 16px;
     }
-
     .payment-from {
         display: flex;
         flex-direction: column;
         gap: 16px;
     }
-
-    .payment-from > div {
+    .payment-from>div {
         width: 100% !important;
     }
-
-    .payment-from > div > div > div {
+    .payment-from>div>div>div {
         width: 100% !important;
     }
-
     /* Customize MyTextField, MyTextareaAutosize, MySelect, MyDatePicker, MyRadio */
     .currency-input,
     .my-text-field,
@@ -142,7 +136,6 @@
     .my-radio {
         width: 100% !important;
     }
-
     /* Customize Buttons in ActionsEditPage */
     .actions-edit-page .button {
         width: 100%;
@@ -151,16 +144,15 @@
 }
 
 @media (min-width: 600px) and (max-width: 1024px) {
-    .payment-from > div {
+    .payment-from>div {
         width: calc(100%) !important;
     }
-    .payment-from > div > div > {
+    .payment-from>div>div> {
         width: calc(100%) !important;
     }
-    .payment-from > div > div > div {
+    .payment-from>div>div>div {
         width: calc(50% - 8px) !important;
     }
-
     .my-select,
     .my-datepicker,
     .my-radio {
@@ -169,10 +161,9 @@
 }
 
 @media (max-width: 600px) {
-    .admin-from > div {
+    .admin-from>div {
         width: calc(100%);
     }
-
     .my-select,
     .my-datepicker,
     .my-radio {
@@ -186,19 +177,16 @@
         font-weight: 600;
         margin-bottom: 24px;
     }
-
     .item-row {
         padding: 12px 0px;
         align-items: center;
         font-size: 18px;
         text-align: left;
         line-height: 20px;
-
         .title {
             width: 360px;
             font-weight: 400;
         }
-
         .content {
             font-weight: 600;
         }
@@ -216,7 +204,6 @@
     border: 1px solid;
     overflow: hidden;
     box-shadow: none;
-
     span {
         font-size: 14px;
         font-weight: 500;
@@ -242,7 +229,6 @@
 
 .ant-pagination {
     display: flex;
-
     li:nth-child(1) {
         flex-grow: 1;
         order: 1;
@@ -258,7 +244,6 @@
     background-color: #ccc;
     cursor: none;
     color: #000;
-
     &:hover {
         background-color: #ccc !important;
         cursor: none;
@@ -278,7 +263,6 @@ input::placeholder {
         align-items: center;
         gap: 6px;
     }
-
     .ant-select-selection-item-remove {
         color: #fff !important;
         background-color: var(--text-color-primary) !important;
@@ -296,7 +280,6 @@ input::placeholder {
         color: var(--text-color-primary) !important;
         background-color: #f6faf7 !important;
     }
-
     .anticon-check {
         color: var(--text-color-primary) !important;
     }
@@ -310,11 +293,13 @@ input::placeholder {
     width: 0 !important;
     height: 0 !important;
 }
+
 .layout-content-custom {
     background: var(--bg-color-secondary);
     max-height: calc(100vh - 64px);
     height: calc(100vh - 64px);
 }
+
 .custom-table-wrapper {
     background-color: #fff;
     padding: 16px 16px 64px 16px;
@@ -324,7 +309,6 @@ input::placeholder {
     flex-direction: column;
     gap: 16px;
     margin-bottom: 8px;
-
     .custom-table {
         height: auto;
         .ant-table-cell {
@@ -336,6 +320,7 @@ input::placeholder {
         }
     }
 }
+
 ul.custom-pagination {
     background: white;
     padding: 4px 16px;
@@ -389,6 +374,7 @@ ul.custom-pagination {
         }
     }
 }
+
 @media (max-width: 600px) {
     .custom-table-wrapper {
         height: auto;
@@ -399,64 +385,55 @@ ul.custom-pagination {
     tr {
         border: 1px solid #d0d5dd;
     }
-
     td,
     th {
         border: 1px solid #d0d5dd;
         padding: 10px;
         text-align: center;
     }
-
     th {
         font-weight: bold;
     }
 }
+
 .ant-select-dropdown {
     top: auto !important;
     /* Vô hiệu hóa tính toán top tự động */
     bottom: 100% !important;
     /* Hiển thị dropdown phía trên */
 }
+
 .input-v2-custom {
     height: 36px !important;
-
-    > div {
+    >div {
         height: 36px !important;
-
-        > div {
+        >div {
             height: 36px !important;
         }
-
         input {
             height: 36px;
             padding: 0px 14px;
         }
-
         div {
             width: 100%;
             border-top-right-radius: 0px !important;
             border-bottom-right-radius: 0px !important;
         }
-
         .ant-select-selector {
             border-top-right-radius: 6px !important;
             border-bottom-right-radius: 6px !important;
         }
     }
-
     .ant-select-dropdown {
         z-index: 9999 !important;
     }
-
     .ant-image-preview-root,
     .ant-color-picker {
         z-index: 9999 !important;
     }
-
     .date-time-range-picker-custom {
         height: 36px;
     }
-
     .check_show {
         border: 1px solid red !important;
     }
@@ -498,6 +475,7 @@ ul.custom-pagination {
         }
     }
 }
+
 .custom-checkbox {
     margin-right: 8px;
     width: 16px;
@@ -540,12 +518,13 @@ ul.custom-pagination {
         left: 6px;
     }
 }
+
 .custom-breadcrumb {
-    li > span,
-    li > a {
+    li>span,
+    li>a {
         color: var(--text-color-primary) !important;
     }
-    li:last-child > span {
+    li:last-child>span {
         color: #000 !important;
     }
 }

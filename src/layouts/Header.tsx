@@ -1,10 +1,17 @@
+import apiAccountService from "@/api/Account.service";
+import apiNotificationService from "@/api/notification.service";
+import AppConfig from "@/common/AppConfig";
 import ButtonCore from "@/components/button/core";
+import EmptyIcon from "@/components/icons/empty";
 import SearchNormal from "@/components/icons/search";
 import UserSection from "@/components/UserSection";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
+import { selectUserInfo } from "@/redux/selectors/user.selector";
+import { setGlobalNoti } from "@/redux/slices/app.slice";
+import { formatDate } from "@/utils/date-time";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { io } from "socket.io-client";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
   Box,
   Divider,
@@ -16,20 +23,11 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { memo, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
-import EmptyIcon from "@/components/icons/empty";
 import clsx from "clsx";
-import { useSelector } from "react-redux";
-import apiAccountService from "@/api/Account.service";
-import apiNotificationService from "@/api/notification.service";
-import { formatDate, formatTime } from "@/utils/date-time";
-import { selectUserInfo } from "@/redux/selectors/user.selector";
-import { onMessageListener } from "@/utils/firebase";
-import { setGlobalNoti } from "@/redux/slices/app.slice";
-import { useDispatch } from "react-redux";
-import AppConfig from "@/common/AppConfig";
+import { memo, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 interface HeaderProps {
   handleDrawerToggle: () => void;
 }
@@ -264,6 +262,7 @@ const Header = (props: HeaderProps): JSX.Element => {
               navigate("/admin/contract/create");
             }}
           />
+
           <ButtonCore
             title={"Tạo dự án"}
             onClick={() => {
@@ -337,7 +336,7 @@ const Header = (props: HeaderProps): JSX.Element => {
                 listNotification.map((noti: any) => (
                   <ListItem
                     key={noti.id}
-                    button
+                    component="div" // Hoặc "a" nếu bạn muốn nó là một liên kết
                     sx={{
                       "&:hover": {
                         backgroundColor: "#f6faf7",

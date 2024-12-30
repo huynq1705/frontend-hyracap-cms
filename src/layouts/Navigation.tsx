@@ -1,36 +1,30 @@
 import IconSvg from "@/components/IconSvg";
 import NavigationList from "@/components/NavigationList";
 import useCustomTranslation from "@/hooks/useCustomTranslation";
-import { NavList } from "@/types/types";
-import clsx from "clsx";
-import { memo, useEffect, useMemo, useState } from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import { Location, Params, useLocation, useParams } from "react-router-dom";
-import NavigationToolbar from "./NavigationToolbar";
-import { useSelector, useDispatch } from "react-redux";
 import { selectUserInfo } from "@/redux/selectors/user.selector";
 import { setActiveKey } from "@/redux/slices/navigation.slice";
+import { NavList } from "@/types/types";
+import clsx from "clsx";
+import { memo, useEffect, useMemo } from "react";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { useDispatch, useSelector } from "react-redux";
+import { Location, Params, useLocation, useParams } from "react-router-dom";
+import NavigationToolbar from "./NavigationToolbar";
 
-import ProductIcon from "@/components/icons/product";
-import CartIcon from "@/components/icons/cart";
-import ScheduleIcon from "@/components/icons/schedule";
 import CustomerIcon from "@/components/icons/customer";
+import ProductIcon from "@/components/icons/product";
 import ReportIcon from "@/components/icons/report";
 // import ContactIcon from "@/components/icons/contact";
-import PermissionsIcon from "@/components/icons/permissions";
-import TagService from "@/components/icons/tag-service";
-import SettingComponent from "@/components/icons/setting";
-import ServiceComponent from "@/components/icons/service";
+import ButtonCore from "@/components/button/core";
+import BlogV2Icon from "@/components/icons/blog";
 import EvaluationsIcon from "@/components/icons/evaluations";
-import MediaIcon from "@/components/icons/media";
+import PermissionsIcon from "@/components/icons/permissions";
+import ProjectIcon from "@/components/icons/project";
+import RevenueIcon from "@/components/icons/revenue";
+import ServiceComponent from "@/components/icons/service";
+import SettingComponent from "@/components/icons/setting";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ButtonCore from "@/components/button/core";
-import BLogIcon from "@/components/icons/blog_icon";
-import RevenueIcon from "@/components/icons/revenue";
-import ProjectIcon from "@/components/icons/project";
-import BlogIcon from "@/components/icons/blog";
-import BlogV2Icon from "@/components/icons/blog";
 const getRoutePath = (location: Location, params: Params): string => {
   const { pathname } = location;
 
@@ -243,7 +237,7 @@ const Navigation = (props: NavigationProps): JSX.Element => {
             key: "admin/manual",
             type: "link",
             // role: ["admin"],
-        },
+          },
           {
             label: `${T("setting")} ${t("system")}`, //
             icon: <SettingComponent />, // icon - name : tên ảnh svg
